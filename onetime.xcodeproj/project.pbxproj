@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,7 +18,17 @@
 		FA0E256322F9E132007DC512 /* nano Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA0E256222F9E132007DC512 /* nano Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FA0E256922F9E132007DC512 /* OTInterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E256822F9E132007DC512 /* OTInterfaceController.m */; };
 		FA0E256C22F9E132007DC512 /* OTExtensionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E256B22F9E132007DC512 /* OTExtensionDelegate.m */; };
-		FA0E257222F9E132007DC512 /* nano.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = FA0E255622F9E131007DC512 /* nano.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA0E257222F9E132007DC512 /* nano.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = FA0E255622F9E131007DC512 /* nano.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA0E258422F9E52F007DC512 /* OTPBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258322F9E52F007DC512 /* OTPBase.m */; };
+		FA0E258522F9E52F007DC512 /* OTPBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258322F9E52F007DC512 /* OTPBase.m */; };
+		FA0E258822F9F703007DC512 /* OTPHash.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258722F9F703007DC512 /* OTPHash.m */; };
+		FA0E258922F9F703007DC512 /* OTPHash.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258722F9F703007DC512 /* OTPHash.m */; };
+		FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258B22F9F736007DC512 /* OTPTime.m */; };
+		FA0E258D22F9F736007DC512 /* OTPTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258B22F9F736007DC512 /* OTPTime.m */; };
+		FA0E259022FA357F007DC512 /* OTBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258F22FA357F007DC512 /* OTBag.m */; };
+		FA0E259122FA357F007DC512 /* OTBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258F22FA357F007DC512 /* OTBag.m */; };
+		FA0E259722FA5877007DC512 /* OTKeychainHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E259622FA5877007DC512 /* OTKeychainHelper.m */; };
+		FA0E259822FA5877007DC512 /* OTKeychainHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E259622FA5877007DC512 /* OTKeychainHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +95,17 @@
 		FA0E256A22F9E132007DC512 /* OTExtensionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTExtensionDelegate.h; sourceTree = "<group>"; };
 		FA0E256B22F9E132007DC512 /* OTExtensionDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTExtensionDelegate.m; sourceTree = "<group>"; };
 		FA0E256F22F9E132007DC512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA0E258222F9E52F007DC512 /* OTPBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPBase.h; sourceTree = "<group>"; };
+		FA0E258322F9E52F007DC512 /* OTPBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPBase.m; sourceTree = "<group>"; };
+		FA0E258622F9F703007DC512 /* OTPHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPHash.h; sourceTree = "<group>"; };
+		FA0E258722F9F703007DC512 /* OTPHash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPHash.m; sourceTree = "<group>"; };
+		FA0E258A22F9F736007DC512 /* OTPTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPTime.h; sourceTree = "<group>"; };
+		FA0E258B22F9F736007DC512 /* OTPTime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPTime.m; sourceTree = "<group>"; };
+		FA0E258E22FA357F007DC512 /* OTBag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTBag.h; sourceTree = "<group>"; };
+		FA0E258F22FA357F007DC512 /* OTBag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTBag.m; sourceTree = "<group>"; };
+		FA0E259222FA43D0007DC512 /* nano.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = nano.entitlements; sourceTree = "<group>"; };
+		FA0E259522FA5877007DC512 /* OTKeychainHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTKeychainHelper.h; sourceTree = "<group>"; };
+		FA0E259622FA5877007DC512 /* OTKeychainHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTKeychainHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +129,7 @@
 		FA0E24F622F9DB3E007DC512 = {
 			isa = PBXGroup;
 			children = (
+				FA0E258122F9E3A7007DC512 /* OneTimeKit */,
 				FA0E250122F9DB3E007DC512 /* onetime */,
 				FA0E255722F9E131007DC512 /* nano */,
 				FA0E256622F9E132007DC512 /* nano_extension */,
@@ -190,6 +212,7 @@
 				FA0E257B22F9E205007DC512 /* ExtensionDelegate */,
 				FA0E257C22F9E216007DC512 /* InterfaceControllers */,
 				FA0E256F22F9E132007DC512 /* Info.plist */,
+				FA0E259222FA43D0007DC512 /* nano.entitlements */,
 			);
 			path = nano_extension;
 			sourceTree = "<group>";
@@ -210,6 +233,39 @@
 				FA0E256822F9E132007DC512 /* OTInterfaceController.m */,
 			);
 			path = InterfaceControllers;
+			sourceTree = "<group>";
+		};
+		FA0E258122F9E3A7007DC512 /* OneTimeKit */ = {
+			isa = PBXGroup;
+			children = (
+				FA0E259322FA581A007DC512 /* Models */,
+				FA0E259422FA5827007DC512 /* Services */,
+			);
+			path = OneTimeKit;
+			sourceTree = "<group>";
+		};
+		FA0E259322FA581A007DC512 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA0E258222F9E52F007DC512 /* OTPBase.h */,
+				FA0E258322F9E52F007DC512 /* OTPBase.m */,
+				FA0E258622F9F703007DC512 /* OTPHash.h */,
+				FA0E258722F9F703007DC512 /* OTPHash.m */,
+				FA0E258A22F9F736007DC512 /* OTPTime.h */,
+				FA0E258B22F9F736007DC512 /* OTPTime.m */,
+				FA0E258E22FA357F007DC512 /* OTBag.h */,
+				FA0E258F22FA357F007DC512 /* OTBag.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA0E259422FA5827007DC512 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FA0E259522FA5877007DC512 /* OTKeychainHelper.h */,
+				FA0E259622FA5877007DC512 /* OTKeychainHelper.m */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,7 +400,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA0E250A22F9DB3E007DC512 /* OTViewController.m in Sources */,
+				FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */,
+				FA0E258422F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,
+				FA0E259722FA5877007DC512 /* OTKeychainHelper.m in Sources */,
+				FA0E258822F9F703007DC512 /* OTPHash.m in Sources */,
+				FA0E259022FA357F007DC512 /* OTBag.m in Sources */,
 				FA0E251522F9DB40007DC512 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,7 +414,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA0E259822FA5877007DC512 /* OTKeychainHelper.m in Sources */,
 				FA0E256C22F9E132007DC512 /* OTExtensionDelegate.m in Sources */,
+				FA0E258522F9E52F007DC512 /* OTPBase.m in Sources */,
+				FA0E258922F9F703007DC512 /* OTPHash.m in Sources */,
+				FA0E259122FA357F007DC512 /* OTBag.m in Sources */,
+				FA0E258D22F9F736007DC512 /* OTPTime.m in Sources */,
 				FA0E256922F9E132007DC512 /* OTInterfaceController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,6 +434,7 @@
 		};
 		FA0E257122F9E132007DC512 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = FA0E255522F9E131007DC512 /* nano */;
 			targetProxy = FA0E257022F9E132007DC512 /* PBXContainerItemProxy */;
 		};
@@ -589,6 +656,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = nano_extension/nano.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = nano_extension/Info.plist;
@@ -610,6 +678,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = nano_extension/nano.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = nano_extension/Info.plist;

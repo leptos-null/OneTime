@@ -17,7 +17,14 @@
     return 'base';
 }
 - (unsigned)type {
-    return [self.class type];
+    return [[self class] type];
+}
+
++ (NSString *)domain {
+    return @"otp";
+}
+- (NSString *)domain {
+    return [[self class] domain];
 }
 
 - (instancetype)init {
@@ -121,6 +128,10 @@
         OTPDigitPropertyKey : @(self.digits),
         OTPAlgorithmPropertyKey : @(self.algorithm),
     };
+}
+
+- (NSURLQueryItem *)specificQuery {
+    __builtin_unreachable();
 }
 
 @end

@@ -11,7 +11,12 @@
 
 #import "OTPBase.h"
 
+#define OTBagIndexPropertyKey @"null.leptos.onetime.bag.index"
+
 @interface OTBag : NSObject
+
++ (NSArray<OTBag *> *)keychainBags;
+
 
 @property (strong, nonatomic) NSString *issuer;
 @property (strong, nonatomic) NSString *account;
@@ -23,8 +28,24 @@
 @property (strong, nonatomic, readonly) NSDictionary *keychainAttributes; // nil if not added to keychain
 
 - (instancetype)initWithGenerator:(OTPBase *)generator;
+
 - (instancetype)initWithKeychainAttributes:(NSDictionary *)attributes;
 
-- (OSStatus)addToKeychain;
+// https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+- (instancetype)initWithURL:(NSURL *)url;
+- (NSURL *)URL;
+
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
+@property NSInteger index;
+NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context);
+
+// syncs current bag properties to the keychain
+// this method doesn't mutate the current object,
+// other than potentially updating the keychainAttributes property
+- (OSStatus)syncToKeychain;
+// deletes the key and other attributes from keychain, not recoverable
+- (OSStatus)deleteFromKeychain;
 
 @end

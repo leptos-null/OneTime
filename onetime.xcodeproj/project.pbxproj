@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E250322F9DB3E007DC512 /* OTAppDelegate.m */; };
-		FA0E250A22F9DB3E007DC512 /* OTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E250922F9DB3E007DC512 /* OTViewController.m */; };
 		FA0E250F22F9DB40007DC512 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA0E250E22F9DB40007DC512 /* Assets.xcassets */; };
 		FA0E251522F9DB40007DC512 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E251422F9DB40007DC512 /* main.m */; };
 		FA0E252422F9DEEA007DC512 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA0E252022F9DEEA007DC512 /* Main.storyboard */; };
@@ -27,8 +26,10 @@
 		FA0E258D22F9F736007DC512 /* OTPTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258B22F9F736007DC512 /* OTPTime.m */; };
 		FA0E259022FA357F007DC512 /* OTBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258F22FA357F007DC512 /* OTBag.m */; };
 		FA0E259122FA357F007DC512 /* OTBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258F22FA357F007DC512 /* OTBag.m */; };
-		FA0E259722FA5877007DC512 /* OTKeychainHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E259622FA5877007DC512 /* OTKeychainHelper.m */; };
-		FA0E259822FA5877007DC512 /* OTKeychainHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E259622FA5877007DC512 /* OTKeychainHelper.m */; };
+		FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E259F22FA9D79007DC512 /* OTPassTableViewCell.m */; };
+		FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */; };
+		FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,8 +78,6 @@
 		FA0E24FF22F9DB3E007DC512 /* onetime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = onetime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0E250222F9DB3E007DC512 /* OTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTAppDelegate.h; sourceTree = "<group>"; };
 		FA0E250322F9DB3E007DC512 /* OTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTAppDelegate.m; sourceTree = "<group>"; };
-		FA0E250822F9DB3E007DC512 /* OTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTViewController.h; sourceTree = "<group>"; };
-		FA0E250922F9DB3E007DC512 /* OTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTViewController.m; sourceTree = "<group>"; };
 		FA0E250E22F9DB40007DC512 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA0E251322F9DB40007DC512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA0E251422F9DB40007DC512 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -104,8 +103,12 @@
 		FA0E258E22FA357F007DC512 /* OTBag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTBag.h; sourceTree = "<group>"; };
 		FA0E258F22FA357F007DC512 /* OTBag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTBag.m; sourceTree = "<group>"; };
 		FA0E259222FA43D0007DC512 /* nano.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = nano.entitlements; sourceTree = "<group>"; };
-		FA0E259522FA5877007DC512 /* OTKeychainHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTKeychainHelper.h; sourceTree = "<group>"; };
-		FA0E259622FA5877007DC512 /* OTKeychainHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTKeychainHelper.m; sourceTree = "<group>"; };
+		FA0E259E22FA9D79007DC512 /* OTPassTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassTableViewCell.h; sourceTree = "<group>"; };
+		FA0E259F22FA9D79007DC512 /* OTPassTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewCell.m; sourceTree = "<group>"; };
+		FA0E25A222FA9D97007DC512 /* OTPassTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassTableViewController.h; sourceTree = "<group>"; };
+		FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewController.m; sourceTree = "<group>"; };
+		FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+OTBase32.h"; sourceTree = "<group>"; };
+		FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+OTBase32.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +155,7 @@
 			children = (
 				FA0E251C22F9DD54007DC512 /* AppDelegate */,
 				FA0E251D22F9DDC3007DC512 /* ViewControllers */,
+				FA0E259922FA9D2C007DC512 /* Views */,
 				FA0E252622F9DEF4007DC512 /* Storyboards */,
 				FA0E251E22F9DE6F007DC512 /* Resources */,
 			);
@@ -170,8 +174,8 @@
 		FA0E251D22F9DDC3007DC512 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FA0E250822F9DB3E007DC512 /* OTViewController.h */,
-				FA0E250922F9DB3E007DC512 /* OTViewController.m */,
+				FA0E25A222FA9D97007DC512 /* OTPassTableViewController.h */,
+				FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -239,7 +243,6 @@
 			isa = PBXGroup;
 			children = (
 				FA0E259322FA581A007DC512 /* Models */,
-				FA0E259422FA5827007DC512 /* Services */,
 			);
 			path = OneTimeKit;
 			sourceTree = "<group>";
@@ -255,17 +258,19 @@
 				FA0E258B22F9F736007DC512 /* OTPTime.m */,
 				FA0E258E22FA357F007DC512 /* OTBag.h */,
 				FA0E258F22FA357F007DC512 /* OTBag.m */,
+				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
+				FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		FA0E259422FA5827007DC512 /* Services */ = {
+		FA0E259922FA9D2C007DC512 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FA0E259522FA5877007DC512 /* OTKeychainHelper.h */,
-				FA0E259622FA5877007DC512 /* OTKeychainHelper.m */,
+				FA0E259E22FA9D79007DC512 /* OTPassTableViewCell.h */,
+				FA0E259F22FA9D79007DC512 /* OTPassTableViewCell.m */,
 			);
-			path = Services;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -399,11 +404,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA0E250A22F9DB3E007DC512 /* OTViewController.m in Sources */,
+				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
+				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
 				FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */,
 				FA0E258422F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,
-				FA0E259722FA5877007DC512 /* OTKeychainHelper.m in Sources */,
+				FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258822F9F703007DC512 /* OTPHash.m in Sources */,
 				FA0E259022FA357F007DC512 /* OTBag.m in Sources */,
 				FA0E251522F9DB40007DC512 /* main.m in Sources */,
@@ -414,8 +420,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA0E259822FA5877007DC512 /* OTKeychainHelper.m in Sources */,
 				FA0E256C22F9E132007DC512 /* OTExtensionDelegate.m in Sources */,
+				FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258522F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E258922F9F703007DC512 /* OTPHash.m in Sources */,
 				FA0E259122FA357F007DC512 /* OTBag.m in Sources */,
@@ -587,6 +593,7 @@
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = onetime/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -607,6 +614,7 @@
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = onetime/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

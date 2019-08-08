@@ -1,5 +1,5 @@
 //
-//  OTViewController.h
+//  OTPassTableViewCell.h
 //  onetime
 //
 //  Created by Leptos on 8/6/19.
@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OTViewController : UIViewController
+NS_ASSUME_NONNULL_BEGIN
 
+@interface OTPassTableViewCell : UITableViewCell
 
 @end
+
+NS_ASSUME_NONNULL_END

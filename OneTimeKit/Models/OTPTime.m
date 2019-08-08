@@ -13,6 +13,9 @@
 + (unsigned)type {
     return 'time';
 }
++ (NSString *)domain {
+    return @"totp";
+}
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits {
     return [self initWithKey:key algorithm:algorithm digits:digits step:30];
@@ -45,6 +48,10 @@
     NSMutableDictionary *props = [[super properties] mutableCopy];
     props[OTPStepPropertyKey] = @(self.step);
     return props;
+}
+
+- (NSURLQueryItem *)specificQuery {
+    return [NSURLQueryItem queryItemWithName:@"period" value:@(self.step).stringValue];
 }
 
 @end

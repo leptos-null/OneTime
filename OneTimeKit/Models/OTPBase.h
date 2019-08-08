@@ -19,6 +19,10 @@
 // mirror of the class property
 @property (nonatomic, readonly) unsigned type;
 
+@property (class, strong, nonatomic, readonly) NSString *domain;
+// mirror of the class property
+@property (strong, nonatomic, readonly) NSString *domain;
+
 @property (strong, nonatomic, readonly) NSData *key;
 @property (nonatomic, readonly) CCHmacAlgorithm algorithm;
 @property (nonatomic, readonly) size_t digits;
@@ -33,6 +37,8 @@
 
 // subclasses should provide a default `factor` implementation
 - (NSString *)password;
+
+- (NSURLQueryItem *)specificQuery;
 
 - (NSDictionary *)properties;
 

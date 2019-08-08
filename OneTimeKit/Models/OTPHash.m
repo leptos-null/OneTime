@@ -13,6 +13,9 @@
 + (unsigned)type {
     return 'hash';
 }
++ (NSString *)domain {
+    return @"hotp";
+}
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits counter:(uint64_t)counter {
     if (self = [super initWithKey:key algorithm:algorithm digits:digits]) {
@@ -38,6 +41,10 @@
     NSMutableDictionary *props = [[super properties] mutableCopy];
     props[OTPCounterPropertyKey] = @(self.counter);
     return props;
+}
+
+- (NSURLQueryItem *)specificQuery {
+    return [NSURLQueryItem queryItemWithName:@"counter" value:@(self.counter).stringValue];
 }
 
 @end

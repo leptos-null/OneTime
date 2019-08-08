@@ -17,6 +17,21 @@
     return @"hotp";
 }
 
++ (uint64_t)defaultCounter {
+    return 1;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _counter = [[self class] defaultCounter];
+    }
+    return self;
+}
+
+- (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits {
+    return [self initWithKey:key algorithm:algorithm digits:digits counter:[[self class] defaultCounter]];
+}
+
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits counter:(uint64_t)counter {
     if (self = [super initWithKey:key algorithm:algorithm digits:digits]) {
         _counter = counter;

@@ -13,6 +13,8 @@
 // https://tools.ietf.org/html/rfc6238
 @interface OTPTime : OTPBase
 
+@property (class, nonatomic, readonly) NSTimeInterval defaultStep;
+
 @property (nonatomic, readonly) NSTimeInterval step;
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits step:(NSTimeInterval)step;

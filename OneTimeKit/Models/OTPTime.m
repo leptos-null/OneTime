@@ -17,8 +17,19 @@
     return @"totp";
 }
 
++ (NSTimeInterval)defaultStep {
+    return 30;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _step = [[self class] defaultStep];
+    }
+    return self;
+}
+
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits {
-    return [self initWithKey:key algorithm:algorithm digits:digits step:30];
+    return [self initWithKey:key algorithm:algorithm digits:digits step:[[self class] defaultStep]];
 }
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits step:(NSTimeInterval)step {

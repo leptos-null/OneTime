@@ -9,7 +9,6 @@
 #import "OTPBase.h"
 
 @implementation OTPBase {
-    CCHmacContext _hmacContext;
     size_t _macLength;
 }
 
@@ -27,9 +26,21 @@
     return [[self class] domain];
 }
 
++ (NSData *)randomKey {
+    uint8_t rand[20];
+    arc4random_buf(rand, sizeof(rand));
+    return [NSData dataWithBytes:rand length:sizeof(rand)];
+}
++ (CCHmacAlgorithm)defaultAlgorithm {
+    return kCCHmacAlgSHA1;
+}
++ (size_t)defaultDigits {
+    return 6;
+}
+
 - (instancetype)init {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    Class const cls = [self class];
+    return [self initWithKey:[cls randomKey] algorithm:[cls defaultAlgorithm] digits:[cls defaultDigits]];
 }
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits {
@@ -64,7 +75,6 @@
         }
         
         _macLength = macLen;
-        CCHmacInit(&_hmacContext, algorithm, key.bytes, key.length);
     }
     return self;
 }
@@ -81,19 +91,21 @@
     // put everything we need in local variables to avoid any
     // property values changing in the middle of the procedure
     uint8_t const base = 10;
+    NSData *const secretKey = self.key;
+    CCHmacAlgorithm const alg = self.algorithm;
     size_t const digits = self.digits;
     size_t const macLength = _macLength;
     
     uint8_t mac[macLength];
-    CCHmacUpdate(&_hmacContext, &factor, sizeof(factor));
-    CCHmacFinal(&_hmacContext, mac);
+    // see git history for using CCHmac family
+    // the mac was incorrect when called during a font size change
+    CCHmac(alg, secretKey.bytes, secretKey.length, &factor, sizeof(factor), mac);
     
     // top 4 bits
     uint8_t const offset = mac[macLength - 1] & 0xf;
     
     uint32_t head = *(uint32_t *)(mac + offset);
     _Static_assert((sizeof(head) * __CHAR_BIT__) >= 31, "HOTP must be 31 bits");
-    // swap to host
     head = ntohl(head);
     // mask off the would-be sign bit
     head &= INT32_MAX;
@@ -114,7 +126,6 @@
         *(--valuePtr) = (head % base) + '0';
         head /= base;
     }
-    
     NSString *done = [[NSString alloc] initWithBytes:value length:digits encoding:NSASCIIStringEncoding];
     return done;
 }

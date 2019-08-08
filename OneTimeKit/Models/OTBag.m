@@ -21,8 +21,9 @@
     CFDictionarySetValue(attribs, kSecReturnAttributes, kCFBooleanTrue);
     CFDictionarySetValue(attribs, kSecReturnData, kCFBooleanTrue);
     
-    CFTypeRef result;
+    CFTypeRef result = NULL;
     SecItemCopyMatching(attribs, &result);
+    CFRelease(attribs);
     NSArray *res = CFBridgingRelease(result);
     NSMutableArray *ret = [NSMutableArray arrayWithCapacity:res.count];
     for (NSDictionary *attribs in res) {
@@ -107,14 +108,17 @@ static inline char singleHexChar(uint8_t hex) {
 }
 
 - (instancetype)initWithURL:(NSURL *)url {
+    if (!url) {
+        return nil;
+    }
     if (self = [super init]) {
         NSURLComponents *urlComps = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
         // ignore scheme
-        CCHmacAlgorithm alg = kCCHmacAlgSHA1;
+        CCHmacAlgorithm alg = [OTPBase defaultAlgorithm];
         NSData *key = nil;
-        size_t digits = 6;
-        uint64_t counter = 1;
-        NSTimeInterval step = 30;
+        size_t digits = [OTPBase defaultDigits];
+        uint64_t counter = [OTPHash defaultCounter];
+        NSTimeInterval step = [OTPTime defaultStep];
         
         for (NSURLQueryItem *queryItem in urlComps.queryItems) {
             if ([queryItem.name isEqualToString:@"algorithm"]) {
@@ -157,7 +161,7 @@ static inline char singleHexChar(uint8_t hex) {
         NSArray<NSString *> *userInfo = [[urlComps.path substringFromIndex:1] componentsSeparatedByString:@":"];
         // "Neither issuer nor account name may themselves contain a colon"
         if (userInfo.count == 1) {
-           _account = userInfo[0];
+            _account = userInfo[0];
         } else if (userInfo.count == 2) {
             if (!_issuer) {
                 _issuer = userInfo[0];
@@ -204,7 +208,9 @@ static inline char singleHexChar(uint8_t hex) {
 
 - (NSDictionary *)_uniqueKeychainQuery {
     return @{
-        (NSString *)kSecAttrAccount : self.uniqueIdentifier
+        (NSString *)kSecAttrAccount : self.uniqueIdentifier,
+        (NSString *)kSecClass : (NSString *)kSecClassGenericPassword,
+        (NSString *)kSecAttrSynchronizable : @(YES)
     };
 }
 

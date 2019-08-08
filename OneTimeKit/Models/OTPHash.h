@@ -13,6 +13,8 @@
 // https://tools.ietf.org/html/rfc4226
 @interface OTPHash : OTPBase
 
+@property (class, nonatomic, readonly) uint64_t defaultCounter;
+
 @property (readonly) uint64_t counter;
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits counter:(uint64_t)counter;

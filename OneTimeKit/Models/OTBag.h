@@ -18,9 +18,6 @@
 + (NSArray<OTBag *> *)keychainBags;
 
 
-@property (strong, nonatomic) NSString *issuer;
-@property (strong, nonatomic) NSString *account;
-
 @property (strong, nonatomic, readonly) OTPBase *generator;
 
 @property (strong, nonatomic, readonly) NSString *uniqueIdentifier;
@@ -38,6 +35,8 @@
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
+@property (strong, nonatomic) NSString *issuer;
+@property (strong, nonatomic) NSString *account;
 @property NSInteger index;
 NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context);
 

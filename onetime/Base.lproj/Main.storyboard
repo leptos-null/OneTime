@@ -1,26 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EOI-im-eZM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--One-Time Passwords-->
+        <scene sceneID="WHg-KQ-rzj">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="OTViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <tableViewController id="Onc-Cc-O5p" customClass="OTPassTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8U3-Dq-TMj">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PassCell" id="k7c-08-FlA" customClass="OTPassTableViewCell">
+                                <rect key="frame" x="0.0" y="28" width="414" height="121"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="k7c-08-FlA" id="pcN-eD-KVN">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="121"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Issuer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jgw-Ia-ggB" userLabel="Issuer Label">
+                                            <rect key="frame" x="36" y="11" width="49" height="20.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qpg-i5-g9c">
+                                            <rect key="frame" x="38" y="40" width="63.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Passcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fZN-5g-Fys">
+                                            <rect key="frame" x="152.5" y="47.5" width="109" height="31.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Override" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pb7-FP-sx4">
+                                            <rect key="frame" x="52" y="71" width="59.5" height="18"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="fZN-5g-Fys" firstAttribute="top" secondItem="Qpg-i5-g9c" secondAttribute="bottom" constant="8" id="0MF-w7-ntT"/>
+                                        <constraint firstItem="fZN-5g-Fys" firstAttribute="centerX" secondItem="pcN-eD-KVN" secondAttribute="centerX" id="7no-OD-d4Q"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Pb7-FP-sx4" secondAttribute="bottom" id="Bho-rY-ZbB"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Qpg-i5-g9c" secondAttribute="trailing" constant="-101.5" id="Kg8-1x-HGJ"/>
+                                        <constraint firstItem="fZN-5g-Fys" firstAttribute="bottom" secondItem="Pb7-FP-sx4" secondAttribute="top" constant="8" id="Ttq-8G-tTP"/>
+                                        <constraint firstItem="jgw-Ia-ggB" firstAttribute="top" secondItem="pcN-eD-KVN" secondAttribute="topMargin" id="UCp-PN-2i1"/>
+                                        <constraint firstItem="Qpg-i5-g9c" firstAttribute="top" secondItem="jgw-Ia-ggB" secondAttribute="bottom" constant="8" id="Ue5-cE-v1r"/>
+                                        <constraint firstItem="Pb7-FP-sx4" firstAttribute="leading" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" constant="32" id="Z6y-Cq-UIA"/>
+                                        <constraint firstItem="fZN-5g-Fys" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pcN-eD-KVN" secondAttribute="leading" id="mMx-Xs-93f"/>
+                                        <constraint firstItem="jgw-Ia-ggB" firstAttribute="leading" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" constant="16" id="mPn-zg-oc8"/>
+                                        <constraint firstItem="Qpg-i5-g9c" firstAttribute="leading" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" constant="18" id="mSb-iH-m0X"/>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="fZN-5g-Fys" secondAttribute="trailing" id="qxp-qG-v69"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Pb7-FP-sx4" secondAttribute="trailing" id="wNc-an-OcI"/>
+                                        <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="jgw-Ia-ggB" secondAttribute="trailing" id="xJ5-35-8rX"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="accountLabel" destination="Qpg-i5-g9c" id="vOQ-d6-CdB"/>
+                                    <outlet property="issuerLabel" destination="jgw-Ia-ggB" id="HyE-ca-Zue"/>
+                                    <outlet property="overrideLabel" destination="Pb7-FP-sx4" id="wYU-pw-daM"/>
+                                    <outlet property="passcodeLabel" destination="fZN-5g-Fys" id="gnd-Ll-PhQ"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Onc-Cc-O5p" id="mI9-3y-roH"/>
+                            <outlet property="delegate" destination="Onc-Cc-O5p" id="Xaa-AR-7Fk"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="One-Time Passwords" id="Ttb-m3-k46"/>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="aLj-rh-NnI">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </refreshControl>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f5O-b4-f6k" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="138"/>
+            <point key="canvasLocation" x="529" y="288"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="um8-bf-xhl">
+            <objects>
+                <navigationController id="EOI-im-eZM" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="4fc-Ix-5dC">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Onc-Cc-O5p" kind="relationship" relationship="rootViewController" id="Hl4-Jv-2w0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dZe-AR-PAB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-393" y="288"/>
         </scene>
     </scenes>
 </document>

@@ -8,10 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
+#import "../../OneTimeKit/Models/OTBag.h"
+#import "../../OneTimeKit/Models/OTPTime.h"
+#import "../../OneTimeKit/Models/OTPHash.h"
 
 @interface OTPassTableViewCell : UITableViewCell
 
-@end
+@property (strong, nonatomic) OTBag *bag;
 
-NS_ASSUME_NONNULL_END
+@property (strong, nonatomic) IBOutlet UILabel *issuerLabel;
+@property (strong, nonatomic) IBOutlet UILabel *accountLabel;
+@property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;
+@property (strong, nonatomic) IBOutlet UILabel *overrideLabel;
+
+@end

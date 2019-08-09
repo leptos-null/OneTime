@@ -35,6 +35,7 @@
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
+// modifying any of these values should be accompanied by a subsequent `syncToKeychain` call
 @property (strong, nonatomic) NSString *issuer;
 @property (strong, nonatomic) NSString *account;
 @property NSInteger index;

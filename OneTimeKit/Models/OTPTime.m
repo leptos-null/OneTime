@@ -65,4 +65,8 @@
     return [NSURLQueryItem queryItemWithName:@"period" value:@(self.step).stringValue];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"%@, step: %f", [super description], self.step];
+}
+
 @end

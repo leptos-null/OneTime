@@ -145,4 +145,9 @@
     __builtin_unreachable();
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p> algorithm: %" __UINT32_FMTu__ ", digits: %" __SIZE_FMTu__,
+            self, [self class], self.algorithm, self.digits];
+}
+
 @end

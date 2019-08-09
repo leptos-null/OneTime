@@ -227,8 +227,8 @@ static inline char singleHexChar(uint8_t hex) {
     }
     
     CFMutableDictionaryRef attribs = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
-    CFDictionarySetValue(attribs, kSecAttrLabel, (__bridge CFStringRef)self.account);
-    CFDictionarySetValue(attribs, kSecAttrService, (__bridge CFStringRef)self.issuer);
+    CFDictionarySetValue(attribs, kSecAttrLabel, (__bridge CFStringRef)(self.account ?: @""));
+    CFDictionarySetValue(attribs, kSecAttrService, (__bridge CFStringRef)(self.issuer ?: @""));
     CFDictionarySetValue(attribs, kSecAttrGeneric, (__bridge CFDataRef)serialProperties);
     
     // be really sure we have the right information
@@ -254,7 +254,7 @@ static inline char singleHexChar(uint8_t hex) {
     CFDictionarySetValue(attribs, kSecReturnAttributes, kCFBooleanTrue);
     CFDictionarySetValue(attribs, kSecReturnData, kCFBooleanTrue);
     
-    CFTypeRef result;
+    CFTypeRef result = NULL;
     OSStatus ret = SecItemAdd(attribs, &result);
     _keychainAttributes = CFBridgingRelease(result);
     CFRelease(attribs);
@@ -314,7 +314,8 @@ NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p> issuer: %@, account: %@", [self class], self, self.issuer, self.account];
+    return [NSString stringWithFormat:@"<%@: %p> generator: %@, issuer: %@, account: %@, index: %@",
+            [self class], self, self.generator, self.issuer, self.account, @(self.index)];
 }
 
 @end

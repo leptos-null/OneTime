@@ -62,4 +62,8 @@
     return [NSURLQueryItem queryItemWithName:@"counter" value:@(self.counter).stringValue];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"%@, counter: %" __UINT64_FMTu__, [super description], self.counter];
+}
+
 @end

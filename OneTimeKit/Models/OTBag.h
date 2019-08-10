@@ -18,7 +18,7 @@
 + (NSArray<OTBag *> *)keychainBags;
 
 
-@property (strong, nonatomic, readonly) OTPBase *generator;
+@property (strong, nonatomic, readonly) __kindof OTPBase *generator;
 
 @property (strong, nonatomic, readonly) NSString *uniqueIdentifier;
 

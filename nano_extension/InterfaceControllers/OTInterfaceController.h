@@ -9,6 +9,10 @@
 #import <WatchKit/WatchKit.h>
 #import <Foundation/Foundation.h>
 
+#import "../../OneTimeKit/Models/OTBag.h"
+
 @interface OTInterfaceController : WKInterfaceController
+
+@property (strong, nonatomic) IBOutlet WKInterfaceTable *passcodesTable;
 
 @end

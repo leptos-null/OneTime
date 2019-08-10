@@ -7,24 +7,61 @@
 //
 
 #import "OTInterfaceController.h"
-
+#import "OTPassRowController.h"
 
 @implementation OTInterfaceController
 
-- (void)awakeWithContext:(id)context {
-    [super awakeWithContext:context];
+- (void)didAppear {
+    [super didAppear];
+    
+    if (@available(watchOS 5.1, *)) {
+        // for cells of this size (being larger), I think this looks better
+        self.passcodesTable.curvesAtTop = YES;
+        self.passcodesTable.curvesAtBottom = YES;
+    }
+}
 
-    // Configure interface objects here.
+- (void)updatePasscodesTable {
+#if TARGET_OS_SIMULATOR || 1 /* currently watchOS: "No iCloud Keychain" */
+    uint32_t const bagCount = arc4random_uniform(8) + 2;
+    NSMutableArray<OTBag *> *bags = [NSMutableArray arrayWithCapacity:bagCount];
+    for (uint32_t i = 0; i < bagCount; i++) {
+        OTPBase *generator = arc4random_uniform(2) ? [OTPTime new] : [OTPHash new];
+        OTBag *bag = [[OTBag alloc] initWithGenerator:generator];
+        /* Strings used for visual purposes only
+         *   Issuer
+         *   Is___r
+         *
+         *   account
+         *   ac___nt
+         */
+        bag.issuer  = [NSString stringWithFormat:@"Is%03dr",  arc4random_uniform(1000)];
+        bag.account = [NSString stringWithFormat:@"ac%03dnt", arc4random_uniform(1000)];
+        bags[i] = bag;
+    }
+#else
+    NSArray<OTBag *> *bags = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+#endif
+    [self.passcodesTable setNumberOfRows:bags.count withRowType:@"PassCell"];
+    [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
+        OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
+        row.bag = bag;
+    }];
 }
 
 - (void)willActivate {
-    // This method is called when watch view controller is about to be visible to user
     [super willActivate];
+    [self updatePasscodesTable];
 }
 
 - (void)didDeactivate {
-    // This method is called when watch view controller is no longer visible
     [super didDeactivate];
+    
+    NSInteger const count = self.passcodesTable.numberOfRows;
+    for (NSInteger idx = 0; idx < count; idx++) {
+        OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
+        [row stopTimingElements];
+    }
 }
 
 @end

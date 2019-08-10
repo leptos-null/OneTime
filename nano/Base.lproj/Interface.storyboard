@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14854.2" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
+        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14640.1"/>
     </dependencies>
@@ -9,7 +10,42 @@
         <!--Interface Controller-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="OTInterfaceController"/>
+                <controller alwaysBounce="YES" id="AgC-eL-Hgc" customClass="OTInterfaceController">
+                    <items>
+                        <table alignment="left" id="0nH-yo-pa4">
+                            <items>
+                                <tableRow identifier="PassCell" selectable="NO" id="3hl-1v-huP" customClass="OTPassRowController">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="7vI-3Y-4I5">
+                                        <items>
+                                            <label alignment="left" accessibilityLabel="Issuer" text="Issuer" id="Szw-Jq-AtY">
+                                                <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                            </label>
+                                            <label alignment="left" accessibilityLabel="Passcode" text="Passcode" id="hS8-RS-faI">
+                                                <accessibilityTraits key="accessibilityTraits" updatesFrequently="YES"/>
+                                                <fontDescription key="font" style="UICTFontTextStyleTitle1"/>
+                                            </label>
+                                            <timer alignment="left" previewedSeconds="30" id="NY6-yl-0jK">
+                                                <accessibilityTraits key="accessibilityTraits" updatesFrequently="YES"/>
+                                                <fontDescription key="font" style="UICTFontTextStyleTitle3"/>
+                                                <calendarUnit key="units" minute="YES" second="YES"/>
+                                            </timer>
+                                            <label alignment="left" accessibilityLabel="Account" text="Account" id="hc8-SW-P61"/>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="accountLabel" destination="hc8-SW-P61" id="AWL-zH-s9u"/>
+                                        <outlet property="issuerLabel" destination="Szw-Jq-AtY" id="8Bl-dB-358"/>
+                                        <outlet property="passcodeLabel" destination="hS8-RS-faI" id="j42-hG-ud4"/>
+                                        <outlet property="validityTimer" destination="NY6-yl-0jK" id="Bsr-LQ-ams"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                    <connections>
+                        <outlet property="passcodesTable" destination="0nH-yo-pa4" id="WLE-xB-7nM"/>
+                    </connections>
+                </controller>
             </objects>
             <point key="canvasLocation" x="34" y="31"/>
         </scene>

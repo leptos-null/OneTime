@@ -137,8 +137,8 @@
 			children = (
 				FA0E258122F9E3A7007DC512 /* OneTimeKit */,
 				FA0E250122F9DB3E007DC512 /* onetime */,
-				FA0E255722F9E131007DC512 /* nano */,
-				FA0E256622F9E132007DC512 /* nano_extension */,
+				FA0E255722F9E131007DC512 /* nanonetime */,
+				FA0E256622F9E132007DC512 /* nanonetimext */,
 				FA0E250022F9DB3E007DC512 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -203,17 +203,17 @@
 			name = Storyboards;
 			sourceTree = "<group>";
 		};
-		FA0E255722F9E131007DC512 /* nano */ = {
+		FA0E255722F9E131007DC512 /* nanonetime */ = {
 			isa = PBXGroup;
 			children = (
 				FA0E255822F9E131007DC512 /* Interface.storyboard */,
 				FA0E255B22F9E132007DC512 /* Assets.xcassets */,
 				FA0E255D22F9E132007DC512 /* Info.plist */,
 			);
-			path = nano;
+			path = nanonetime;
 			sourceTree = "<group>";
 		};
-		FA0E256622F9E132007DC512 /* nano_extension */ = {
+		FA0E256622F9E132007DC512 /* nanonetimext */ = {
 			isa = PBXGroup;
 			children = (
 				FA0E257B22F9E205007DC512 /* ExtensionDelegate */,
@@ -221,7 +221,7 @@
 				FA0E256F22F9E132007DC512 /* Info.plist */,
 				FA0E259222FA43D0007DC512 /* nano.entitlements */,
 			);
-			path = nano_extension;
+			path = nanonetimext;
 			sourceTree = "<group>";
 		};
 		FA0E257B22F9E205007DC512 /* ExtensionDelegate */ = {
@@ -638,8 +638,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
-				IBSC_MODULE = nano_Extension;
-				INFOPLIST_FILE = nano/Info.plist;
+				IBSC_MODULE = nanonetimext;
+				INFOPLIST_FILE = nanonetime/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -655,8 +655,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
-				IBSC_MODULE = nano_Extension;
-				INFOPLIST_FILE = nano/Info.plist;
+				IBSC_MODULE = nanonetimext;
+				INFOPLIST_FILE = nanonetime/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -670,10 +670,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = nano_extension/nano.entitlements;
+				CODE_SIGN_ENTITLEMENTS = nanonetimext/nano.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
-				INFOPLIST_FILE = nano_extension/Info.plist;
+				INFOPLIST_FILE = nanonetimext/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -692,10 +692,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = nano_extension/nano.entitlements;
+				CODE_SIGN_ENTITLEMENTS = nanonetimext/nano.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
-				INFOPLIST_FILE = nano_extension/Info.plist;
+				INFOPLIST_FILE = nanonetimext/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

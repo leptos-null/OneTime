@@ -21,4 +21,7 @@
 
 - (NSString *)passwordForDate:(NSDate *)date;
 
+// when the period for the next step will start after a given date
+- (NSDate *)nextStepPeriodForDate:(NSDate *)date;
+
 @end

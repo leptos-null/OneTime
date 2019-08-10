@@ -55,6 +55,13 @@
     return [self passwordForDate:[NSDate date]];
 }
 
+- (NSDate *)nextStepPeriodForDate:(NSDate *)date {
+    NSTimeInterval const step = self.step;
+    // ceil should not be used here, because theoretically date/step may have a 0 fraction
+    NSTimeInterval const next = (floor(date.timeIntervalSince1970 / step) + 1) * step;
+    return [NSDate dateWithTimeIntervalSince1970:next];
+}
+
 - (NSDictionary *)properties {
     NSMutableDictionary *props = [[super properties] mutableCopy];
     props[OTPStepPropertyKey] = @(self.step);

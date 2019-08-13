@@ -10,21 +10,6 @@
 
 @implementation OTPassTableViewCell
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    
-    self.issuerLabel.accessibilityLabel = @"Issuer";
-    self.accountLabel.accessibilityLabel = @"Account";
-    self.passcodeLabel.accessibilityLabel = @"Passcode";
-    self.overrideLabel.accessibilityLabel = @"Override";
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
 - (void)setBag:(OTBag *)bag {
     _bag = bag;
     

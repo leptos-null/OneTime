@@ -25,6 +25,7 @@
         self.editButtonItem,
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(_addButtonHit:)]
     ];
+    // Are settings needed?
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     [self.refreshControl addTarget:self action:@selector(_refreshControlEvent:) forControlEvents:UIControlEventValueChanged];
     
@@ -43,20 +44,38 @@
 
 - (void)_addButtonHit:(UIBarButtonItem *)button {
     __weak __typeof(self) weakself = self;
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add" message:nil
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add Code" message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
+    
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+    if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            OTQRScanViewController *qrScanner = [OTQRScanViewController new];
+            qrScanner.delegate = self;
+            qrScanner.title = action.title;
+            [weakself.navigationController pushViewController:qrScanner animated:YES];
+        }]];
+    }
+    [alert addAction:[UIAlertAction actionWithTitle:@"QR Code In Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [UIImagePickerController new];
+        imagePicker.delegate = weakself;
+        [weakself presentViewController:imagePicker animated:YES completion:NULL];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Manual Entry" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        // TODO: manually enter
+    }]];
+    // DEBUG
     [alert addAction:[UIAlertAction actionWithTitle:@"Random" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if (!weakself) {
             return;
         }
         __typeof(self) strongself = weakself;
-        NSInteger const start = strongself->_dataSource.count;
-        for (NSInteger i = start; i < (start + 5); i++) {
+        NSInteger const start = strongself->_dataSource.count, stop = start + 5;
+        for (NSInteger i = start; i < stop; i++) {
             OTPTime *totp = [OTPTime new];
             OTBag *bag = [[OTBag alloc] initWithGenerator:totp];
             bag.issuer = @"LeptosInternal";
-            bag.account = [NSString stringWithFormat:@"leptos.testing.%@", @(i)];
+            bag.account = [@"leptos.testing" stringByAppendingPathExtension:@(i).stringValue];
             bag.index = i;
             [bag syncToKeychain];
         }
@@ -64,6 +83,7 @@
         [strongself updateDataSource];
         [strongself.tableView reloadData];
     }]];
+    
     alert.popoverPresentationController.barButtonItem = button;
     [self presentViewController:alert animated:YES completion:NULL];
 }
@@ -74,6 +94,90 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
         [control endRefreshing];
     });
+}
+
+- (void)bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {
+    VNRequestCompletionHandler barcodeHandler = ^(VNRequest *request, NSError *error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        NSMutableArray<OTBag *> *bags = [NSMutableArray array];
+        for (VNBarcodeObservation *barcode in request.results) {
+            OTBag *bag = [[OTBag alloc] initWithURL:[NSURL URLWithString:barcode.payloadStringValue]];
+            if (bag) {
+                [bags addObject:bag];
+            }
+        }
+        completion([bags copy], nil);
+    };
+    
+    VNDetectBarcodesRequest *qrRequest = [[VNDetectBarcodesRequest alloc] initWithCompletionHandler:barcodeHandler];
+    qrRequest.symbologies = @[ VNBarcodeSymbologyQR ];
+    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:image.CGImage options:@{
+        
+    }];
+    NSError *err = NULL;
+    [requestHandler performRequests:@[ qrRequest ] error:&err];
+    if (err) {
+        completion(nil, err);
+    }
+}
+
+// MARK: - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    __weak __typeof(self) weakself = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
+            if (error) {
+                // TODO: Present error to user
+                NSLog(@"bagsForQRCodeInImage: %@", error);
+                return;
+            }
+            // TODO: Handle bags
+            if (bags.count) {
+                [picker dismissViewControllerAnimated:YES completion:NULL];
+                
+            } else {
+                // TODO: Warn user no bags found
+            }
+        }];
+    });
+}
+
+// MARK: - OTQRScanControllerDelegate
+
+- (void)qrScanController:(OTQRScanViewController *)controller didFindPayloads:(NSArray<NSString *> *)payloads {
+    // currently not handling multiple good payloads, but it's unlikely, and not a big issue
+    //   i.e. as soon as a good payload comes in, we return out, potentially ignoring another
+    for (NSString *payload in payloads) {
+        OTBag *bag = [[OTBag alloc] initWithURL:[NSURL URLWithString:payload]];
+        if (bag) {
+            // we're good- stop receiving delegate calls (a little bit of a hack)
+            controller.delegate = nil;
+            
+            NSInteger const rowTarget = _dataSource.count;
+            bag.index = rowTarget;
+            [bag syncToKeychain];
+            [self updateDataSource];
+                        
+            [controller.navigationController popViewControllerAnimated:YES];
+            
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            [self.tableView insertRowsAtIndexPaths:@[
+                [NSIndexPath indexPathForRow:rowTarget inSection:0]
+            ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            return;
+        }
+    }
+}
+
+- (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
+    // TODO: Present error to user
+    NSLog(@"qrScanControllerDidFailWithError: %@", error);
+    [controller.navigationController popViewControllerAnimated:YES];
 }
 
 // MARK: - UITableViewDataSource
@@ -98,6 +202,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // I'm not sure I like the idea of overwriting the clipboard. preference?
     //    OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     //    NSString *password = cell.bag.generator.password;
     //    UIPasteboard.generalPasteboard.string = password;
@@ -107,7 +212,6 @@
     });
 }
 
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (editingStyle) {
         case UITableViewCellEditingStyleDelete: {

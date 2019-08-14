@@ -30,6 +30,7 @@
 		FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */; };
 		FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
 		FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FA59A89023035B0200463A3F /* OTQRScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A88F23035B0200463A3F /* OTQRScanViewController.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +111,8 @@
 		FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewController.m; sourceTree = "<group>"; };
 		FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+OTBase32.h"; sourceTree = "<group>"; };
 		FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+OTBase32.m"; sourceTree = "<group>"; };
+		FA59A88E23035B0200463A3F /* OTQRScanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTQRScanViewController.h; sourceTree = "<group>"; };
+		FA59A88F23035B0200463A3F /* OTQRScanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTQRScanViewController.m; sourceTree = "<group>"; };
 		FAB40B9622FD1857007E607F /* OTPassRowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassRowController.h; sourceTree = "<group>"; };
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,6 +182,8 @@
 			children = (
 				FA0E25A222FA9D97007DC512 /* OTPassTableViewController.h */,
 				FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */,
+				FA59A88E23035B0200463A3F /* OTQRScanViewController.h */,
+				FA59A88F23035B0200463A3F /* OTQRScanViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -416,6 +421,7 @@
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,
 				FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258822F9F703007DC512 /* OTPHash.m in Sources */,
+				FA59A89023035B0200463A3F /* OTQRScanViewController.m in Sources */,
 				FA0E259022FA357F007DC512 /* OTBag.m in Sources */,
 				FA0E251522F9DB40007DC512 /* main.m in Sources */,
 			);
@@ -598,6 +604,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = onetime/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -619,6 +626,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = onetime/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (

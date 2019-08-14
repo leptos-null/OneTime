@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Vision/Vision.h>
 
-@interface OTPassTableViewController : UITableViewController
+#import "OTQRScanViewController.h"
+
+@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate>
 
 @end

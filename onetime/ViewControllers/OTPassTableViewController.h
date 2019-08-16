@@ -10,7 +10,8 @@
 #import <Vision/Vision.h>
 
 #import "OTQRScanViewController.h"
+#import "OTManualEntryViewController.h"
 
-@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate>
+@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate, OTManualEntryControllerDelegate>
 
 @end

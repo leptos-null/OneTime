@@ -49,20 +49,27 @@
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
     if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
-        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Live)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             OTQRScanViewController *qrScanner = [OTQRScanViewController new];
-            qrScanner.delegate = self;
+            qrScanner.delegate = weakself;
             qrScanner.title = action.title;
             [weakself.navigationController pushViewController:qrScanner animated:YES];
         }]];
     }
-    [alert addAction:[UIAlertAction actionWithTitle:@"QR Code In Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [UIImagePickerController new];
-        imagePicker.delegate = weakself;
-        [weakself presentViewController:imagePicker animated:YES completion:NULL];
-    }]];
+    if (@available(iOS 11.0, *)) {
+        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIImagePickerController *imagePicker = [UIImagePickerController new];
+            imagePicker.delegate = weakself;
+            [weakself presentViewController:imagePicker animated:YES completion:NULL];
+        }]];
+    }
     [alert addAction:[UIAlertAction actionWithTitle:@"Manual Entry" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        // TODO: manually enter
+        NSBundle *manualBundle = [NSBundle bundleForClass:[OTManualEntryViewController class]];
+        UIStoryboard *manualStoryboard = [UIStoryboard storyboardWithName:@"Manual" bundle:manualBundle];
+        OTManualEntryViewController *manual = [manualStoryboard instantiateInitialViewController];
+        manual.delegate = weakself;
+        manual.title = action.title;
+        [weakself.navigationController pushViewController:manual animated:YES];
     }]];
     // DEBUG
     [alert addAction:[UIAlertAction actionWithTitle:@"Random" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -137,12 +144,14 @@
                 return;
             }
             // TODO: Handle bags
-            if (bags.count) {
-                [picker dismissViewControllerAnimated:YES completion:NULL];
-                
-            } else {
-                // TODO: Warn user no bags found
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (bags.count) {
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                    
+                } else {
+                    // TODO: Warn user no bags found
+                }
+            });
         }];
     });
 }
@@ -162,7 +171,7 @@
             bag.index = rowTarget;
             [bag syncToKeychain];
             [self updateDataSource];
-                        
+            
             [controller.navigationController popViewControllerAnimated:YES];
             
             [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -178,6 +187,22 @@
     // TODO: Present error to user
     NSLog(@"qrScanControllerDidFailWithError: %@", error);
     [controller.navigationController popViewControllerAnimated:YES];
+}
+
+// MARK: - OTManualEntryControllerDelegate
+
+- (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
+    NSInteger const rowTarget = _dataSource.count;
+    bag.index = rowTarget;
+    [bag syncToKeychain];
+    [self updateDataSource];
+    
+    [controller.navigationController popViewControllerAnimated:YES];
+    
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    [self.tableView insertRowsAtIndexPaths:@[
+        [NSIndexPath indexPathForRow:rowTarget inSection:0]
+    ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 // MARK: - UITableViewDataSource
@@ -199,17 +224,6 @@
         [cell.bag syncToKeychain];
     }
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // I'm not sure I like the idea of overwriting the clipboard. preference?
-    //    OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    //    NSString *password = cell.bag.generator.password;
-    //    UIPasteboard.generalPasteboard.string = password;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    });
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -244,6 +258,19 @@
     }
     
     [self updateDataSource];
+}
+
+// MARK: - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // I'm not sure I like the idea of overwriting the clipboard. preference?
+    //    OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //    NSString *password = cell.bag.generator.password;
+    //    UIPasteboard.generalPasteboard.string = password;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    });
 }
 
 @end

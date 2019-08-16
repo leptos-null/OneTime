@@ -15,7 +15,7 @@
 @implementation OTManualEntryViewController {
     NSArray<NSString *> *_algorithms;
 }
-
+// TODO: Provide help text for sections that are less commonly used (e.g. code length, algorithm)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -23,8 +23,6 @@
     self.lengthStepper.value = 6;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
-    
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_colorSecretTextField) name:UITextFieldTextDidChangeNotification object:self.secretField];
     
     _algorithms = @[
         @"SHA1",
@@ -41,6 +39,9 @@
     NSData *key = [[NSData alloc] initWithBase32EncodedString:cleanKey options:NSDataBase32DecodingOptionsNone];
     CCHmacAlgorithm alg = (CCHmacAlgorithm)[self.algorithmPicker selectedRowInComponent:0];
     size_t digits = self.lengthStepper.value;
+    if (key == nil || cleanKey.length == 0 || digits <= 0 || alg < 0) {
+        return;
+    }
     
     // currently no options for step and counter are being provided (TODO?)
     __kindof OTPBase *generator = nil;
@@ -80,8 +81,8 @@
     return ret;
 }
 
-- (void)_colorSecretTextField {
-    NSString *interest = self.secretField.text;
+- (IBAction)_colorSecretTextField:(UITextField *)secretField {
+    NSString *interest = secretField.text;
     
     NSMutableAttributedString *markup = [[NSMutableAttributedString alloc] initWithString:interest];
     NSCharacterSet *const badChars = [self _invertedBase32Set];
@@ -99,7 +100,7 @@
         range.location = badRange.location + badRange.length;
         range.length = interest.length - range.location;
     }
-    self.secretField.attributedText = markup;
+    secretField.attributedText = markup;
 }
 
 // MARK: - UITextFieldDelegate

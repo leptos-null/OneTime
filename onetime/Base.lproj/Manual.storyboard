@@ -107,6 +107,7 @@
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="continue" enablesReturnKeyAutomatically="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                     <connections>
+                                                        <action selector="_colorSecretTextField:" destination="8qJ-lG-vdC" eventType="editingChanged" id="BNc-8P-5DE"/>
                                                         <outlet property="delegate" destination="8qJ-lG-vdC" id="Ltg-IV-6Ph"/>
                                                     </connections>
                                                 </textField>

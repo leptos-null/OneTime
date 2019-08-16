@@ -44,13 +44,14 @@
 #define UNBASE32_LEN(len) (((len) / 8) * 5)
 
 /*
- * Let this be a sequence of plain data before encoding:
- *
+ * @brief This is base documentation for the below base32 routines
+ * @discussion Let this be a sequence of plain data before encoding:
+ * @code
  *  01234567 01234567 01234567 01234567 01234567
  * +--------+--------+--------+--------+--------+
  * |< 0 >< 1| >< 2 ><|.3 >< 4.|>< 5 ><.|6 >< 7 >|
  * +--------+--------+--------+--------+--------+
- *
+ * @endcode
  * There are 5 octets of 8 bits each in each sequence.
  * There are 8 blocks of 5 bits each in each sequence.
  *
@@ -77,7 +78,7 @@ static char OTBase32_encode_char(uint8_t c) {
  * Returns @c -1 if the argument given was an invalid base32 character
  * or a padding character.
  */
-static int OTBase32_decode_char(char c) {
+static int __pure2 OTBase32_decode_char(char c) {
     int retval = -1;
     
     if (c >= 'A' && c <= 'Z') {
@@ -210,7 +211,7 @@ static int OTBase32_decode_sequence(const char *coded, uint8_t *plain, NSDataBas
         }
         
         plain[octet] |= OTBase32_shift_left(c, offset);
-        if (offset < 0) { // does this block overflows to next octet?
+        if (offset < 0) { // does this block overflow to the next octet?
             assert(octet < 4);
             plain[octet + 1] = OTBase32_shift_left(c, 8 + offset);
         }

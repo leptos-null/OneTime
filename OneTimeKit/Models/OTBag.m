@@ -60,7 +60,7 @@
  *         add     al, dil   ; ret += hex
  *         ret               ; return ret
  */
-static inline char singleHexChar(uint8_t hex) {
+static inline __pure2 char singleHexChar(uint8_t hex) {
     hex &= 0xf;
     return hex + ((hex < 0xa) ? '0' : ('a' - 0xa));
 }

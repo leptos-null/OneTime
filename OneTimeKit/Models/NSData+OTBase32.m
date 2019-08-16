@@ -81,14 +81,12 @@ static char OTBase32_encode_char(uint8_t c) {
 static int __pure2 OTBase32_decode_char(char c) {
     int retval = -1;
     
-    if (c >= 'A' && c <= 'Z') {
-        retval = c - 'A';
-    }
-    if (c >= 'a' && c <= 'z') {
-        retval = c - 'a';
-    }
     if (c >= '2' && c <= '7') {
         retval = c - '2' + 26;
+    } else if (c >= 'A' && c <= 'Z') {
+        retval = c - 'A';
+    } else if (c >= 'a' && c <= 'z') {
+        retval = c - 'a';
     }
     assert((retval == -1) || ((retval & 0x1F) == retval));
     
@@ -171,7 +169,7 @@ static void OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *cod
     assert(CHAR_BIT == 8); // not sure this would work otherwise
     assert(len >= 0 && len <= 5);
     
-    for (unsigned block = 0; block < 8; block++) {
+    for (int block = 0; block < 8; block++) {
         int octet = OTBase32_get_octet(block); // figure out which octet this block starts in
         int junk = OTBase32_get_offset(block); // how many bits do we drop from this octet?
         
@@ -196,7 +194,7 @@ static int OTBase32_decode_sequence(const char *coded, uint8_t *plain, NSDataBas
     assert(coded && plain);
     
     plain[0] = 0;
-    for (unsigned block = 0; block < 8; block++) {
+    for (int block = 0; block < 8; block++) {
         int offset = OTBase32_get_offset(block);
         int octet = OTBase32_get_octet(block);
         
@@ -220,28 +218,44 @@ static int OTBase32_decode_sequence(const char *coded, uint8_t *plain, NSDataBas
 }
 
 - (instancetype)initWithBase32EncodedString:(NSString *)base32String options:(NSDataBase32DecodingOptions)options {
-    return [self initWithBase32EncodedData:[base32String dataUsingEncoding:NSUTF8StringEncoding] options:options];
+    return [self initWithBase32EncodedData:[base32String dataUsingEncoding:NSASCIIStringEncoding] options:options];
 }
 
 - (NSString *)base32EncodedStringWithOptions:(NSDataBase32EncodingOptions)options {
     return [[NSString alloc] initWithData:[self base32EncodedDataWithOptions:options] encoding:NSASCIIStringEncoding];
 }
-
+// TODO: This implementation is fairly fragile, look into other solutions
 - (instancetype)initWithBase32EncodedData:(NSData *)base32Data options:(NSDataBase32DecodingOptions)options {
-    NSMutableData *ret = [NSMutableData dataWithLength:UNBASE32_LEN(base32Data.length)];
+    if (base32Data == nil) {
+        return nil;
+    }
+    NSUInteger const base32Length = base32Data.length;
     const char *coded = base32Data.bytes;
-    uint8_t *plain = ret.mutableBytes;
+    if ((options & NSDataBase32DecodingOptionsIgnoreUnknownCharacters) != NSDataBase32DecodingOptionsIgnoreUnknownCharacters) {
+        /* verify that all the input is in the valid alphabet */
+        for (NSUInteger i = 0; i < base32Length; i++) {
+            const char validate = coded[i];
+            if (validate >= '2' && validate <= '7') {
+                continue;
+            } else if (validate >= 'A' && validate <= 'Z') {
+                continue;
+            } else if (validate >= 'a' && validate <= 'z') {
+                continue;
+            }
+            return nil;
+        }
+    }
+    uint8_t *plain = malloc(UNBASE32_LEN(base32Length));
     
     size_t written = 0;
-    for (size_t i = 0, j = 0; i < base32Data.length; i += 8, j += 5) {
+    for (size_t i = 0, j = 0; i < base32Length; i += 8, j += 5) {
         int n = OTBase32_decode_sequence(&coded[i], &plain[j], options);
         written += n;
         if (n < 5) {
             break;
         }
     }
-    ret.length = written;
-    return [ret copy];
+    return [self initWithBytesNoCopy:plain length:written];
 }
 
 - (NSData *)base32EncodedDataWithOptions:(NSDataBase32EncodingOptions)options {

@@ -90,7 +90,6 @@
     factor = htonll(factor);
     // put everything we need in local variables to avoid any
     // property values changing in the middle of the procedure
-    uint8_t const base = 10;
     NSData *const secretKey = self.key;
     CCHmacAlgorithm const alg = self.algorithm;
     size_t const digits = self.digits;
@@ -110,14 +109,18 @@
     // mask off the would-be sign bit
     head &= INT32_MAX;
     
-    // TODO: Is this the most efficient way of getting the `n` least significant digits?
-    
+    // routine description:
+    //   for a value `n` create a string `s` of length `d`
+    //   `s` should contain the `d` least significant
+    //     base 10 digits of `n`, zero (0) padded if necessary
+    uint32_t const base = 10;
     uint32_t trunc = 1;
     for (size_t td = 0; td < digits; td++) {
-        trunc *= 10;
+        trunc *= base;
     }
     head %= trunc;
     
+    // google uses `[NSString stringWithFormat:@"%0*u", (int)digits, value]`
     char value[digits];
     char *valuePtr = value;
     valuePtr += digits;

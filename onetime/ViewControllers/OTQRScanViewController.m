@@ -10,10 +10,10 @@
 
 @implementation OTQRScanViewController  {
     dispatch_queue_t _queue;
-    
     AVCaptureSession *_avSession;
-    AVCaptureVideoPreviewLayer *_previewLayer;
 }
+
+@dynamic view;
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -22,80 +22,60 @@
     return self;
 }
 
+- (void)loadView {
+    self.view = [OTCaptureVideoView new];
+    
+    AVCaptureVideoPreviewLayer *previewLayer = self.view.layer;
+    previewLayer.session = _avSession;
+    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self updatePreviewLayerForCurrentOrientation];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    NSError *error = NULL;
-    AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
-    if (error) {
-        [self.delegate qrScanController:self didFailWithError:error];
-        return;
-    }
-    AVCaptureMetadataOutput *captureOutput = [AVCaptureMetadataOutput new];
-    AVCaptureSession *captureSession = [AVCaptureSession new];
-    
-    [captureSession addInput:captureInput];
-    [captureSession addOutput:captureOutput];
-    [captureOutput setMetadataObjectsDelegate:self queue:_queue];
-    captureOutput.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode ];
-    
-    AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:captureSession];
-    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    [self.view.layer addSublayer:previewLayer];
-    previewLayer.frame = self.view.bounds;
-    
-    [captureSession startRunning];
-    
-    _previewLayer = previewLayer;
-    _avSession = captureSession;
-    
-    [self updatePreviewLayerForCurrentOrientation];
-}
-
-- (void)updatePreviewLayerForCurrentOrientation {
-    // this seems odd to me, but it's what's reccomended (not sure how else to do it)
-    UIDeviceOrientation deviceOrientation = UIDevice.currentDevice.orientation;
-    if (UIDeviceOrientationIsValidInterfaceOrientation(deviceOrientation)) {
-        AVCaptureVideoOrientation avOrient = AVCaptureVideoOrientationPortrait;
-#if 0
-        switch (deviceOrientation) {
-            case UIDeviceOrientationPortrait: // 1 ("home button on the bottom")
-                avOrient = AVCaptureVideoOrientationPortrait; // 1 ("home button on the bottom")
-                break;
-            case UIDeviceOrientationPortraitUpsideDown: // 2 ("home button on the top")
-                avOrient = AVCaptureVideoOrientationPortraitUpsideDown; // 2 ("home button on the top")
-                break;
-            case UIDeviceOrientationLandscapeLeft: // 3 ("home button on the right")
-                avOrient = AVCaptureVideoOrientationLandscapeRight; // 3 ("home button on the right")
-                break;
-            case UIDeviceOrientationLandscapeRight: // 4 ("home button on the left")
-                avOrient = AVCaptureVideoOrientationLandscapeLeft; // 4 ("home button on the left")
-                break;
-            default:
-                break;
+    if (!_avSession) {
+        NSError *error = NULL;
+        AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
+        if (error) {
+            [self.delegate qrScanController:self didFailWithError:error];
+            return;
         }
-#else
-        avOrient = deviceOrientation & 0x7; // just need the first three bits, and this makes for a clean cast
-#endif
-        _previewLayer.connection.videoOrientation = avOrient;
+        AVCaptureMetadataOutput *captureOutput = [AVCaptureMetadataOutput new];
+        AVCaptureSession *captureSession = [AVCaptureSession new];
+        
+        [captureSession addInput:captureInput];
+        [captureSession addOutput:captureOutput];
+        [captureOutput setMetadataObjectsDelegate:self queue:_queue];
+        captureOutput.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode ];
+        
+        self.view.layer.session = captureSession;
+        
+        _avSession = captureSession;
     }
-}
-
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    CGRect frame = CGRectZero;
-    frame.size = size;
-    _previewLayer.frame = frame;
-    
-    [self updatePreviewLayerForCurrentOrientation];
+    [_avSession startRunning];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [_avSession stopRunning];
+}
+
+- (void)updatePreviewLayerForCurrentOrientation {
+    // this seems odd to me, but it's what's reccomended (not sure how else to do it)
+    UIDeviceOrientation deviceOrientation = UIDevice.currentDevice.orientation;
+    if (UIDeviceOrientationIsValidInterfaceOrientation(deviceOrientation)) {
+        // just need the first three bits, and this makes for a clean cast
+        self.view.layer.connection.videoOrientation = deviceOrientation & 0b111;
+    }
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [self updatePreviewLayerForCurrentOrientation];
 }
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {

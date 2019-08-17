@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "../../OneTimeKit/Models/OTBag.h"
+#import "../Views/OTCaptureVideoView.h"
 
 @class OTQRScanViewController;
 
@@ -19,8 +20,10 @@
 
 @end
 
-// This class was based on Google's "AuthScanBarcodeViewController"
+
 @interface OTQRScanViewController : UIViewController <AVCaptureMetadataOutputObjectsDelegate>
+
+@property(strong, nonatomic) OTCaptureVideoView *view;
 
 @property (weak, nonatomic) id<OTQRScanControllerDelegate> delegate;
 

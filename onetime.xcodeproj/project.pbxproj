@@ -35,6 +35,7 @@
 		FA59A8932304A8AE00463A3F /* Manual.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA59A8912304A8AE00463A3F /* Manual.storyboard */; };
 		FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
+		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,8 @@
 		FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTManualEntryViewController.m; sourceTree = "<group>"; };
 		FAB40B9622FD1857007E607F /* OTPassRowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassRowController.h; sourceTree = "<group>"; };
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
+		FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCaptureVideoView.h; sourceTree = "<group>"; };
+		FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTCaptureVideoView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +295,8 @@
 				FA0E259F22FA9D79007DC512 /* OTPassTableViewCell.m */,
 				FA357D592307B22B0026F646 /* OTPadTextField.h */,
 				FA357D5A2307B22B0026F646 /* OTPadTextField.m */,
+				FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */,
+				FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,6 +437,7 @@
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
+				FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */,
 				FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */,
 				FA0E258422F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,

@@ -30,6 +30,7 @@
 		FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */; };
 		FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
 		FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FA357D5A2307B22B0026F646 /* OTPadTextField.m */; };
 		FA59A89023035B0200463A3F /* OTQRScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A88F23035B0200463A3F /* OTQRScanViewController.m */; };
 		FA59A8932304A8AE00463A3F /* Manual.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA59A8912304A8AE00463A3F /* Manual.storyboard */; };
 		FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */; };
@@ -113,6 +114,8 @@
 		FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewController.m; sourceTree = "<group>"; };
 		FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+OTBase32.h"; sourceTree = "<group>"; };
 		FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+OTBase32.m"; sourceTree = "<group>"; };
+		FA357D592307B22B0026F646 /* OTPadTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPadTextField.h; sourceTree = "<group>"; };
+		FA357D5A2307B22B0026F646 /* OTPadTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPadTextField.m; sourceTree = "<group>"; };
 		FA59A88E23035B0200463A3F /* OTQRScanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTQRScanViewController.h; sourceTree = "<group>"; };
 		FA59A88F23035B0200463A3F /* OTQRScanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTQRScanViewController.m; sourceTree = "<group>"; };
 		FA59A8922304A8AE00463A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Manual.storyboard; sourceTree = "<group>"; };
@@ -287,6 +290,8 @@
 			children = (
 				FA0E259E22FA9D79007DC512 /* OTPassTableViewCell.h */,
 				FA0E259F22FA9D79007DC512 /* OTPassTableViewCell.m */,
+				FA357D592307B22B0026F646 /* OTPadTextField.h */,
+				FA357D5A2307B22B0026F646 /* OTPadTextField.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -423,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */,
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,

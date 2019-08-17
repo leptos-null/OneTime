@@ -12,13 +12,14 @@
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
 
-@interface OTPassTableViewCell : UITableViewCell
+#import "OTPadTextField.h"
+
+@interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate>
 
 @property (strong, nonatomic) OTBag *bag;
 
-@property (strong, nonatomic) IBOutlet UILabel *issuerLabel;
-@property (strong, nonatomic) IBOutlet UILabel *accountLabel;
+@property (strong, nonatomic) IBOutlet OTPadTextField *issuerField;
 @property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;
-@property (strong, nonatomic) IBOutlet UILabel *overrideLabel;
+@property (strong, nonatomic) IBOutlet OTPadTextField *accountField;
 
 @end

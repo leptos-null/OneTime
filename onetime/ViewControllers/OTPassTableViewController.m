@@ -27,7 +27,6 @@
     ];
     // Are settings needed?
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
-    [self.refreshControl addTarget:self action:@selector(_refreshControlEvent:) forControlEvents:UIControlEventValueChanged];
     
     [self updateDataSource];
     //    CIQRCodeErrorCorrectionLevel correctionLevel = CIQRCodeErrorCorrectionLevelH;
@@ -95,7 +94,7 @@
     [self presentViewController:alert animated:YES completion:NULL];
 }
 
-- (void)_refreshControlEvent:(UIRefreshControl *)control {
+- (IBAction)_refreshControlEvent:(UIRefreshControl *)control {
     [self updateDataSource];
     [self.tableView reloadData];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{

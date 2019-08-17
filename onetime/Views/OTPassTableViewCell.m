@@ -18,8 +18,10 @@
     NSArray<OTPadTextField *> *borderFields = @[ self.issuerField, self.accountField ];
     for (OTPadTextField *borderField in borderFields) {
         borderField.contentInsets = UIEdgeInsetsMake(6, 6, 6, 6);
-        borderField.layer.borderWidth = 1;
-        borderField.layer.cornerRadius = 6;
+        CALayer *borderFieldLayer = borderField.layer;
+        borderFieldLayer.borderWidth = 1;
+        borderFieldLayer.cornerRadius = 6;
+        borderFieldLayer.borderColor = UIColor.clearColor.CGColor;
     }
 }
 
@@ -51,9 +53,9 @@
         [self endEditing:YES];
     }
     
-    UIColor *borderColor = editing ? UIColor.systemGrayColor : nil;
-    self.issuerField.layer.borderColor = borderColor.CGColor;
-    self.accountField.layer.borderColor = borderColor.CGColor;
+    CGColorRef borderColor = editing ? UIColor.systemGrayColor.CGColor : UIColor.clearColor.CGColor;
+    self.issuerField.layer.borderColor = borderColor;
+    self.accountField.layer.borderColor = borderColor;
 }
 
 // MARK: - UITextFieldDelegate

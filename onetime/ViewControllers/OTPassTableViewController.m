@@ -70,26 +70,6 @@
         manual.title = action.title;
         [weakself.navigationController pushViewController:manual animated:YES];
     }]];
-    // DEBUG
-    [alert addAction:[UIAlertAction actionWithTitle:@"Random" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        if (!weakself) {
-            return;
-        }
-        __typeof(self) strongself = weakself;
-        NSInteger const start = strongself->_dataSource.count, stop = start + 5;
-        for (NSInteger i = start; i < stop; i++) {
-            OTPTime *totp = [OTPTime new];
-            OTBag *bag = [[OTBag alloc] initWithGenerator:totp];
-            bag.issuer = @"LeptosInternal";
-            bag.account = [@"leptos.testing" stringByAppendingPathExtension:@(i).stringValue];
-            bag.index = i;
-            [bag syncToKeychain];
-        }
-        
-        [strongself updateDataSource];
-        [strongself.tableView reloadData];
-    }]];
-    
     alert.popoverPresentationController.barButtonItem = button;
     [self presentViewController:alert animated:YES completion:NULL];
 }
@@ -100,6 +80,26 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
         [control endRefreshing];
     });
+}
+
+- (void)_addBagsToTable:(NSArray<OTBag *> *)bags animated:(BOOL)animated {
+    NSInteger const rowTarget = _dataSource.count;
+    NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
+    [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
+        NSInteger row = rowTarget + idx;
+        bag.index = row;
+        [bag syncToKeychain];
+        newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
+    }];
+    
+    if (animated) {
+        // maybe scroll anyway?
+        NSIndexPath *scrollTarget = [NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0];
+        [self.tableView scrollToRowAtIndexPath:scrollTarget atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+    }
+    
+    UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
+    [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
 }
 
 - (void)bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {
@@ -133,26 +133,27 @@
 // MARK: - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *image = info[UIImagePickerControllerOriginalImage];
-    __weak __typeof(self) weakself = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
-            if (error) {
-                // TODO: Present error to user
-                NSLog(@"bagsForQRCodeInImage: %@", error);
-                return;
-            }
-            // TODO: Handle bags
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (bags.count) {
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                    
-                } else {
-                    // TODO: Warn user no bags found
+    if (@available(iOS 11.0, *)) {
+        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        __weak __typeof(self) weakself = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
+                if (error) {
+                    // TODO: Present error to user
+                    NSLog(@"bagsForQRCodeInImage: %@", error);
+                    return;
                 }
-            });
-        }];
-    });
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (bags.count) {
+                        [picker dismissViewControllerAnimated:YES completion:NULL];
+                        [weakself _addBagsToTable:bags animated:YES];
+                    } else {
+                        // TODO: Warn user no bags found
+                    }
+                });
+            }];
+        });
+    }
 }
 
 // MARK: - OTQRScanControllerDelegate
@@ -165,18 +166,7 @@
         if (bag) {
             // we're good- stop receiving delegate calls (a little bit of a hack)
             controller.delegate = nil;
-            
-            NSInteger const rowTarget = _dataSource.count;
-            bag.index = rowTarget;
-            [bag syncToKeychain];
-            [self updateDataSource];
-            
-            [controller.navigationController popViewControllerAnimated:YES];
-            
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            [self.tableView insertRowsAtIndexPaths:@[
-                [NSIndexPath indexPathForRow:rowTarget inSection:0]
-            ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self _addBagsToTable:@[ bag ] animated:YES];
             return;
         }
     }
@@ -191,17 +181,8 @@
 // MARK: - OTManualEntryControllerDelegate
 
 - (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
-    NSInteger const rowTarget = _dataSource.count;
-    bag.index = rowTarget;
-    [bag syncToKeychain];
-    [self updateDataSource];
-    
     [controller.navigationController popViewControllerAnimated:YES];
-    
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    [self.tableView insertRowsAtIndexPaths:@[
-        [NSIndexPath indexPathForRow:rowTarget inSection:0]
-    ] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self _addBagsToTable:@[ bag ] animated:YES];
 }
 
 // MARK: - UITableViewDataSource

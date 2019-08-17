@@ -67,10 +67,20 @@
  * Only the 5 least significant bits are used.
  * https://tools.ietf.org/html/rfc3548#section-5
  */
-static char OTBase32_encode_char(uint8_t c) {
-    // static const char base32[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    static const char base32[] = "abcdefghijklmnopqrstuvwxyz234567";
-    return base32[c & 0x1f]; // 0001 1111
+static char __pure2 OTBase32_encode_char(uint8_t c, BOOL uppercase) {
+    c &= 0x1f; // 0001 1111
+    char retval = 0;
+    if (c < 26) {
+        if (uppercase) {
+            retval = c + 'A';
+        } else {
+            retval = c + 'a';
+        }
+    } else {
+        retval = c + '2' - 26;
+    }
+    
+    return retval;
 }
 
 /**
@@ -105,7 +115,7 @@ static int __pure2 OTBase32_decode_char(char c) {
  *  octet 1 | octet 2
  *  @endcode
  */
-static int __pure2 OTBase32_get_octet(int block) {
+static size_t __pure2 OTBase32_get_octet(size_t block) {
     assert(block >= 0 && block < 8);
     return (block * 5) / 8;
 }
@@ -129,7 +139,7 @@ static int __pure2 OTBase32_get_octet(int block) {
  *  +--------+-
  *  @endcode
  */
-static int __pure2 OTBase32_get_offset(int block) {
+static int __pure2 OTBase32_get_offset(size_t block) {
     assert(block >= 0 && block < 8);
     return (8 - 5 - (5 * block) % 8);
 }
@@ -165,19 +175,20 @@ static uint8_t __pure2 OTBase32_shift_left(uint8_t byte, char offset) {
  * sequences shorter than 5 octets is supported and padding will be added to the
  * output as per the specification.
  */
-static void OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *coded, NSDataBase32EncodingOptions options) {
+static size_t OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *coded, NSDataBase32EncodingOptions const options) {
     assert(CHAR_BIT == 8); // not sure this would work otherwise
     assert(len >= 0 && len <= 5);
     
-    for (int block = 0; block < 8; block++) {
-        int octet = OTBase32_get_octet(block); // figure out which octet this block starts in
-        int junk = OTBase32_get_offset(block); // how many bits do we drop from this octet?
+    for (size_t block = 0; block < 8; block++) {
+        size_t octet = OTBase32_get_octet(block); // figure out which octet this block starts in
+        size_t junk = OTBase32_get_offset(block); // how many bits do we drop from this octet?
         
         if (octet >= len) { // we hit the end of the buffer
             if ((options & NSDataBase32EncodingOptionsNoPad) == 0) {
                 memset(&coded[block], '=', 8 - block);
+                return 8;
             }
-            return;
+            return block;
         }
         
         uint8_t c = OTBase32_shift_right(plain[octet], junk); // first part
@@ -185,31 +196,35 @@ static void OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *cod
             octet < len - 1 /* is there still something to read? */) {
             c |= OTBase32_shift_right(plain[octet + 1], 8 + junk);
         }
-        coded[block] = OTBase32_encode_char(c);
+        coded[block] = OTBase32_encode_char(c, options & NSDataBase32EncodingOptionsUppercase);
     }
+    return 8;
 }
 
-static int OTBase32_decode_sequence(const char *coded, uint8_t *plain, NSDataBase32DecodingOptions options) {
+static size_t OTBase32_decode_sequence(const char *coded, size_t len, uint8_t *plain, NSDataBase32DecodingOptions const options) {
     assert(CHAR_BIT == 8);
     assert(coded && plain);
     
     plain[0] = 0;
-    for (int block = 0; block < 8; block++) {
+    for (size_t block = 0; block < len; block++) {
         int offset = OTBase32_get_offset(block);
-        int octet = OTBase32_get_octet(block);
+        size_t octet = OTBase32_get_octet(block);
         
         int c = OTBase32_decode_char(coded[block]);
-        if (c < 0) { // invalid char
-            // not sure if this is implemented correctly
+        if (c < 0) {
             if (options & NSDataBase32DecodingOptionsIgnoreUnknownCharacters) {
+                // this is incorrect. the block for writing will be off
+                // supporting IgnoreUnknownCharacters isn't needed for this project,
+                //   however it would be nice to have a good implementation
+                // https://github.com/leptos-null/OneTime/issues/1
                 continue;
-            } else {
-                return octet;
             }
+            return octet;
         }
         
         plain[octet] |= OTBase32_shift_left(c, offset);
-        if (offset < 0) { // does this block overflow to the next octet?
+        // does this block overflow to the next octet?
+        if (offset < 0) {
             assert(octet < 4);
             plain[octet + 1] = OTBase32_shift_left(c, 8 + offset);
         }
@@ -224,50 +239,47 @@ static int OTBase32_decode_sequence(const char *coded, uint8_t *plain, NSDataBas
 - (NSString *)base32EncodedStringWithOptions:(NSDataBase32EncodingOptions)options {
     return [[NSString alloc] initWithData:[self base32EncodedDataWithOptions:options] encoding:NSASCIIStringEncoding];
 }
-// TODO: This implementation is fairly fragile, look into other solutions
+
 - (instancetype)initWithBase32EncodedData:(NSData *)base32Data options:(NSDataBase32DecodingOptions)options {
     if (base32Data == nil) {
         return nil;
     }
-    NSUInteger const base32Length = base32Data.length;
+    NSUInteger base32Length = base32Data.length;
     const char *coded = base32Data.bytes;
-    if ((options & NSDataBase32DecodingOptionsIgnoreUnknownCharacters) != NSDataBase32DecodingOptionsIgnoreUnknownCharacters) {
+    const char *padStart = memchr(coded, '=', base32Length);
+    // not clear how to deal with padding characters if `IgnoreUnknownCharacters` is set
+    // should the padding characters only be searched for within the last octet?
+    if (padStart) {
+        base32Length = padStart - coded;
+    }
+    if ((options & NSDataBase32DecodingOptionsIgnoreUnknownCharacters) == 0) {
         /* verify that all the input is in the valid alphabet */
         for (NSUInteger i = 0; i < base32Length; i++) {
-            const char validate = coded[i];
-            if (validate >= '2' && validate <= '7') {
-                continue;
-            } else if (validate >= 'A' && validate <= 'Z') {
-                continue;
-            } else if (validate >= 'a' && validate <= 'z') {
-                continue;
+            if (OTBase32_decode_char(coded[i]) < 0) {
+                return nil;
             }
-            return nil;
         }
     }
     uint8_t *plain = malloc(UNBASE32_LEN(base32Length));
     
     size_t written = 0;
-    for (size_t i = 0, j = 0; i < base32Length; i += 8, j += 5) {
-        int n = OTBase32_decode_sequence(&coded[i], &plain[j], options);
-        written += n;
-        if (n < 5) {
-            break;
-        }
+    for (size_t i = 0; i < base32Length; i += 8) {
+        written += OTBase32_decode_sequence(&coded[i], MIN(base32Length - i, 8), &plain[written], options);
     }
     return [self initWithBytesNoCopy:plain length:written];
 }
 
 - (NSData *)base32EncodedDataWithOptions:(NSDataBase32EncodingOptions)options {
     size_t const len = self.length;
-    NSMutableData *ret = [NSMutableData dataWithLength:BASE32_LEN(len)];
     
     const uint8_t *plain = self.bytes;
-    char *coded = ret.mutableBytes;
-    for (size_t i = 0, j = 0; i < len; i += 5, j += 8) {
-        OTBase32_encode_sequence(&plain[i], MIN(len - i, 5), &coded[j], options);
+    char *coded = malloc(BASE32_LEN(len));
+    
+    size_t written = 0;
+    for (size_t i = 0; i < len; i += 5) {
+        written += OTBase32_encode_sequence(&plain[i], MIN(len - i, 5), &coded[written], options);
     }
-    return [ret copy];
+    return [NSData dataWithBytesNoCopy:coded length:written];
 }
 
 @end

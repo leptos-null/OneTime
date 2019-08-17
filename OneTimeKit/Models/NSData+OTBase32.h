@@ -28,10 +28,10 @@
 
 #import <Foundation/Foundation.h>
 
-
 typedef NS_OPTIONS(NSInteger, NSDataBase32EncodingOptions) {
     NSDataBase32EncodingOptionsNone = 0,
     NSDataBase32EncodingOptionsNoPad = 1 << 0,
+    NSDataBase32EncodingOptionsUppercase = 1 << 1,
 };
 
 typedef NS_OPTIONS(NSInteger, NSDataBase32DecodingOptions) {

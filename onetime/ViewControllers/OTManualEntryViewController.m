@@ -107,13 +107,11 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.secretField) {
-        [textField resignFirstResponder];
+        return [textField resignFirstResponder];
     } else if (textField == self.issuerField) {
-        [self.accountField becomeFirstResponder];
+        return [self.accountField becomeFirstResponder];
     } else if (textField == self.accountField) {
-        [self.secretField becomeFirstResponder];
-    } else {
-        NSParameterAssert(0);
+        return [self.secretField becomeFirstResponder];
     }
     return YES;
 }

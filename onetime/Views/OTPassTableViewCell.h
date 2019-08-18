@@ -21,5 +21,7 @@
 @property (strong, nonatomic) IBOutlet OTPadTextField *issuerField;
 @property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;
 @property (strong, nonatomic) IBOutlet OTPadTextField *accountField;
+// used as both a "new code" (HOTP) button, and expiry (TOTP) indicator
+@property (strong, nonatomic) IBOutlet UIButton *factorIndicator;
 
 @end

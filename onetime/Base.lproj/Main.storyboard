@@ -56,23 +56,39 @@
                                                 <outlet property="delegate" destination="k7c-08-FlA" id="guE-tz-NAa"/>
                                             </connections>
                                         </textField>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RoA-ix-f69">
+                                            <rect key="frame" x="314" y="65.5" width="80" height="36"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                            <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                                            <state key="normal" title="Indicator">
+                                                <color key="titleColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="_didTapFactorIndicator:" destination="k7c-08-FlA" eventType="touchUpInside" id="jBj-di-BaK"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="centerX" secondItem="pcN-eD-KVN" secondAttribute="centerX" id="30P-er-RGh"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="RoA-ix-f69" secondAttribute="bottom" id="5PQ-Bi-R2K"/>
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" id="5cR-IJ-zcj"/>
                                         <constraint firstItem="lFD-Cd-b56" firstAttribute="top" secondItem="RZA-vA-7Zr" secondAttribute="bottom" constant="8" id="6fH-od-auU"/>
                                         <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="j3p-PH-tQg" secondAttribute="trailing" id="EVv-o2-joP"/>
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="top" secondItem="j3p-PH-tQg" secondAttribute="bottom" constant="8" id="IIG-i3-vF0"/>
+                                        <constraint firstItem="RoA-ix-f69" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="RZA-vA-7Zr" secondAttribute="trailing" id="KpQ-P6-19z"/>
                                         <constraint firstItem="j3p-PH-tQg" firstAttribute="leading" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" constant="16" id="MDA-Qf-vwM"/>
                                         <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="lFD-Cd-b56" secondAttribute="trailing" id="OI1-PF-R7f"/>
                                         <constraint firstItem="j3p-PH-tQg" firstAttribute="top" secondItem="pcN-eD-KVN" secondAttribute="topMargin" id="TfJ-7r-tNi"/>
                                         <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="RZA-vA-7Zr" secondAttribute="trailing" id="VHP-83-rwH"/>
+                                        <constraint firstItem="RoA-ix-f69" firstAttribute="top" relation="greaterThanOrEqual" secondItem="pcN-eD-KVN" secondAttribute="topMargin" id="Y17-a4-WvG"/>
                                         <constraint firstItem="lFD-Cd-b56" firstAttribute="leading" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" constant="18" id="kKZ-3d-xYQ"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="lFD-Cd-b56" secondAttribute="bottom" id="s2L-3R-6GL"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="RoA-ix-f69" secondAttribute="trailing" id="uso-5u-6hL"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="accountField" destination="lFD-Cd-b56" id="Pb9-PJ-SNX"/>
+                                    <outlet property="factorIndicator" destination="RoA-ix-f69" id="Xpz-mh-ns7"/>
                                     <outlet property="issuerField" destination="j3p-PH-tQg" id="NJb-Cc-oox"/>
                                     <outlet property="passcodeLabel" destination="RZA-vA-7Zr" id="Ss3-0r-gX2"/>
                                 </connections>

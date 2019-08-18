@@ -7,6 +7,7 @@
 //
 
 #import "OTPassTableViewCell.h"
+#import "../Services/OTSecondKeeper.h"
 
 @implementation OTPassTableViewCell {
     NSTimer *_totpTimer;
@@ -29,20 +30,87 @@
     _bag = bag;
     
     [_totpTimer invalidate];
-    _totpTimer = NULL;
+    [OTSecondKeeper.keepCenter removeObserver:self name:OTSecondKeeper.everySecondName object:nil];
     
     self.issuerField.text = bag.issuer;
     self.accountField.text = bag.account;
-    self.passcodeLabel.text = bag.generator.password;
+    [self _updatePasscodeLabel];
+    [self _updateFactorIndicator];
     
     if ([bag.generator isKindOfClass:[OTPTime class]]) {
+        self.factorIndicator.userInteractionEnabled = NO;
+        self.factorIndicator.accessibilityLabel = @"Expires in";
+        self.factorIndicator.accessibilityTraits = UIAccessibilityTraitUpdatesFrequently;
+        
         OTPTime *totp = bag.generator;
-        __weak __typeof(self) weakself = self;
         NSDate *firstFire = [totp nextStepPeriodForDate:[NSDate date]];
-        _totpTimer = [[NSTimer alloc] initWithFireDate:firstFire interval:totp.step repeats:YES block:^(NSTimer *timer) {
-            weakself.passcodeLabel.text = totp.password;
-        }];
+        _totpTimer = [[NSTimer alloc] initWithFireDate:firstFire interval:totp.step target:self selector:@selector(_updatePasscodeLabel) userInfo:nil repeats:YES];
         [NSRunLoop.mainRunLoop addTimer:_totpTimer forMode:NSDefaultRunLoopMode];
+        
+        [OTSecondKeeper.keepCenter addObserver:self selector:@selector(_updateFactorIndicator) name:OTSecondKeeper.everySecondName object:nil];
+    } else {
+        self.factorIndicator.userInteractionEnabled = YES;
+        self.factorIndicator.accessibilityLabel = nil; // use default
+        self.factorIndicator.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitStaticText;
+    }
+}
+
+- (void)_updatePasscodeLabel {
+    self.passcodeLabel.text = self.bag.generator.password;
+}
+
+- (void)_updateFactorIndicator {
+    __kindof OTPBase *generator = self.bag.generator;
+    if ([generator isKindOfClass:[OTPTime class]]) {
+        OTPTime *totp = generator;
+        NSDate *now = [NSDate date];
+        NSDate *nextStep = [totp nextStepPeriodForDate:now];
+        NSTimeInterval seconds = [nextStep timeIntervalSinceDate:now];
+        
+        NSTimeInterval const secsPerMin = 60;
+        double minutes = floor(seconds / secsPerMin);
+        NSString *indicator = [NSString stringWithFormat:@"%02.0f:%02.0f", minutes, seconds - (minutes * secsPerMin)];
+        [self.factorIndicator setTitle:indicator forState:UIControlStateNormal];
+        
+        static NSMeasurementFormatter *timeFormatter;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            timeFormatter = [NSMeasurementFormatter new];
+            timeFormatter.locale = NSLocale.autoupdatingCurrentLocale;
+            timeFormatter.unitOptions = NSMeasurementFormatterUnitOptionsNaturalScale;
+            timeFormatter.unitStyle = NSFormattingUnitStyleLong;
+            timeFormatter.numberFormatter.maximumFractionDigits = 0;
+        });
+        NSMeasurement *measure = [[NSMeasurement alloc] initWithDoubleValue:seconds unit:[NSUnitDuration seconds]];
+        self.factorIndicator.accessibilityValue = [timeFormatter stringFromMeasurement:measure];
+        
+        UIColor *textColor = nil;
+        if (@available(iOS 13.0, *)) {
+            textColor = UIColor.labelColor;
+        } else {
+            textColor = UIColor.darkTextColor;
+        }
+        [self.factorIndicator setTitleColor:textColor forState:UIControlStateNormal];
+    } else {
+        [self.factorIndicator setTitle:@"New Code" forState:UIControlStateNormal];
+        
+        UIColor *color = self.factorIndicator.tintColor;
+        [self.factorIndicator setTitleColor:color forState:UIControlStateNormal];
+        
+        CGFloat hue, saturation, brightness, alpha;
+        [color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
+        color = [UIColor colorWithHue:hue saturation:saturation brightness:(brightness * 0.72) alpha:alpha];
+        [self.factorIndicator setTitleColor:color forState:UIControlStateHighlighted];
+    }
+}
+
+- (IBAction)_didTapFactorIndicator:(UIButton *)button {
+    OTBag *bag = self.bag;
+    if ([bag.generator isKindOfClass:[OTPHash class]]) {
+        OTPHash *hotp = bag.generator;
+        [hotp incrementCounter];
+        self.passcodeLabel.text = hotp.password;
+        [bag syncToKeychain];
     }
 }
 
@@ -61,7 +129,7 @@
 // MARK: - UITextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    // I use to just set each of the textFields to `enabled = editing`
+    // previously, I set each of the textFields to `enabled = editing`
     //   but that caused VoiceOver to read "dimmed" which could be confusing
     return self.editing;
 }

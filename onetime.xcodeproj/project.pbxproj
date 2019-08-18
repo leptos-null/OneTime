@@ -36,6 +36,7 @@
 		FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
+		FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,8 @@
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
 		FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCaptureVideoView.h; sourceTree = "<group>"; };
 		FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTCaptureVideoView.m; sourceTree = "<group>"; };
+		FADD93A82309C03A00EAAC69 /* OTSecondKeeper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTSecondKeeper.h; sourceTree = "<group>"; };
+		FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTSecondKeeper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +176,7 @@
 				FA0E251C22F9DD54007DC512 /* AppDelegate */,
 				FA0E251D22F9DDC3007DC512 /* ViewControllers */,
 				FA0E259922FA9D2C007DC512 /* Views */,
+				FADD93A72309C01A00EAAC69 /* Services */,
 				FA0E252622F9DEF4007DC512 /* Storyboards */,
 				FA0E251E22F9DE6F007DC512 /* Resources */,
 			);
@@ -299,6 +303,15 @@
 				FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		FADD93A72309C01A00EAAC69 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FADD93A82309C03A00EAAC69 /* OTSecondKeeper.h */,
+				FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -439,6 +452,7 @@
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
 				FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */,
 				FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */,
+				FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */,
 				FA0E258422F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,
 				FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */,

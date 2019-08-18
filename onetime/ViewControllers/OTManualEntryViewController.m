@@ -14,6 +14,9 @@
 
 @implementation OTManualEntryViewController {
     NSArray<NSString *> *_algorithms;
+    
+    NSString *_counterStoredValue;
+    NSString *_timeStoredValue;
 }
 // TODO: Provide help text for sections that are less commonly used (e.g. code length, algorithm)
 - (void)viewDidLoad {
@@ -22,7 +25,13 @@
     // I'm setting this in the storyboard, but for some reason it's not working
     self.lengthStepper.value = 6;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
+    saveButton.enabled = NO;
+    self.navigationItem.rightBarButtonItem = saveButton;
+    
+    _counterStoredValue = @"1";
+    _timeStoredValue = @"30";
+    [self _updateFactorFieldForSelectedSegment];
     
     _algorithms = @[
         @"SHA1",
@@ -39,18 +48,17 @@
     NSData *key = [[NSData alloc] initWithBase32EncodedString:cleanKey options:NSDataBase32DecodingOptionsNone];
     CCHmacAlgorithm alg = (CCHmacAlgorithm)[self.algorithmPicker selectedRowInComponent:0];
     size_t digits = self.lengthStepper.value;
-    if (key == nil || cleanKey.length == 0 || digits <= 0 || alg < 0) {
+    NSString *factorComponent = self.factorField.text;
+    if (key == nil || cleanKey.length == 0 || digits <= 0 || alg < 0 || factorComponent.length == 0) {
         return;
     }
-    
-    // currently no options for step and counter are being provided (TODO?)
     __kindof OTPBase *generator = nil;
     switch (self.factorTypeOption.selectedSegmentIndex) {
         case OTManualEntryFactorTypeCounter:
-            generator = [[OTPHash alloc] initWithKey:key algorithm:alg digits:digits counter:OTPHash.defaultCounter];
+            generator = [[OTPHash alloc] initWithKey:key algorithm:alg digits:digits counter:factorComponent.integerValue];
             break;
         case OTManualEntryFactorTypeTime:
-            generator = [[OTPTime alloc] initWithKey:key algorithm:alg digits:digits step:OTPTime.defaultStep];
+            generator = [[OTPTime alloc] initWithKey:key algorithm:alg digits:digits step:factorComponent.doubleValue];
             break;
         default: {
             NSAssert(0, @"An unknown option selected in factorTypeOption: %@", self.factorTypeOption);
@@ -81,13 +89,53 @@
     return ret;
 }
 
+- (IBAction)_updateFactorFieldForSelectedSegment {
+    UITextField *correspondingField = self.factorField;
+    NSString *infoText = nil;
+    switch (self.factorTypeOption.selectedSegmentIndex) {
+        case OTManualEntryFactorTypeCounter: {
+            infoText = @"Starting counter";
+            correspondingField.keyboardType = UIKeyboardTypeNumberPad;
+            correspondingField.text = _counterStoredValue;
+        } break;
+        case OTManualEntryFactorTypeTime: {
+            infoText = @"Step seconds";
+            correspondingField.keyboardType = UIKeyboardTypeDecimalPad;
+            correspondingField.text = _timeStoredValue;
+        } break;
+            
+        default:
+            break;
+    }
+    correspondingField.placeholder = infoText;
+    correspondingField.accessibilityLabel = infoText;
+    if (correspondingField.isFirstResponder) {
+        [correspondingField reloadInputViews];
+    }
+}
+
+- (IBAction)_factorFieldTextDidChange:(UITextField *)sender {
+    switch (self.factorTypeOption.selectedSegmentIndex) {
+        case OTManualEntryFactorTypeCounter: {
+            _counterStoredValue = sender.text;
+        } break;
+        case OTManualEntryFactorTypeTime: {
+            _timeStoredValue = sender.text;
+        } break;
+            
+        default:
+            break;
+    }
+}
+
 - (IBAction)_colorSecretTextField:(UITextField *)secretField {
     NSString *interest = secretField.text;
+    BOOL couldSave = (interest.length != 0);
     
     NSMutableAttributedString *markup = [[NSMutableAttributedString alloc] initWithString:interest];
     NSCharacterSet *const badChars = [self _invertedBase32Set];
     NSDictionary *const badCharAttribs = @{
-        NSBackgroundColorAttributeName : [UIColor systemPinkColor]
+        NSBackgroundColorAttributeName : UIColor.systemPinkColor
     };
     
     NSRange range = NSMakeRange(0, interest.length);
@@ -96,11 +144,13 @@
         if (badRange.location == NSNotFound) {
             break;
         }
+        couldSave = NO;
         [markup addAttributes:badCharAttribs range:badRange];
         range.location = badRange.location + badRange.length;
         range.length = interest.length - range.location;
     }
     secretField.attributedText = markup;
+    self.navigationItem.rightBarButtonItem.enabled = couldSave;
 }
 
 // MARK: - UITextFieldDelegate
@@ -122,22 +172,6 @@
         return range.location == NSNotFound;
     }
     return YES;
-}
-
-// currently, I like the idea of highlighting invalid characters instead of just blocking them
-// - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-//     if (textField == self.secretField && string.length) {
-//         NSRange range = [string rangeOfCharacterFromSet:[self _invertedBase32Set]];
-//         return range.location == NSNotFound;
-//     }
-//     return YES;
-// }
-
-// MARK: - UITableViewDelegate
-
-// a bug in the interface builder renderer is preventing some cells to be marked automatic in the storyboard
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewAutomaticDimension;
 }
 
 // MARK: - UIPickerViewDataSource

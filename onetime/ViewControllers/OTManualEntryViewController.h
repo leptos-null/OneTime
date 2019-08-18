@@ -36,5 +36,6 @@ typedef NS_ENUM(NSUInteger, OTManualEntryFactorType) {
 @property (strong, nonatomic) IBOutlet UIStepper *lengthStepper;
 @property (strong, nonatomic) IBOutlet UIPickerView *algorithmPicker;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *factorTypeOption;
+@property (strong, nonatomic) IBOutlet UITextField *factorField;
 
 @end

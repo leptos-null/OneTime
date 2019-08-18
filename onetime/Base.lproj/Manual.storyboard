@@ -106,7 +106,7 @@
                                                 </label>
                                                 <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="abc2 34de f56g" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Okc-8D-veL">
                                                     <rect key="frame" x="72.5" y="41" width="269" height="68"/>
-                                                    <accessibility key="accessibilityConfiguration" label="Secret Key"/>
+                                                    <accessibility key="accessibilityConfiguration" label="Secret key"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="continue" enablesReturnKeyAutomatically="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                     <connections>
@@ -128,7 +128,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="121" id="4sq-RV-iKr" userLabel="Code Length Cell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="4sq-RV-iKr" userLabel="Code Length Cell">
                                         <rect key="frame" x="0.0" y="361" width="414" height="121"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4sq-RV-iKr" id="p3F-cS-b2Z">
@@ -142,29 +142,28 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="6" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EWf-dQ-jvs">
-                                                    <rect key="frame" x="202" y="41" width="10.5" height="21"/>
+                                                    <rect key="frame" x="152" y="47" width="10.5" height="21"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="6" minimumValue="1" maximumValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Y9I-TW-770">
-                                                    <rect key="frame" x="160" y="78" width="94" height="32"/>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="6" minimumValue="1" maximumValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Y9I-TW-770">
+                                                    <rect key="frame" x="178.5" y="41.5" width="94" height="32"/>
                                                     <connections>
                                                         <action selector="_lengthStepperDidChange:" destination="8qJ-lG-vdC" eventType="valueChanged" id="C3U-jT-T9h"/>
                                                     </connections>
                                                 </stepper>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="Y9I-TW-770" firstAttribute="centerX" secondItem="p3F-cS-b2Z" secondAttribute="centerX" id="1ax-kx-OO4"/>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="Y9I-TW-770" secondAttribute="trailing" id="BCQ-cs-YHv"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="qeP-rj-bVv" secondAttribute="trailing" id="GeZ-9j-VTv"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="Y9I-TW-770" secondAttribute="bottom" id="HAK-IG-Xhg"/>
-                                                <constraint firstItem="Y9I-TW-770" firstAttribute="top" secondItem="EWf-dQ-jvs" secondAttribute="bottom" constant="6" id="K0E-aw-0FD"/>
                                                 <constraint firstItem="qeP-rj-bVv" firstAttribute="top" secondItem="p3F-cS-b2Z" secondAttribute="topMargin" id="KQf-RF-R5J"/>
-                                                <constraint firstItem="EWf-dQ-jvs" firstAttribute="top" secondItem="qeP-rj-bVv" secondAttribute="bottom" constant="6" id="SNt-xJ-iVF"/>
+                                                <constraint firstItem="Y9I-TW-770" firstAttribute="leading" secondItem="EWf-dQ-jvs" secondAttribute="trailing" constant="16" id="OgC-j2-C3K"/>
+                                                <constraint firstItem="EWf-dQ-jvs" firstAttribute="top" secondItem="qeP-rj-bVv" secondAttribute="bottom" constant="12" id="SNt-xJ-iVF"/>
                                                 <constraint firstItem="qeP-rj-bVv" firstAttribute="leading" secondItem="p3F-cS-b2Z" secondAttribute="leadingMargin" constant="4" id="Y3a-Uz-RsT"/>
-                                                <constraint firstItem="EWf-dQ-jvs" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="p3F-cS-b2Z" secondAttribute="leadingMargin" id="Z6j-KN-BAc"/>
-                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="EWf-dQ-jvs" secondAttribute="trailing" id="bSU-jT-d4S"/>
-                                                <constraint firstItem="EWf-dQ-jvs" firstAttribute="centerX" secondItem="p3F-cS-b2Z" secondAttribute="centerX" id="yXW-07-6X0"/>
+                                                <constraint firstItem="EWf-dQ-jvs" firstAttribute="centerX" secondItem="p3F-cS-b2Z" secondAttribute="centerX" multiplier="0.76" id="jm3-IG-l1n"/>
+                                                <constraint firstItem="Y9I-TW-770" firstAttribute="centerY" secondItem="EWf-dQ-jvs" secondAttribute="centerY" id="yQa-kZ-yM1"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="EWf-dQ-jvs" secondAttribute="bottom" constant="8" id="yTv-75-9gL"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -218,20 +217,34 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="2Pd-aZ-JrO">
-                                                    <rect key="frame" x="138.5" y="41" width="137" height="32"/>
+                                                    <rect key="frame" x="36" y="60" width="137" height="32"/>
                                                     <segments>
                                                         <segment title="Counter"/>
                                                         <segment title="Time"/>
                                                     </segments>
+                                                    <connections>
+                                                        <action selector="_updateFactorFieldForSelectedSegment" destination="8qJ-lG-vdC" eventType="valueChanged" id="q85-Tq-Ilf"/>
+                                                    </connections>
                                                 </segmentedControl>
+                                                <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Step seconds" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2rS-4n-9e3">
+                                                    <rect key="frame" x="185" y="67" width="132.5" height="18"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                                    <connections>
+                                                        <action selector="_factorFieldTextDidChange:" destination="8qJ-lG-vdC" eventType="editingChanged" id="l6J-bV-ZgT"/>
+                                                    </connections>
+                                                </textField>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2rS-4n-9e3" secondAttribute="bottom" constant="4" id="4gg-Gv-oRq"/>
                                                 <constraint firstItem="FRG-DR-Cnb" firstAttribute="leading" secondItem="TC7-jO-Pht" secondAttribute="leadingMargin" constant="4" id="6xO-O2-Cd1"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="2Pd-aZ-JrO" secondAttribute="bottom" id="8VY-aF-Anx"/>
                                                 <constraint firstItem="FRG-DR-Cnb" firstAttribute="top" secondItem="TC7-jO-Pht" secondAttribute="topMargin" id="ATX-fR-3ds"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="FRG-DR-Cnb" secondAttribute="trailing" id="EJN-2z-l4z"/>
-                                                <constraint firstItem="2Pd-aZ-JrO" firstAttribute="centerX" secondItem="TC7-jO-Pht" secondAttribute="centerX" id="ksj-1q-qhX"/>
-                                                <constraint firstItem="2Pd-aZ-JrO" firstAttribute="top" secondItem="FRG-DR-Cnb" secondAttribute="bottom" constant="6" id="oaf-lH-c0U"/>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="2rS-4n-9e3" secondAttribute="trailing" id="G6H-iw-uvv"/>
+                                                <constraint firstItem="2rS-4n-9e3" firstAttribute="centerY" secondItem="2Pd-aZ-JrO" secondAttribute="centerY" id="WFc-PA-CnX"/>
+                                                <constraint firstItem="2rS-4n-9e3" firstAttribute="leading" secondItem="2Pd-aZ-JrO" secondAttribute="trailing" constant="12" id="ZYJ-kE-bzI"/>
+                                                <constraint firstItem="2rS-4n-9e3" firstAttribute="top" secondItem="FRG-DR-Cnb" secondAttribute="bottom" constant="8" id="o9Q-r2-uci"/>
+                                                <constraint firstItem="2Pd-aZ-JrO" firstAttribute="leading" secondItem="TC7-jO-Pht" secondAttribute="leadingMargin" constant="16" id="orV-2q-i2d"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -246,6 +259,7 @@
                     <connections>
                         <outlet property="accountField" destination="beU-2n-uUu" id="jU5-bU-0lD"/>
                         <outlet property="algorithmPicker" destination="gJD-1I-EBy" id="CR7-gC-Upo"/>
+                        <outlet property="factorField" destination="2rS-4n-9e3" id="1Xq-A4-fZC"/>
                         <outlet property="factorTypeOption" destination="2Pd-aZ-JrO" id="ncD-KA-fvL"/>
                         <outlet property="issuerField" destination="IN6-8d-fAr" id="Ns1-7l-tQR"/>
                         <outlet property="lengthStepper" destination="Y9I-TW-770" id="U8W-h9-dKW"/>

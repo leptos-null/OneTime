@@ -47,9 +47,11 @@
 }
 
 - (NSString *)password {
-    NSString *pass = [super passwordForFactor:_counter];
+    return [super passwordForFactor:_counter];
+}
+
+- (void)incrementCounter {
     _counter++;
-    return pass;
 }
 
 - (NSDictionary *)properties {

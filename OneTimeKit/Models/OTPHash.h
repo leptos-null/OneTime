@@ -19,4 +19,6 @@
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits counter:(uint64_t)counter;
 
+- (void)incrementCounter;
+
 @end

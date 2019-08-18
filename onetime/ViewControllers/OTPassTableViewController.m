@@ -85,11 +85,13 @@
 - (void)_addBagsToTable:(NSArray<OTBag *> *)bags animated:(BOOL)animated {
     NSInteger const rowTarget = _dataSource.count;
     NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
+    NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
-        NSInteger row = rowTarget + idx;
+        NSInteger const row = rowTarget + idx;
         bag.index = row;
         [bag syncToKeychain];
         newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
+        newSource[row] = bag;
     }];
     
     if (animated) {
@@ -97,7 +99,7 @@
         NSIndexPath *scrollTarget = [NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0];
         [self.tableView scrollToRowAtIndexPath:scrollTarget atScrollPosition:UITableViewScrollPositionBottom animated:animated];
     }
-    
+    _dataSource = [newSource copy];
     UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
     [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
 }

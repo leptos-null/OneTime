@@ -14,9 +14,16 @@
 
 #import "OTPadTextField.h"
 
+@protocol OTEditingDataSource <NSObject>
+
+- (BOOL)interfaceIsEditing;
+
+@end
+
 @interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate>
 
 @property (strong, nonatomic) OTBag *bag;
+@property (weak, nonatomic) id<OTEditingDataSource> editSource;
 
 @property (strong, nonatomic) IBOutlet OTPadTextField *issuerField;
 @property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;

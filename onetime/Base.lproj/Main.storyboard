@@ -17,10 +17,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PassCell" id="k7c-08-FlA" customClass="OTPassTableViewCell">
-                                <rect key="frame" x="0.0" y="28" width="414" height="112.5"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="112"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="k7c-08-FlA" id="pcN-eD-KVN">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="112.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="112"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Issuer" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="j3p-PH-tQg" customClass="OTPadTextField">
@@ -36,7 +36,7 @@
                                             </connections>
                                         </textField>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Passcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RZA-vA-7Zr">
-                                            <rect key="frame" x="152.5" y="40" width="109" height="32.5"/>
+                                            <rect key="frame" x="152.5" y="40" width="109" height="32"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" notEnabled="YES" updatesFrequently="YES"/>
                                             </accessibility>
@@ -45,7 +45,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Account" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lFD-Cd-b56" customClass="OTPadTextField">
-                                            <rect key="frame" x="38" y="80.5" width="63.5" height="21"/>
+                                            <rect key="frame" x="38" y="80" width="63.5" height="21"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <accessibility key="accessibilityConfiguration" label="Account">
                                                 <accessibilityTraits key="traits" staticText="YES"/>
@@ -57,7 +57,10 @@
                                             </connections>
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RoA-ix-f69">
-                                            <rect key="frame" x="314" y="65.5" width="80" height="36"/>
+                                            <rect key="frame" x="314" y="65" width="80" height="36"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" button="YES" updatesFrequently="YES"/>
+                                            </accessibility>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                             <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                             <state key="normal" title="Indicator">
@@ -72,6 +75,7 @@
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="centerX" secondItem="pcN-eD-KVN" secondAttribute="centerX" id="30P-er-RGh"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="RoA-ix-f69" secondAttribute="bottom" id="5PQ-Bi-R2K"/>
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pcN-eD-KVN" secondAttribute="leadingMargin" id="5cR-IJ-zcj"/>
+                                        <constraint firstItem="RoA-ix-f69" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="lFD-Cd-b56" secondAttribute="trailing" id="6dO-lQ-Tx4"/>
                                         <constraint firstItem="lFD-Cd-b56" firstAttribute="top" secondItem="RZA-vA-7Zr" secondAttribute="bottom" constant="8" id="6fH-od-auU"/>
                                         <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="j3p-PH-tQg" secondAttribute="trailing" id="EVv-o2-joP"/>
                                         <constraint firstItem="RZA-vA-7Zr" firstAttribute="top" secondItem="j3p-PH-tQg" secondAttribute="bottom" constant="8" id="IIG-i3-vF0"/>

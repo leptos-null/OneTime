@@ -48,6 +48,7 @@
         [NSRunLoop.mainRunLoop addTimer:_totpTimer forMode:NSDefaultRunLoopMode];
         
         [OTSecondKeeper.keepCenter addObserver:self selector:@selector(_updateFactorIndicator) name:OTSecondKeeper.everySecondName object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_updatePasscodeLabel) name:UIApplicationWillEnterForegroundNotification object:nil];
     } else {
         self.factorIndicator.userInteractionEnabled = YES;
         self.factorIndicator.accessibilityLabel = nil; // use default
@@ -121,6 +122,7 @@
         [self endEditing:YES];
     }
     
+    editing = self.editSource.interfaceIsEditing;
     CGColorRef borderColor = editing ? UIColor.systemGrayColor.CGColor : UIColor.clearColor.CGColor;
     self.issuerField.layer.borderColor = borderColor;
     self.accountField.layer.borderColor = borderColor;

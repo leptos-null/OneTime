@@ -12,10 +12,11 @@
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
 
-#import "../Views/OTPassTableViewCell.h"
-
 @implementation OTPassTableViewController {
     NSArray<OTBag *> *_dataSource;
+    
+    // if the receiver is editing per the edit button being clicked
+    BOOL _editModeFromButton;
 }
 
 - (void)viewDidLoad {
@@ -25,6 +26,9 @@
         self.editButtonItem,
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(_addButtonHit:)]
     ];
+    self.editButtonItem.target = self;
+    self.editButtonItem.action = @selector(_editButtonHit:);
+    
     // Are settings needed?
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     
@@ -72,6 +76,14 @@
     }]];
     alert.popoverPresentationController.barButtonItem = button;
     [self presentViewController:alert animated:YES completion:NULL];
+}
+
+- (void)_editButtonHit:(UIBarButtonItem *)button {
+    BOOL newState = !self.editing;
+    // our state needs to be set before calling `setEditing:`
+    //   because it sends the same message to the table cells
+    _editModeFromButton = newState;
+    [self setEditing:newState animated:YES];
 }
 
 - (IBAction)_refreshControlEvent:(UIRefreshControl *)control {
@@ -200,6 +212,7 @@
     NSParameterAssert(indexPath.section == 0);
     
     OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PassCell" forIndexPath:indexPath];
+    cell.editSource = self;
     cell.bag = _dataSource[indexPath.row];
     if (cell.bag.index != indexPath.row) {
         cell.bag.index = indexPath.row;
@@ -209,12 +222,21 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSParameterAssert(tableView == self.tableView);
+    NSParameterAssert(indexPath.section == 0);
+    
     switch (editingStyle) {
         case UITableViewCellEditingStyleDelete: {
-            OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            [cell.bag deleteFromKeychain];
-            [self updateDataSource];
-            [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            __weak __typeof(self) weakself = self;
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:@"Deleting a token cannot be undone. This action will not turn off 2FA for the account." preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                [cell.bag deleteFromKeychain];
+                [weakself updateDataSource];
+                [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }]];
+            [self presentViewController:alert animated:YES completion:NULL];
         } break;
         case UITableViewCellEditingStyleInsert: {
             // not supported right now
@@ -226,6 +248,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+    NSParameterAssert(tableView == self.tableView);
+    NSParameterAssert(fromIndexPath.section == 0);
+    NSParameterAssert(toIndexPath.section == 0);
+    
     NSInteger const
     start = MIN(fromIndexPath.row, toIndexPath.row),
     stop  = MAX(toIndexPath.row, fromIndexPath.row);
@@ -245,6 +271,8 @@
 // MARK: - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSParameterAssert(tableView == self.tableView);
+    NSParameterAssert(indexPath.section == 0);
     // I'm not sure I like the idea of overwriting the clipboard. preference?
     //    OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     //    NSString *password = cell.bag.generator.password;
@@ -253,6 +281,12 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     });
+}
+
+// MARK: - OTEditingDataSource
+
+- (BOOL)interfaceIsEditing {
+    return _editModeFromButton;
 }
 
 @end

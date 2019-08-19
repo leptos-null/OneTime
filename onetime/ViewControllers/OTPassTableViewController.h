@@ -11,7 +11,8 @@
 
 #import "OTQRScanViewController.h"
 #import "OTManualEntryViewController.h"
+#import "../Views/OTPassTableViewCell.h"
 
-@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate, OTManualEntryControllerDelegate>
+@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate, OTManualEntryControllerDelegate, OTEditingDataSource>
 
 @end

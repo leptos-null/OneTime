@@ -20,6 +20,7 @@
 @property (strong, nonatomic) IBOutlet WKInterfaceLabel *issuerLabel;
 @property (strong, nonatomic) IBOutlet WKInterfaceLabel *passcodeLabel;
 @property (strong, nonatomic) IBOutlet WKInterfaceTimer *validityTimer;
+@property (strong, nonatomic) IBOutlet WKInterfaceButton *counterButton;
 @property (strong, nonatomic) IBOutlet WKInterfaceLabel *accountLabel;
 
 - (void)updateTimingElements;

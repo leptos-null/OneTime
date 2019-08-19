@@ -23,8 +23,10 @@
     self.accountLabel.accessibilityValue = bag.account;
     
     [self updateTimingElements];
+    
     BOOL isTotp = [bag.generator isKindOfClass:[OTPTime class]];
     self.validityTimer.hidden = !isTotp;
+    self.counterButton.hidden = isTotp;
     
     if (isTotp) {
         OTPTime *totp = bag.generator;
@@ -58,6 +60,16 @@
 - (void)stopTimingElements {
     [_validityTiming invalidate];
     [self.validityTimer stop];
+}
+
+- (IBAction)counterButtonHit {
+    OTBag *bag = self.bag;
+    if ([bag.generator isKindOfClass:[OTPHash class]]) {
+        OTPHash *hotp = bag.generator;
+        [hotp incrementCounter];
+        [self updateTimingElements];
+        [bag syncToKeychain];
+    }
 }
 
 @end

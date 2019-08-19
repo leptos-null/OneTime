@@ -29,11 +29,18 @@
                                                 <fontDescription key="font" style="UICTFontTextStyleTitle3"/>
                                                 <calendarUnit key="units" minute="YES" second="YES"/>
                                             </timer>
+                                            <button alignment="left" title="New Code" id="zlS-eH-u9q">
+                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                                <connections>
+                                                    <action selector="counterButtonHit" destination="3hl-1v-huP" id="CNR-fT-eNh"/>
+                                                </connections>
+                                            </button>
                                             <label alignment="left" accessibilityLabel="Account" text="Account" id="hc8-SW-P61"/>
                                         </items>
                                     </group>
                                     <connections>
                                         <outlet property="accountLabel" destination="hc8-SW-P61" id="AWL-zH-s9u"/>
+                                        <outlet property="counterButton" destination="zlS-eH-u9q" id="vdV-Ik-6wP"/>
                                         <outlet property="issuerLabel" destination="Szw-Jq-AtY" id="8Bl-dB-358"/>
                                         <outlet property="passcodeLabel" destination="hS8-RS-faI" id="j42-hG-ud4"/>
                                         <outlet property="validityTimer" destination="NY6-yl-0jK" id="Bsr-LQ-ams"/>

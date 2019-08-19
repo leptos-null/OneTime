@@ -33,12 +33,6 @@
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     
     [self updateDataSource];
-    //    CIQRCodeErrorCorrectionLevel correctionLevel = CIQRCodeErrorCorrectionLevelH;
-    //    CIFilter *qrCodeGenerator = [CIFilter filterWithName:@"CIQRCodeGenerator" withInputParameters:@{
-    //        @"inputMessage" : [bag.URL.absoluteString dataUsingEncoding:NSISOLatin1StringEncoding],
-    //        @"inputCorrectionLevel" : [[NSString alloc] initWithBytes:&correctionLevel length:1 encoding:NSASCIIStringEncoding]
-    //    }];
-    //    UIImage *qrCode = [UIImage imageWithCIImage:qrCodeGenerator.outputImage];
 }
 
 - (void)updateDataSource {
@@ -94,7 +88,7 @@
     });
 }
 
-- (void)_addBagsToTable:(NSArray<OTBag *> *)bags animated:(BOOL)animated {
+- (void)_addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
     NSInteger const rowTarget = _dataSource.count;
     NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
     NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
@@ -106,8 +100,7 @@
         newSource[row] = bag;
     }];
     
-    if (animated) {
-        // maybe scroll anyway?
+    if (shouldScroll && (rowTarget >= 1)) {
         NSIndexPath *scrollTarget = [NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0];
         [self.tableView scrollToRowAtIndexPath:scrollTarget atScrollPosition:UITableViewScrollPositionBottom animated:animated];
     }
@@ -160,7 +153,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (bags.count) {
                         [picker dismissViewControllerAnimated:YES completion:NULL];
-                        [weakself _addBagsToTable:bags animated:YES];
+                        [weakself _addBagsToTable:bags scroll:YES animated:YES];
                     } else {
                         // TODO: Warn user no bags found
                     }
@@ -180,7 +173,8 @@
         if (bag) {
             // we're good- stop receiving delegate calls (a little bit of a hack)
             controller.delegate = nil;
-            [self _addBagsToTable:@[ bag ] animated:YES];
+            [controller.navigationController popViewControllerAnimated:YES];
+            [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
             return;
         }
     }
@@ -196,7 +190,7 @@
 
 - (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
     [controller.navigationController popViewControllerAnimated:YES];
-    [self _addBagsToTable:@[ bag ] animated:YES];
+    [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
 }
 
 // MARK: - UITableViewDataSource
@@ -233,8 +227,13 @@
             [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                 [cell.bag deleteFromKeychain];
-                [weakself updateDataSource];
-                [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                if (weakself) {
+                    __typeof(self) strongself = weakself;
+                    NSMutableArray<OTBag *> *patchSource = [strongself->_dataSource mutableCopy];
+                    [patchSource removeObjectAtIndex:indexPath.row];
+                    strongself->_dataSource = [patchSource copy];;
+                    [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
             }]];
             [self presentViewController:alert animated:YES completion:NULL];
         } break;
@@ -264,8 +263,7 @@
         bags[i].index = i;
         [bags[i] syncToKeychain];
     }
-    
-    [self updateDataSource];
+    _dataSource = [bags copy];
 }
 
 // MARK: - UITableViewDelegate

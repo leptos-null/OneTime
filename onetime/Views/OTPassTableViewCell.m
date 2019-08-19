@@ -51,13 +51,45 @@
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_updatePasscodeLabel) name:UIApplicationWillEnterForegroundNotification object:nil];
     } else {
         self.factorIndicator.userInteractionEnabled = YES;
-        self.factorIndicator.accessibilityLabel = nil; // use default
-        self.factorIndicator.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitStaticText;
+        self.factorIndicator.accessibilityLabel = @"New code";
+        self.factorIndicator.accessibilityTraits = UIAccessibilityTraitButton;
     }
 }
 
 - (void)_updatePasscodeLabel {
     self.passcodeLabel.text = self.bag.generator.password;
+}
+
+- (NSString *)_displayableStringForSeconds:(NSTimeInterval)seconds {
+    static NSNumberFormatter *numberFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        numberFormatter = [NSNumberFormatter new];
+        numberFormatter.locale = NSLocale.autoupdatingCurrentLocale;
+        numberFormatter.roundingMode = NSNumberFormatterRoundDown;
+        numberFormatter.minimumIntegerDigits = 2;
+        numberFormatter.maximumFractionDigits = 0;
+    });
+    
+    NSTimeInterval const secsPerMin = 60;
+    double minutes = floor(seconds / secsPerMin);
+    return [NSString stringWithFormat:@"%@:%@",
+            [numberFormatter stringFromNumber:@(minutes)],
+            [numberFormatter stringFromNumber:@(seconds - (minutes * secsPerMin))]];
+}
+
+- (NSString *)_readableStringForSeconds:(NSTimeInterval)seconds {
+    static NSMeasurementFormatter *timeFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        timeFormatter = [NSMeasurementFormatter new];
+        timeFormatter.locale = NSLocale.autoupdatingCurrentLocale;
+        timeFormatter.unitOptions = NSMeasurementFormatterUnitOptionsNaturalScale;
+        timeFormatter.unitStyle = NSFormattingUnitStyleLong;
+        timeFormatter.numberFormatter.maximumFractionDigits = 0;
+    });
+    NSMeasurement *measure = [[NSMeasurement alloc] initWithDoubleValue:seconds unit:[NSUnitDuration seconds]];
+    return [timeFormatter stringFromMeasurement:measure];
 }
 
 - (void)_updateFactorIndicator {
@@ -68,40 +100,33 @@
         NSDate *nextStep = [totp nextStepPeriodForDate:now];
         NSTimeInterval seconds = [nextStep timeIntervalSinceDate:now];
         
-        NSTimeInterval const secsPerMin = 60;
-        double minutes = floor(seconds / secsPerMin);
-        NSString *indicator = [NSString stringWithFormat:@"%02.0f:%02.0f", minutes, seconds - (minutes * secsPerMin)];
-        [self.factorIndicator setTitle:indicator forState:UIControlStateNormal];
-        
-        static NSMeasurementFormatter *timeFormatter;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            timeFormatter = [NSMeasurementFormatter new];
-            timeFormatter.locale = NSLocale.autoupdatingCurrentLocale;
-            timeFormatter.unitOptions = NSMeasurementFormatterUnitOptionsNaturalScale;
-            timeFormatter.unitStyle = NSFormattingUnitStyleLong;
-            timeFormatter.numberFormatter.maximumFractionDigits = 0;
-        });
-        NSMeasurement *measure = [[NSMeasurement alloc] initWithDoubleValue:seconds unit:[NSUnitDuration seconds]];
-        self.factorIndicator.accessibilityValue = [timeFormatter stringFromMeasurement:measure];
-        
-        UIColor *textColor = nil;
-        if (@available(iOS 13.0, *)) {
-            textColor = UIColor.labelColor;
-        } else {
-            textColor = UIColor.darkTextColor;
-        }
-        [self.factorIndicator setTitleColor:textColor forState:UIControlStateNormal];
+        [self.factorIndicator setTitle:[self _displayableStringForSeconds:seconds] forState:UIControlStateNormal];
+        [self.factorIndicator setImage:nil forState:UIControlStateNormal];
+        self.factorIndicator.accessibilityValue = [self _readableStringForSeconds:seconds];
     } else {
-        [self.factorIndicator setTitle:@"New Code" forState:UIControlStateNormal];
-        
-        UIColor *color = self.factorIndicator.tintColor;
-        [self.factorIndicator setTitleColor:color forState:UIControlStateNormal];
-        
-        CGFloat hue, saturation, brightness, alpha;
-        [color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
-        color = [UIColor colorWithHue:hue saturation:saturation brightness:(brightness * 0.72) alpha:alpha];
-        [self.factorIndicator setTitleColor:color forState:UIControlStateHighlighted];
+        UIImage *image;
+        UITraitCollection *traitCollection = self.traitCollection;
+        if (@available(iOS 13.0, *)) {
+            image = [UIImage systemImageNamed:@"arrow.clockwise" compatibleWithTraitCollection:traitCollection];
+        } else {
+            unichar symbol = 0x21bb;
+            NSString *clockwiseCircle = [NSString stringWithCharacters:&symbol length:1];
+            UIFont *weightRef = [UIFont preferredFontForTextStyle:UIFontTextStyleBody compatibleWithTraitCollection:traitCollection];
+            UIFont *sizeRef = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2 compatibleWithTraitCollection:traitCollection];
+            NSAttributedString *drawReady = [[NSAttributedString alloc] initWithString:clockwiseCircle attributes:@{
+                NSFontAttributeName : [weightRef fontWithSize:sizeRef.pointSize]
+            }];
+            UIGraphicsBeginImageContextWithOptions([drawReady size], NO, 0);
+            [drawReady drawAtPoint:CGPointZero];
+            image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        }
+        if (image.renderingMode != UIImageRenderingModeAlwaysTemplate) {
+            image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        }
+        [self.factorIndicator setImage:image forState:UIControlStateNormal];
+        [self.factorIndicator setTitle:nil forState:UIControlStateNormal];
+        self.factorIndicator.accessibilityValue = nil;
     }
 }
 

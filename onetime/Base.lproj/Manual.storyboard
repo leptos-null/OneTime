@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8qJ-lG-vdC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8qJ-lG-vdC">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14819.2"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -302,6 +303,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XkM-rv-Ze6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="50.724637681159422" y="191.51785714285714"/>
+        </scene>
+        <!--Info View Controller-->
+        <scene sceneID="LGn-mX-ihv">
+            <objects>
+                <viewController storyboardIdentifier="Info" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GrX-fB-haC" customClass="OTInfoViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eEh-Vk-tyL">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Info text" textAlignment="natural" adjustsFontForContentSizeCategory="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u2i-Cy-jtV">
+                                <rect key="frame" x="8" y="52" width="398" height="802"/>
+                                <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="u2i-Cy-jtV" firstAttribute="leading" secondItem="ITC-nD-c2E" secondAttribute="leading" constant="8" id="5AL-Lu-WeA"/>
+                            <constraint firstItem="ITC-nD-c2E" firstAttribute="trailing" secondItem="u2i-Cy-jtV" secondAttribute="trailing" constant="8" id="Xo7-rS-lmT"/>
+                            <constraint firstItem="ITC-nD-c2E" firstAttribute="bottom" secondItem="u2i-Cy-jtV" secondAttribute="bottom" constant="8" id="YAX-vQ-ppN"/>
+                            <constraint firstItem="u2i-Cy-jtV" firstAttribute="top" secondItem="ITC-nD-c2E" secondAttribute="top" constant="8" id="kDO-a6-GDZ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ITC-nD-c2E"/>
+                    </view>
+                    <connections>
+                        <outlet property="textView" destination="u2i-Cy-jtV" id="ghS-qf-s0R"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y2M-2g-qxS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1072" y="192"/>
         </scene>
     </scenes>
 </document>

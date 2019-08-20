@@ -7,6 +7,7 @@
 //
 
 #import "OTManualEntryViewController.h"
+#import "OTInfoViewController.h"
 
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
@@ -154,43 +155,11 @@
 }
 
 - (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
-    UIColor *textColor;
-    if (@available(iOS 13.0, *)) {
-        textColor = UIColor.labelColor;
-    } else {
-        textColor = UIColor.darkTextColor;
-    }
-    // using a text field so we get a scroll view for free
-    UITextView *label = [UITextView new];
-    label.text = text;
-    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody compatibleWithTraitCollection:self.traitCollection];
-    label.textColor = textColor;
-    label.textAlignment = NSTextAlignmentNatural;
-    label.editable = NO;
-    label.selectable = NO;
-    label.adjustsFontForContentSizeCategory = YES;
-    label.translatesAutoresizingMaskIntoConstraints = NO;
+    OTInfoViewController *info = [self.storyboard instantiateViewControllerWithIdentifier:@"Info"];
+    [info loadViewIfNeeded];
+    info.textView.text = text;
+    [info updatePreferredContentSizeForMaxSize:self.view.bounds.size];
     
-    UIEdgeInsets labelInsets = UIEdgeInsetsMake(8, 0, 8, 0);
-    UIViewController *info = [UIViewController new];
-    info.view.backgroundColor = label.backgroundColor;
-    [info.view addSubview:label];
-    [info.view addConstraints:@[
-        [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:info.view attribute:NSLayoutAttributeTopMargin multiplier:1 constant:labelInsets.top],
-        [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:info.view attribute:NSLayoutAttributeLeadingMargin multiplier:1 constant:labelInsets.left],
-        [NSLayoutConstraint constraintWithItem:info.view attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1 constant:labelInsets.bottom],
-        [NSLayoutConstraint constraintWithItem:info.view attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeTrailing multiplier:1 constant:labelInsets.right],
-    ]];
-    
-    CGSize maxSize = self.view.bounds.size;
-    CGRect labelRender = [label.attributedText boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    CGSize labelSize = labelRender.size;
-    labelSize.width += (labelInsets.left + labelInsets.right);
-    labelSize.height += (labelInsets.top + labelInsets.bottom);
-    labelInsets = label.textContainerInset;
-    labelSize.width += (labelInsets.left + labelInsets.right);
-    labelSize.height += (labelInsets.top + labelInsets.bottom);
-    info.preferredContentSize = labelSize;
     info.modalPresentationStyle = UIModalPresentationPopover;
     info.popoverPresentationController.sourceView = self.view;
     info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];

@@ -34,6 +34,7 @@
 		FA59A89023035B0200463A3F /* OTQRScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A88F23035B0200463A3F /* OTQRScanViewController.m */; };
 		FA59A8932304A8AE00463A3F /* Manual.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA59A8912304A8AE00463A3F /* Manual.storyboard */; };
 		FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */; };
+		FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F914B230BDEB300FD2A04 /* OTInfoViewController.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
 		FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */; };
@@ -123,6 +124,8 @@
 		FA59A8922304A8AE00463A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Manual.storyboard; sourceTree = "<group>"; };
 		FA59A8942304A95B00463A3F /* OTManualEntryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTManualEntryViewController.h; sourceTree = "<group>"; };
 		FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTManualEntryViewController.m; sourceTree = "<group>"; };
+		FA7F914A230BDEB300FD2A04 /* OTInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTInfoViewController.h; sourceTree = "<group>"; };
+		FA7F914B230BDEB300FD2A04 /* OTInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTInfoViewController.m; sourceTree = "<group>"; };
 		FAB40B9622FD1857007E607F /* OTPassRowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassRowController.h; sourceTree = "<group>"; };
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
 		FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCaptureVideoView.h; sourceTree = "<group>"; };
@@ -201,6 +204,8 @@
 				FA59A88F23035B0200463A3F /* OTQRScanViewController.m */,
 				FA59A8942304A95B00463A3F /* OTManualEntryViewController.h */,
 				FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */,
+				FA7F914A230BDEB300FD2A04 /* OTInfoViewController.h */,
+				FA7F914B230BDEB300FD2A04 /* OTInfoViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -449,6 +454,7 @@
 				FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */,
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
+				FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */,
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
 				FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */,
 				FA0E258C22F9F736007DC512 /* OTPTime.m in Sources */,

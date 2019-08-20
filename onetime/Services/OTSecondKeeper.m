@@ -23,12 +23,23 @@
     return @"OTEverySecondNotification";
 }
 
-+ (void)initialize {
-    NSDate *first = [NSDate dateWithTimeIntervalSinceReferenceDate:floor(NSDate.timeIntervalSinceReferenceDate) + 1];
-    NSTimer *timer = [[NSTimer alloc] initWithFireDate:first interval:1 repeats:YES block:^(NSTimer *timer) {
++ (void)_fireAtTopOfNextSecond {
+    struct timespec time;
+    clock_gettime(CLOCK_REALTIME, &time);
+    time.tv_nsec = 0;
+    dispatch_after(dispatch_walltime(&time, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [[self keepCenter] postNotificationName:[self everySecondName] object:nil];
-    }];
-    [NSRunLoop.mainRunLoop addTimer:timer forMode:NSDefaultRunLoopMode];
+        [self _fireAtTopOfNextSecond];
+    });
+}
+
++ (void)initialize {
+    // seperate method, only because it's probably not a good idea to
+    // call `+initialize` multiple times (though it's theoretically safe)
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self _fireAtTopOfNextSecond];
+    });
 }
 
 @end

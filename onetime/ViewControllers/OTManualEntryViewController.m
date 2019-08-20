@@ -18,7 +18,7 @@
     NSString *_counterStoredValue;
     NSString *_timeStoredValue;
 }
-// TODO: Provide help text for sections that are less commonly used (e.g. code length, algorithm)
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -151,6 +151,85 @@
     }
     secretField.attributedText = markup;
     self.navigationItem.rightBarButtonItem.enabled = couldSave;
+}
+
+- (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
+    UIColor *textColor;
+    if (@available(iOS 13.0, *)) {
+        textColor = UIColor.labelColor;
+    } else {
+        textColor = UIColor.darkTextColor;
+    }
+    // using a text field so we get a scroll view for free
+    UITextView *label = [UITextView new];
+    label.text = text;
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody compatibleWithTraitCollection:self.traitCollection];
+    label.textColor = textColor;
+    label.textAlignment = NSTextAlignmentNatural;
+    label.editable = NO;
+    label.selectable = NO;
+    label.adjustsFontForContentSizeCategory = YES;
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    UIEdgeInsets labelInsets = UIEdgeInsetsMake(8, 0, 8, 0);
+    UIViewController *info = [UIViewController new];
+    info.view.backgroundColor = label.backgroundColor;
+    [info.view addSubview:label];
+    [info.view addConstraints:@[
+        [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:info.view attribute:NSLayoutAttributeTopMargin multiplier:1 constant:labelInsets.top],
+        [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:info.view attribute:NSLayoutAttributeLeadingMargin multiplier:1 constant:labelInsets.left],
+        [NSLayoutConstraint constraintWithItem:info.view attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1 constant:labelInsets.bottom],
+        [NSLayoutConstraint constraintWithItem:info.view attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeTrailing multiplier:1 constant:labelInsets.right],
+    ]];
+    
+    CGSize maxSize = self.view.bounds.size;
+    CGRect labelRender = [label.attributedText boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    CGSize labelSize = labelRender.size;
+    labelSize.width += (labelInsets.left + labelInsets.right);
+    labelSize.height += (labelInsets.top + labelInsets.bottom);
+    labelInsets = label.textContainerInset;
+    labelSize.width += (labelInsets.left + labelInsets.right);
+    labelSize.height += (labelInsets.top + labelInsets.bottom);
+    info.preferredContentSize = labelSize;
+    info.modalPresentationStyle = UIModalPresentationPopover;
+    info.popoverPresentationController.sourceView = self.view;
+    info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];
+    info.popoverPresentationController.delegate = self;
+    [self presentViewController:info animated:YES completion:NULL];
+}
+
+// MARK: - Help text trampolines
+
+- (IBAction)_secretHelpHit:(UIButton *)sender {
+    [self _presentHelpButton:sender text:@"The secret key that you and the service share.\n"
+     "If someone else had the secret, they would be able to generate one time codes too.\n"
+     "The text you should enter is the base32 encoded key provided by the service.\n"
+     "If the service does not provide the secret key, it is not possible to generate one time passwords."];
+}
+
+- (IBAction)_digitsHelpHit:(UIButton *)sender {
+    [self _presentHelpButton:sender text:@"The length of the password that is generated.\n"
+     "This must be the same length that the service is expecting. "
+     "If you're not sure what the code length is, it's most likely 6."];
+}
+
+- (IBAction)_algorithmHelpHit:(UIButton *)sender {
+    [self _presentHelpButton:sender text:@"The algorithm used to derive passwords from the secret.\n"
+     "This must be the same algorithm that is used by the service. "
+     "If you're not sure what the algorithm used is, it's most likely SHA1."];
+}
+
+- (IBAction)_factorHelpHit:(UIButton *)sender {
+    [self _presentHelpButton:sender text:@"The factor type is either counter or time based.\n"
+     "This must be the same factor type that is used by the service. "
+     "If you're not sure what the factor type is, it's most likely time with a period of 30 seconds.\n"
+     "If the service indicates it uses a counter, but doesn't say what the starting value is, it's likely 1."];
+}
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
+    return UIModalPresentationNone;
 }
 
 // MARK: - UITextFieldDelegate

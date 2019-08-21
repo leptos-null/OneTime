@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OTInfoViewController : UIViewController
+@interface OTInfoViewController : UIViewController <UIPopoverPresentationControllerDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextView *textView;
 

@@ -307,7 +307,7 @@
         <!--Info View Controller-->
         <scene sceneID="LGn-mX-ihv">
             <objects>
-                <viewController storyboardIdentifier="Info" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GrX-fB-haC" customClass="OTInfoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Info" id="GrX-fB-haC" customClass="OTInfoViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eEh-Vk-tyL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, OTManualEntryFactorType) {
     OTManualEntryFactorTypeCaseCount
 };
 
-@interface OTManualEntryViewController : UITableViewController <UIPickerViewDataSource, UITextFieldDelegate, UIPopoverPresentationControllerDelegate>
+@interface OTManualEntryViewController : UITableViewController <UIPickerViewDataSource, UITextFieldDelegate>
 
 @property (weak, nonatomic) id<OTManualEntryControllerDelegate> delegate;
 

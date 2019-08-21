@@ -155,15 +155,13 @@
 }
 
 - (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
-    OTInfoViewController *info = [self.storyboard instantiateViewControllerWithIdentifier:@"Info"];
+    OTInfoViewController *info = [OTInfoViewController new];
     [info loadViewIfNeeded];
     info.textView.text = text;
     [info updatePreferredContentSizeForMaxSize:self.view.bounds.size];
     
-    info.modalPresentationStyle = UIModalPresentationPopover;
     info.popoverPresentationController.sourceView = self.view;
     info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];
-    info.popoverPresentationController.delegate = self;
     [self presentViewController:info animated:YES completion:NULL];
 }
 
@@ -193,12 +191,6 @@
      "This must be the same factor type that is used by the service. "
      "If you're not sure what the factor type is, it's most likely time with a period of 30 seconds.\n"
      "If the service indicates it uses a counter, but doesn't say what the starting value is, it's likely 1."];
-}
-
-// MARK: - UIAdaptivePresentationControllerDelegate
-
-- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
-    return UIModalPresentationNone;
 }
 
 // MARK: - UITextFieldDelegate

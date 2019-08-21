@@ -10,6 +10,14 @@
 
 @implementation OTInfoViewController
 
++ (instancetype)new {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Manual" bundle:[NSBundle bundleForClass:self]];
+    OTInfoViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"Info"];
+    controller.modalPresentationStyle = UIModalPresentationPopover;
+    controller.popoverPresentationController.delegate = controller;
+    return controller;
+}
+
 - (void)updatePreferredContentSizeForMaxSize:(CGSize)maxSize {
     NSAttributedString *text = self.textView.attributedText;
     CGRect textRender = [text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
@@ -20,13 +28,19 @@
     UIEdgeInsets containerInsets = self.textView.textContainerInset;
     size.width += (containerInsets.left + containerInsets.right);
     size.height += (containerInsets.top + containerInsets.bottom);
-    self.preferredContentSize = textRender.size;
+    self.preferredContentSize = size;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
     
     [self updatePreferredContentSizeForMaxSize:self.presentingViewController.view.bounds.size];
+}
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
+    return UIModalPresentationNone;
 }
 
 @end

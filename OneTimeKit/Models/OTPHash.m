@@ -39,9 +39,16 @@
     return self;
 }
 
-- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties {
-    if (self = [super initWithKey:key properties:properties]) {
-        _counter = [properties[OTPCounterPropertyKey] unsignedLongLongValue];
+- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version {
+    if (self = [super initWithKey:key properties:properties version:version]) {
+        switch (version) {
+            case OTPropertiesVersion1:
+                _counter = [properties[OTPCounterPropertyKey] unsignedLongLongValue];
+                break;
+                
+            default:
+                break;
+        }
     }
     return self;
 }

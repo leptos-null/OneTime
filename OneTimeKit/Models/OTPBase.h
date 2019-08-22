@@ -12,6 +12,12 @@
 #define OTPDigitPropertyKey @"null.leptos.onetime.base.digits"
 #define OTPAlgorithmPropertyKey @"null.leptos.onetime.base.algorithm"
 
+typedef NS_ENUM(NSInteger, OTPropertiesVersion) {
+    OTPropertiesVersionUnknown,
+    OTPropertiesVersion1,
+    OTPropertiesVersionLatest = OTPropertiesVersion1,
+};
+
 // abstract superclass, do not use directly
 @interface OTPBase : NSObject
 
@@ -33,7 +39,7 @@
 @property (nonatomic, readonly) size_t digits;
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits;
-- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties;
+- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version;
 
 - (NSString *)passwordForFactor:(uint64_t)factor;
 
@@ -42,6 +48,7 @@
 
 - (NSURLQueryItem *)specificQuery;
 
+// always OTPropertiesVersionLatest
 - (NSDictionary *)properties;
 
 @end

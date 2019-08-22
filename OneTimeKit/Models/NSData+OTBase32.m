@@ -60,6 +60,8 @@
  * 8 bits quantities. This implementation will probably not work properly on
  * systems that don't have exactly 8 bits per (unsigned) char.
  */
+_Static_assert(__CHAR_BIT__ == 8, "This implementation depends on exactly 8 bits per (unsigned) char.");
+
 @implementation NSData (OTBase32)
 
 /**
@@ -176,7 +178,6 @@ static uint8_t __pure2 OTBase32_shift_left(uint8_t byte, char offset) {
  * output as per the specification.
  */
 static size_t OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *coded, NSDataBase32EncodingOptions const options) {
-    assert(CHAR_BIT == 8); // not sure this would work otherwise
     assert(len >= 0 && len <= 5);
     
     for (size_t block = 0; block < 8; block++) {
@@ -202,7 +203,6 @@ static size_t OTBase32_encode_sequence(const uint8_t *plain, size_t len, char *c
 }
 
 static size_t OTBase32_decode_sequence(const char *coded, size_t len, uint8_t *plain, NSDataBase32DecodingOptions const options) {
-    assert(CHAR_BIT == 8);
     assert(coded && plain);
     
     plain[0] = 0;

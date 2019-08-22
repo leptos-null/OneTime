@@ -39,9 +39,16 @@
     return self;
 }
 
-- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties {
-    if (self = [super initWithKey:key properties:properties]) {
-        _step = [properties[OTPStepPropertyKey] doubleValue];
+- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version {
+    if (self = [super initWithKey:key properties:properties version:version]) {
+        switch (version) {
+            case OTPropertiesVersion1:
+                _step = [properties[OTPStepPropertyKey] doubleValue];
+                break;
+                
+            default:
+                break;
+        }
     }
     return self;
 }

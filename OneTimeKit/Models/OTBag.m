@@ -187,21 +187,32 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
             return nil;
         }
         NSDictionary *properties = [NSPropertyListSerialization propertyListWithData:props options:0 format:NULL error:NULL];
-        
+        if (![properties isKindOfClass:[NSDictionary class]]) {
+            return nil;
+        }
+        OTPropertiesVersion const version = [properties[OTPropertiesVersionPropertyKey] integerValue];
         OTPBase *generator;
         if (generatorType == OTPHash.type) {
-            generator = [[OTPHash alloc] initWithKey:key properties:properties];
+            generator = [[OTPHash alloc] initWithKey:key properties:properties version:version];
         } else if (generatorType == OTPTime.type) {
-            generator = [[OTPTime alloc] initWithKey:key properties:properties];
+            generator = [[OTPTime alloc] initWithKey:key properties:properties version:version];
         } else {
             return nil;
         }
+        switch (version) {
+            case OTPropertiesVersion1:
+                _index = [properties[OTBagIndexPropertyKey] integerValue];
+                break;
+                
+            default:
+                break;
+        }
         _keychainAttributes = attributes;
         _generator = generator;
-        _index = [properties[OTBagIndexPropertyKey] integerValue];
         _uniqueIdentifier = attributes[(NSString *)kSecAttrAccount];
         _account = attributes[(NSString *)kSecAttrLabel];
         _issuer = attributes[(NSString *)kSecAttrService];
+        _comment = attributes[(NSString *)kSecAttrComment];
     }
     return self;
 }
@@ -215,9 +226,9 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
 }
 
 - (OSStatus)syncToKeychain {
-    NSNumber *generatorType = [NSNumber numberWithUnsignedInt:self.generator.type];
     NSMutableDictionary *properties = [self.generator.properties mutableCopy];
     properties[OTBagIndexPropertyKey] = @(self.index);
+    properties[OTPropertiesVersionPropertyKey] = @(OTPropertiesVersionLatest);
     
     NSError *propListErr = NULL;
     NSData *serialProperties = [NSPropertyListSerialization dataWithPropertyList:properties format:NSPropertyListBinaryFormat_v1_0
@@ -225,39 +236,36 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
     if (propListErr) {
         return errSecCoreFoundationUnknown;
     }
-    
-    CFMutableDictionaryRef attribs = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
-    CFDictionarySetValue(attribs, kSecAttrLabel, (__bridge CFStringRef)(self.account ?: @""));
-    CFDictionarySetValue(attribs, kSecAttrService, (__bridge CFStringRef)(self.issuer ?: @""));
-    CFDictionarySetValue(attribs, kSecAttrGeneric, (__bridge CFDataRef)serialProperties);
+    NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+    attribs[(NSString *)kSecAttrLabel] = self.account ?: @"";
+    attribs[(NSString *)kSecAttrService] = self.issuer ?: @"";
+    attribs[(NSString *)kSecAttrComment] = self.comment ?: @"";
+    attribs[(NSString *)kSecAttrGeneric] = serialProperties;
     
     // be really sure we have the right information
     if ([self.keychainAttributes[(NSString *)kSecAttrAccount] isEqualToString:self.uniqueIdentifier]) {
-        OSStatus ret = SecItemUpdate((__bridge CFDictionaryRef)[self _uniqueKeychainQuery], attribs);
-        NSMutableDictionary *attributes = CFBridgingRelease(attribs);
+        OSStatus ret = SecItemUpdate((__bridge CFDictionaryRef)[self _uniqueKeychainQuery], (__bridge CFDictionaryRef)attribs);
         if (ret == errSecSuccess) {
             NSMutableDictionary *props = [self.keychainAttributes mutableCopy];
-            [props addEntriesFromDictionary:attributes];
+            [props addEntriesFromDictionary:attribs];
             _keychainAttributes = [props copy];
         }
         return ret;
     }
+    attribs[(NSString *)kSecClass] = (NSString *)kSecClassGenericPassword;
+    attribs[(NSString *)kSecValueData] = self.generator.key;
     
-    CFDictionarySetValue(attribs, kSecClass, kSecClassGenericPassword);
-    CFDictionarySetValue(attribs, kSecValueData, (__bridge CFDataRef)self.generator.key);
+    attribs[(NSString *)kSecAttrSynchronizable] = @(YES);
+    attribs[(NSString *)kSecAttrAccount] = self.uniqueIdentifier;
+    attribs[(NSString *)kSecAttrType] = [NSNumber numberWithUnsignedInt:self.generator.type];
+    attribs[(NSString *)kSecAttrDescription] = @"One-Time Password Generator";
     
-    CFDictionarySetValue(attribs, kSecAttrSynchronizable, kCFBooleanTrue);
-    CFDictionarySetValue(attribs, kSecAttrAccount, (__bridge CFStringRef)self.uniqueIdentifier);
-    CFDictionarySetValue(attribs, kSecAttrType, (__bridge CFNumberRef)generatorType);
-    CFDictionarySetValue(attribs, kSecAttrDescription, CFSTR("One-Time Password Generator"));
-    
-    CFDictionarySetValue(attribs, kSecReturnAttributes, kCFBooleanTrue);
-    CFDictionarySetValue(attribs, kSecReturnData, kCFBooleanTrue);
+    attribs[(NSString *)kSecReturnAttributes] = @(YES);
+    attribs[(NSString *)kSecReturnData] = @(YES);
     
     CFTypeRef result = NULL;
-    OSStatus ret = SecItemAdd(attribs, &result);
+    OSStatus ret = SecItemAdd((__bridge CFDictionaryRef)attribs, &result);
     _keychainAttributes = CFBridgingRelease(result);
-    CFRelease(attribs);
     return ret;
 }
 

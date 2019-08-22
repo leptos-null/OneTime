@@ -12,6 +12,7 @@
 #import "OTPBase.h"
 
 #define OTBagIndexPropertyKey @"null.leptos.onetime.bag.index"
+#define OTPropertiesVersionPropertyKey @"null.leptos.onetime.bag.version" // value is OTPropertiesVersion
 
 @interface OTBag : NSObject
 
@@ -38,6 +39,7 @@
 // modifying any of these values should be accompanied by a subsequent `syncToKeychain` call
 @property (strong, nonatomic) NSString *issuer;
 @property (strong, nonatomic) NSString *account;
+@property (strong, nonatomic) NSString *comment;
 @property NSInteger index;
 NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context);
 

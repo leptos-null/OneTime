@@ -79,10 +79,18 @@
     return self;
 }
 
-- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties {
-    CCHmacAlgorithm alg = [properties[OTPAlgorithmPropertyKey] unsignedIntValue];
-    size_t digits = [properties[OTPDigitPropertyKey] unsignedLongValue];
-    return [self initWithKey:key algorithm:alg digits:digits];
+- (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version {
+    switch (version) {
+        case OTPropertiesVersion1: {
+            CCHmacAlgorithm alg = [properties[OTPAlgorithmPropertyKey] unsignedIntValue];
+            size_t digits = [properties[OTPDigitPropertyKey] unsignedLongValue];
+            return [self initWithKey:key algorithm:alg digits:digits];
+        } break;
+            
+        default: {
+            return nil;
+        } break;
+    }
 }
 
 // based on https://wikipedia.org/wiki/HMAC-based_One-time_Password_algorithm#HOTP_value

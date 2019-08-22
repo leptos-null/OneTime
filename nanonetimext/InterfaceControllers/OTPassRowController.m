@@ -12,6 +12,10 @@
     NSTimer *_validityTiming;
 }
 
++ (NSString *)reusableIdentifier {
+    return @"PassCell";
+}
+
 - (void)setBag:(OTBag *)bag {
     _bag = bag;
     

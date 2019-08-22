@@ -15,6 +15,8 @@
 
 @interface OTPassRowController : NSObject
 
+@property (class, strong, nonatomic, readonly) NSString *reusableIdentifier;
+
 @property (strong, nonatomic) OTBag *bag;
 
 @property (strong, nonatomic) IBOutlet WKInterfaceLabel *issuerLabel;

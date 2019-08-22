@@ -205,7 +205,7 @@
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(indexPath.section == 0);
     
-    OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PassCell" forIndexPath:indexPath];
+    OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:OTPassTableViewCell.reusableIdentifier forIndexPath:indexPath];
     cell.editSource = self;
     cell.bag = _dataSource[indexPath.row];
     if (cell.bag.index != indexPath.row) {

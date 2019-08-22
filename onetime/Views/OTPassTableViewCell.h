@@ -22,6 +22,8 @@
 
 @interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate>
 
+@property (class, strong, nonatomic, readonly) NSString *reusableIdentifier;
+
 @property (strong, nonatomic) OTBag *bag;
 @property (weak, nonatomic) id<OTEditingDataSource> editSource;
 

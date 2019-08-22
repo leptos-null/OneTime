@@ -13,6 +13,10 @@
     NSTimer *_totpTimer;
 }
 
++ (NSString *)reusableIdentifier {
+    return @"PassCell";
+}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     

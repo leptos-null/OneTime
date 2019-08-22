@@ -42,7 +42,7 @@
 #else
     NSArray<OTBag *> *bags = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
 #endif
-    [self.passcodesTable setNumberOfRows:bags.count withRowType:@"PassCell"];
+    [self.passcodesTable setNumberOfRows:bags.count withRowType:OTPassRowController.reusableIdentifier];
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
         OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
         row.bag = bag;

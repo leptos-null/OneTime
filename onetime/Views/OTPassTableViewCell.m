@@ -24,6 +24,22 @@
         borderFieldLayer.cornerRadius = 6;
         borderFieldLayer.borderColor = UIColor.clearColor.CGColor;
     }
+    
+    UILongPressGestureRecognizer *longTouch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longGestureRecognizerFire:)];
+    [self addGestureRecognizer:longTouch];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    
+    if (!editing) {
+        [self endEditing:YES];
+    }
+    
+    editing = self.editSource.interfaceIsEditing;
+    CGColorRef borderColor = editing ? UIColor.systemGrayColor.CGColor : UIColor.clearColor.CGColor;
+    self.issuerField.layer.borderColor = borderColor;
+    self.accountField.layer.borderColor = borderColor;
 }
 
 - (void)setBag:(OTBag *)bag {
@@ -106,6 +122,10 @@
     } else {
         UIImage *image;
         UITraitCollection *traitCollection = self.traitCollection;
+        // > Clocks still turn clockwise for RTL languages.
+        // > The refresh icon shows time moving forward;
+        // > the direction is clockwise. The icon is not mirrored.
+        //  - https://material.io/design/usability/bidirectionality.html#mirroring-elements
         if (@available(iOS 13.0, *)) {
             image = [UIImage systemImageNamed:@"arrow.clockwise" compatibleWithTraitCollection:traitCollection];
         } else {
@@ -140,17 +160,20 @@
     }
 }
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    [super setEditing:editing animated:animated];
-    
-    if (!editing) {
-        [self endEditing:YES];
+- (void)_longGestureRecognizerFire:(UILongPressGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan && !self.editing) {
+        [self becomeFirstResponder];
+        
+        UIMenuController *menu = UIMenuController.sharedMenuController;
+        UIView *showView = self;
+        CGRect showRect = self.passcodeLabel.frame;
+        if (@available(iOS 13.0, *)) {
+            [menu showMenuFromView:showView rect:showRect];
+        } else {
+            [menu setTargetRect:showRect inView:showView];
+            [menu setMenuVisible:YES animated:YES];
+        }
     }
-    
-    editing = self.editSource.interfaceIsEditing;
-    CGColorRef borderColor = editing ? UIColor.systemGrayColor.CGColor : UIColor.clearColor.CGColor;
-    self.issuerField.layer.borderColor = borderColor;
-    self.accountField.layer.borderColor = borderColor;
 }
 
 // MARK: - UITextFieldDelegate
@@ -180,6 +203,21 @@
         return;
     }
     [self.bag syncToKeychain];
+}
+
+// MARK: - UIResponder overrides
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    return [super canPerformAction:action withSender:sender]
+    || (action == @selector(copy:));
+}
+
+- (void)copy:(id)sender {
+    UIPasteboard.generalPasteboard.string = self.passcodeLabel.text;
 }
 
 @end

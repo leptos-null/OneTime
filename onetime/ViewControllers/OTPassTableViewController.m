@@ -29,7 +29,7 @@
     self.editButtonItem.target = self;
     self.editButtonItem.action = @selector(_editButtonHit:);
     
-    // Are settings needed?
+    // Settings should include local auth preferences
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     
     [self updateDataSource];
@@ -271,14 +271,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(indexPath.section == 0);
-    // I'm not sure I like the idea of overwriting the clipboard. preference?
-    //    OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    //    NSString *password = cell.bag.generator.password;
-    //    UIPasteboard.generalPasteboard.string = password;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    });
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 // MARK: - OTEditingDataSource

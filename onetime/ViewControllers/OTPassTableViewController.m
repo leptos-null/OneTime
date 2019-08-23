@@ -14,7 +14,8 @@
 
 @implementation OTPassTableViewController {
     NSArray<OTBag *> *_dataSource;
-    
+    NSArray<OTBag *> *_filteredSource;
+
     // if the receiver is editing per the edit button being clicked
     BOOL _editModeFromButton;
 }
@@ -33,6 +34,21 @@
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     
     [self updateDataSource];
+    
+    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    searchController.obscuresBackgroundDuringPresentation = NO;
+    searchController.searchResultsUpdater = self;
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.searchController = searchController;
+        self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
+    } else {
+        self.tableView.tableHeaderView = searchController.searchBar;
+    }
+    _searchController = searchController;
+}
+
+- (NSArray<OTBag *> *)activeDataSource {
+    return self.searchController.active ? _filteredSource : _dataSource;
 }
 
 - (void)updateDataSource {
@@ -198,7 +214,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(section == 0);
-    return _dataSource.count;
+    return self.activeDataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -207,7 +223,7 @@
     
     OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:OTPassTableViewCell.reusableIdentifier forIndexPath:indexPath];
     cell.editSource = self;
-    cell.bag = _dataSource[indexPath.row];
+    cell.bag = self.activeDataSource[indexPath.row];
     if (cell.bag.index != indexPath.row) {
         cell.bag.index = indexPath.row;
         [cell.bag syncToKeychain];
@@ -215,34 +231,42 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSParameterAssert(tableView == self.tableView);
+    NSParameterAssert(indexPath.section == 0);
+    return !self.searchController.active;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSParameterAssert(tableView == self.tableView);
+    NSParameterAssert(indexPath.section == 0);
+    return !self.searchController.active;
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(indexPath.section == 0);
-    
-    switch (editingStyle) {
-        case UITableViewCellEditingStyleDelete: {
-            __weak __typeof(self) weakself = self;
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:@"Deleting a token cannot be undone. This action will not turn off 2FA for the account." preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                [cell.bag deleteFromKeychain];
-                if (weakself) {
-                    __typeof(self) strongself = weakself;
-                    NSMutableArray<OTBag *> *patchSource = [strongself->_dataSource mutableCopy];
-                    [patchSource removeObjectAtIndex:indexPath.row];
-                    strongself->_dataSource = [patchSource copy];;
-                    [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
-                }
-            }]];
-            [self presentViewController:alert animated:YES completion:NULL];
-        } break;
-        case UITableViewCellEditingStyleInsert: {
-            // not supported right now
-        } break;
-            
-        default:
-            break;
+    if (self.searchController.active) {
+        return;
+    }
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        __weak __typeof(self) weakself = self;
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:@"Deleting a token cannot be undone. This action will not turn off 2FA for the account." preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            [cell.bag deleteFromKeychain];
+            if (weakself) {
+                __typeof(self) strongself = weakself;
+                NSMutableArray<OTBag *> *patchSource = [strongself->_dataSource mutableCopy];
+                [patchSource removeObjectAtIndex:indexPath.row];
+                strongself->_dataSource = [patchSource copy];
+                [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        }]];
+        [self presentViewController:alert animated:YES completion:NULL];
+    } else {
+        NSLog(@"tableViewCommitUnsupportedEditingStyle: %@", @(editingStyle));
     }
 }
 
@@ -250,6 +274,9 @@
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(fromIndexPath.section == 0);
     NSParameterAssert(toIndexPath.section == 0);
+    if (self.searchController.active) {
+        return;
+    }
     
     NSInteger const
     start = MIN(fromIndexPath.row, toIndexPath.row),
@@ -273,6 +300,18 @@
     NSParameterAssert(indexPath.section == 0);
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+// MARK: - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    NSString *filterKey = searchController.searchBar.text;
+    _filteredSource = [_dataSource filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(OTBag *bag, id bindings) {
+        return [bag.issuer localizedCaseInsensitiveContainsString:filterKey] ||
+        [bag.account localizedCaseInsensitiveContainsString:filterKey] ||
+        [bag.comment localizedCaseInsensitiveContainsString:filterKey];
+    }]];
+    [self.tableView reloadData];
 }
 
 // MARK: - OTEditingDataSource

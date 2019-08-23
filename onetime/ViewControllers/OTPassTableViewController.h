@@ -13,6 +13,8 @@
 #import "OTManualEntryViewController.h"
 #import "../Views/OTPassTableViewCell.h"
 
-@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, OTQRScanControllerDelegate, OTManualEntryControllerDelegate, OTEditingDataSource>
+@interface OTPassTableViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchResultsUpdating, OTQRScanControllerDelegate, OTManualEntryControllerDelegate, OTEditingDataSource>
+
+@property (strong, nonatomic, readonly) UISearchController *searchController;
 
 @end

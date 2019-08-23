@@ -29,6 +29,10 @@
     previewLayer.session = _avSession;
     previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self updatePreviewLayerForCurrentOrientation];
+    
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {

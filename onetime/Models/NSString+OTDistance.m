@@ -10,49 +10,36 @@
 
 @implementation NSString (OTDistance)
 
-// https://github.com/koyachi/NSString-LevenshteinDistance
-- (NSUInteger)levenshteinDistance:(NSString *)string {
-    NSUInteger const width = string.length + 1, height = self.length + 1;
-    NSUInteger x, y, *distances = calloc(width * height, sizeof(*distances));
-    
-    for (y = 0; y < height; y++) {
-        distances[y * width] = y;
-    }
-    for (x = 0; x < width; x++) {
-        distances[x] = x;
-    }
-    
-    for (y = 1; y < height; y++) {
-        for (x = 1; x < width; x++) {
-            NSInteger cost = [self characterAtIndex:(y - 1)] != [string characterAtIndex:(x - 1)];
-            
-            NSUInteger insert  = distances[(y - 1) * width + x] + 1;
-            NSUInteger remove  = distances[y * width + (x - 1)] + 1;
-            NSUInteger replace = distances[(y - 1) * width + (x - 1)] + cost;
-            distances[y * width + x] = MIN(MIN(insert, remove), replace);
-        }
-    }
-    NSUInteger ret = distances[height * width - 1];
-    free(distances);
-    return ret;
+// https://stackoverflow.com/a/26790799
+
+- (NSUInteger)_composedLength {
+    __block NSUInteger length = 0;
+    [self enumerateSubstringsInRange:NSMakeRange(0, self.length)
+                             options:NSStringEnumerationByComposedCharacterSequences | NSStringEnumerationSubstringNotRequired
+                          usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+        length++;
+    }];
+    return length;
 }
 
-// https://stackoverflow.com/a/26790799
-- (NSUInteger)longestCommonSubsequence:(NSString *)string {
-    NSUInteger const width = string.length + 1, height = self.length + 1;
-    NSUInteger x, y, *distances = calloc(width * height, sizeof(*distances));
+- (NSUInteger)longestCommonSubsequence:(NSString *)string options:(NSStringCompareOptions)options {
+    NSUInteger const height = [self _composedLength] + 1, width = [string _composedLength] + 1;
+    NSUInteger *const distances = calloc(width * height, sizeof(*distances));
+    NSUInteger __block x, y = 0;
     
-    for (y = 1; y < height; y++) {
-        for (x = 1; x < width; x++) {
-            distances[y * width + x] = ([self characterAtIndex:(y - 1)] == [string characterAtIndex:(x - 1)]) ? ({
+    [self enumerateSubstringsInRange:NSMakeRange(0, self.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substringY, NSRange substringRangeY, NSRange enclosingRangeY, BOOL *stopY) {
+        y++;
+        x = 0;
+        [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substringX, NSRange substringRangeX, NSRange enclosingRangeX, BOOL *stopX) {
+            x++;
+            distances[y * width + x] = ([substringX compare:substringY options:options] == NSOrderedSame) ? ({
                 1 + distances[(y - 1) * width + (x - 1)];
             }) : ({
                 MAX(distances[(y - 1) * width + x],
                     distances[y * width + (x - 1)]);
             });
-        }
-    }
-
+        }];
+    }];
     NSUInteger ret = distances[height * width - 1];
     free(distances);
     return ret;

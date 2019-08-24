@@ -10,7 +10,6 @@
 
 @interface NSString (OTDistance)
 
-- (NSUInteger)levenshteinDistance:(NSString *)string;
-- (NSUInteger)longestCommonSubsequence:(NSString *)string;
+- (NSUInteger)longestCommonSubsequence:(NSString *)string options:(NSStringCompareOptions)options;
 
 @end

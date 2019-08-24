@@ -12,6 +12,9 @@
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
 
+#import "../Models/NSString+OTDistance.h"
+#import "../Models/_OTBagScore.h"
+
 @implementation OTPassTableViewController {
     NSArray<OTBag *> *_dataSource;
     NSArray<OTBag *> *_filteredSource;
@@ -221,10 +224,11 @@
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(indexPath.section == 0);
     
-    OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:OTPassTableViewCell.reusableIdentifier forIndexPath:indexPath];
+    NSString *identifier = OTPassTableViewCell.reusableIdentifier;
+    OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     cell.editSource = self;
     cell.bag = self.activeDataSource[indexPath.row];
-    if (cell.bag.index != indexPath.row) {
+    if (cell.bag.index != indexPath.row && !self.searchController.active) {
         cell.bag.index = indexPath.row;
         [cell.bag syncToKeychain];
     }
@@ -306,12 +310,45 @@
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *filterKey = searchController.searchBar.text;
-    _filteredSource = [_dataSource filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(OTBag *bag, id bindings) {
-        return [bag.issuer localizedCaseInsensitiveContainsString:filterKey] ||
-        [bag.account localizedCaseInsensitiveContainsString:filterKey] ||
-        [bag.comment localizedCaseInsensitiveContainsString:filterKey];
-    }]];
-    [self.tableView reloadData];
+    NSArray<OTBag *> *dataSource = _dataSource;
+    __weak __typeof(self) weakself = self;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray<_OTBagScore *> *distances = [NSMutableArray arrayWithCapacity:dataSource.count];
+        NSStringCompareOptions const options = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch;
+        [dataSource enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
+            NSInteger score =
+            [bag.issuer  longestCommonSubsequence:filterKey options:options] +
+            [bag.account longestCommonSubsequence:filterKey options:options] +
+            [bag.comment longestCommonSubsequence:filterKey options:options];
+            if (score > 0) {
+                [distances addObject:[_OTBagScore bagScoreWithBag:bag score:score]];
+            }
+        }];
+        [distances sortWithOptions:NSSortStable usingComparator:^NSComparisonResult(_OTBagScore *a, _OTBagScore *b) {
+            NSInteger const diff = a.score - b.score;
+            if (diff == 0) {
+                return NSOrderedSame;
+            } else if (diff > 0) {
+                return NSOrderedAscending;
+            } else if (diff < 0) {
+                return NSOrderedDescending;
+            } else {
+                __builtin_unreachable();
+            }
+        }];
+        NSMutableArray<OTBag *> *sorted = [NSMutableArray arrayWithCapacity:distances.count];
+        [distances enumerateObjectsUsingBlock:^(_OTBagScore *bagScore, NSUInteger idx, BOOL *stop) {
+            sorted[idx] = bagScore.bag;
+        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (weakself) {
+                __typeof(self) strongself = weakself;
+                strongself->_filteredSource = [sorted copy];
+                [weakself.tableView reloadData];
+            }
+        });
+    });
 }
 
 // MARK: - OTEditingDataSource

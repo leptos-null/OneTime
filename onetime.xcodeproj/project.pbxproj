@@ -36,6 +36,7 @@
 		FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA59A8952304A95B00463A3F /* OTManualEntryViewController.m */; };
 		FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F914B230BDEB300FD2A04 /* OTInfoViewController.m */; };
 		FA7F915D231056B600FD2A04 /* OTNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F915C231056B600FD2A04 /* OTNavigationController.m */; };
+		FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F91662310D96900FD2A04 /* NSString+OTDistance.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
 		FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */; };
@@ -129,6 +130,8 @@
 		FA7F914B230BDEB300FD2A04 /* OTInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTInfoViewController.m; sourceTree = "<group>"; };
 		FA7F915B231056B600FD2A04 /* OTNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTNavigationController.h; sourceTree = "<group>"; };
 		FA7F915C231056B600FD2A04 /* OTNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTNavigationController.m; sourceTree = "<group>"; };
+		FA7F91652310D96900FD2A04 /* NSString+OTDistance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+OTDistance.h"; sourceTree = "<group>"; };
+		FA7F91662310D96900FD2A04 /* NSString+OTDistance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+OTDistance.m"; sourceTree = "<group>"; };
 		FAB40B9622FD1857007E607F /* OTPassRowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassRowController.h; sourceTree = "<group>"; };
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
 		FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCaptureVideoView.h; sourceTree = "<group>"; };
@@ -182,6 +185,7 @@
 				FA0E251C22F9DD54007DC512 /* AppDelegate */,
 				FA0E251D22F9DDC3007DC512 /* ViewControllers */,
 				FA0E259922FA9D2C007DC512 /* Views */,
+				FA7F91642310D94F00FD2A04 /* Models */,
 				FADD93A72309C01A00EAAC69 /* Services */,
 				FA0E252622F9DEF4007DC512 /* Storyboards */,
 				FA0E251E22F9DE6F007DC512 /* Resources */,
@@ -313,6 +317,15 @@
 				FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		FA7F91642310D94F00FD2A04 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA7F91652310D96900FD2A04 /* NSString+OTDistance.h */,
+				FA7F91662310D96900FD2A04 /* NSString+OTDistance.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		FADD93A72309C01A00EAAC69 /* Services */ = {
@@ -459,6 +472,7 @@
 				FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */,
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
+				FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */,
 				FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */,
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
 				FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */,

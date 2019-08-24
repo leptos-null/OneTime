@@ -15,7 +15,7 @@
 @implementation OTPassTableViewController {
     NSArray<OTBag *> *_dataSource;
     NSArray<OTBag *> *_filteredSource;
-
+    
     // if the receiver is editing per the edit button being clicked
     BOOL _editModeFromButton;
 }

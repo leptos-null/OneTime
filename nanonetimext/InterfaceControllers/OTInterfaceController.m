@@ -21,6 +21,21 @@
     }
 }
 
+- (void)willActivate {
+    [super willActivate];
+    [self updatePasscodesTable];
+}
+
+- (void)didDeactivate {
+    [super didDeactivate];
+    
+    NSInteger const count = self.passcodesTable.numberOfRows;
+    for (NSInteger idx = 0; idx < count; idx++) {
+        OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
+        [row stopTimingElements];
+    }
+}
+
 - (void)updatePasscodesTable {
 #if TARGET_OS_SIMULATOR || 1 /* currently watchOS: "No iCloud Keychain" */
     uint32_t const bagCount = arc4random_uniform(8) + 2;
@@ -47,21 +62,6 @@
         OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
         row.bag = bag;
     }];
-}
-
-- (void)willActivate {
-    [super willActivate];
-    [self updatePasscodesTable];
-}
-
-- (void)didDeactivate {
-    [super didDeactivate];
-    
-    NSInteger const count = self.passcodesTable.numberOfRows;
-    for (NSInteger idx = 0; idx < count; idx++) {
-        OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
-        [row stopTimingElements];
-    }
 }
 
 @end

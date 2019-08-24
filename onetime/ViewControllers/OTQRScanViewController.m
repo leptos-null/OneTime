@@ -67,6 +67,12 @@
     [_avSession stopRunning];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [self updatePreviewLayerForCurrentOrientation];
+}
+
 - (void)updatePreviewLayerForCurrentOrientation {
     // this seems odd to me, but it's what's reccomended (not sure how else to do it)
     UIDeviceOrientation deviceOrientation = UIDevice.currentDevice.orientation;
@@ -76,11 +82,7 @@
     }
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    [self updatePreviewLayerForCurrentOrientation];
-}
+// MARK: - AVCaptureMetadataOutputObjectsDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     NSMutableArray<NSString *> *payloads = [NSMutableArray arrayWithCapacity:metadataObjects.count];

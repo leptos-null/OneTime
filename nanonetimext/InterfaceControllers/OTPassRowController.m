@@ -72,7 +72,10 @@
         OTPHash *hotp = bag.generator;
         [hotp incrementCounter];
         [self updateTimingElements];
-        [bag syncToKeychain];
+        OSStatus syncStatus = [bag syncToKeychain];
+        if (syncStatus != errSecSuccess) {
+            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        }
     }
 }
 

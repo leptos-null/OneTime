@@ -10,6 +10,7 @@
 #import <Security/Security.h>
 
 #import "OTPBase.h"
+#import "OTSecError.h"
 
 #define OTBagIndexPropertyKey @"null.leptos.onetime.bag.index"
 #define OTPropertiesVersionPropertyKey @"null.leptos.onetime.bag.version" // value is OTPropertiesVersion

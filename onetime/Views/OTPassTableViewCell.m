@@ -9,9 +9,7 @@
 #import "OTPassTableViewCell.h"
 #import "../Services/OTSecondKeeper.h"
 
-@implementation OTPassTableViewCell {
-    NSTimer *_totpTimer;
-}
+@implementation OTPassTableViewCell
 
 + (NSString *)reusableIdentifier {
     return @"PassCell";
@@ -49,12 +47,11 @@
 - (void)setBag:(OTBag *)bag {
     _bag = bag;
     
-    [_totpTimer invalidate];
     [OTSecondKeeper.keepCenter removeObserver:self name:OTSecondKeeper.everySecondName object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     
     self.issuerField.text = bag.issuer;
     self.accountField.text = bag.account;
-    [self _updatePasscodeLabel];
     [self _updateFactorIndicator];
     
     if ([bag.generator isKindOfClass:[OTPTime class]]) {
@@ -62,22 +59,13 @@
         self.factorIndicator.accessibilityLabel = @"Expires in";
         self.factorIndicator.accessibilityTraits = UIAccessibilityTraitUpdatesFrequently;
         
-        OTPTime *totp = bag.generator;
-        NSDate *firstFire = [totp nextStepPeriodForDate:[NSDate date]];
-        _totpTimer = [[NSTimer alloc] initWithFireDate:firstFire interval:totp.step target:self selector:@selector(_updatePasscodeLabel) userInfo:nil repeats:YES];
-        [NSRunLoop.mainRunLoop addTimer:_totpTimer forMode:NSDefaultRunLoopMode];
-        
         [OTSecondKeeper.keepCenter addObserver:self selector:@selector(_updateFactorIndicator) name:OTSecondKeeper.everySecondName object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_updatePasscodeLabel) name:UIApplicationWillEnterForegroundNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_updateFactorIndicator) name:UIApplicationWillEnterForegroundNotification object:nil];
     } else {
         self.factorIndicator.userInteractionEnabled = YES;
         self.factorIndicator.accessibilityLabel = @"New code";
         self.factorIndicator.accessibilityTraits = UIAccessibilityTraitButton;
     }
-}
-
-- (void)_updatePasscodeLabel {
-    self.passcodeLabel.text = self.bag.generator.password;
 }
 
 - (NSString *)_displayableStringForSeconds:(NSTimeInterval)seconds {
@@ -114,6 +102,8 @@
 
 - (void)_updateFactorIndicator {
     __kindof OTPBase *generator = self.bag.generator;
+    // TODO: Store factor, as to not recalculate every time
+    self.passcodeLabel.text = generator.password;
     if ([generator isKindOfClass:[OTPTime class]]) {
         OTPTime *totp = generator;
         NSDate *now = [NSDate date];
@@ -160,7 +150,11 @@
         OTPHash *hotp = bag.generator;
         [hotp incrementCounter];
         self.passcodeLabel.text = hotp.password;
-        [bag syncToKeychain];
+        OSStatus syncStatus = [bag syncToKeychain];
+        if (syncStatus != errSecSuccess) {
+            // TODO: Update user interface with error
+            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        }
     }
 }
 
@@ -193,20 +187,25 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+    OTBag *bag = self.bag;
     if (textField == self.issuerField) {
-        if ([textField.text isEqualToString:self.bag.issuer]) {
+        if ([textField.text isEqualToString:bag.issuer]) {
             return;
         }
-        self.bag.issuer = textField.text;
+        bag.issuer = textField.text;
     } else if (textField == self.accountField) {
-        if ([textField.text isEqualToString:self.bag.account]) {
+        if ([textField.text isEqualToString:bag.account]) {
             return;
         }
-        self.bag.account = textField.text;
+        bag.account = textField.text;
     } else {
         return;
     }
-    [self.bag syncToKeychain];
+    OSStatus syncStatus = [bag syncToKeychain];
+    if (syncStatus != errSecSuccess) {
+        // TODO: Update user interface with error
+        NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+    }
 }
 
 // MARK: - UIResponder overrides

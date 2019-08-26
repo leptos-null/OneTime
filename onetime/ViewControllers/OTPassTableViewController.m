@@ -114,9 +114,14 @@
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
         NSInteger const row = rowTarget + idx;
         bag.index = row;
-        [bag syncToKeychain];
-        newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
-        newSource[row] = bag;
+        OSStatus syncStatus = [bag syncToKeychain];
+        if (syncStatus == errSecSuccess) {
+            newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
+            newSource[row] = bag;
+        } else {
+            // TODO: Update user interface with error
+            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        }
     }];
     
     if (shouldScroll && (rowTarget >= 1)) {
@@ -230,7 +235,11 @@
     cell.bag = self.activeDataSource[indexPath.row];
     if (cell.bag.index != indexPath.row && !self.searchController.active) {
         cell.bag.index = indexPath.row;
-        [cell.bag syncToKeychain];
+        OSStatus syncStatus = [cell.bag syncToKeychain];
+        if (syncStatus != errSecSuccess) {
+            // this isn't a user initiated event, the user doesn't need to know about it (but we might!)
+            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        }
     }
     return cell;
 }
@@ -292,7 +301,11 @@
     [bags insertObject:target atIndex:toIndexPath.row];
     for (NSInteger i = start; i <= stop; i++) {
         bags[i].index = i;
-        [bags[i] syncToKeychain];
+        OSStatus syncStatus = [bags[i] syncToKeychain];
+        if (syncStatus != errSecSuccess) {
+            // TODO: Update user interface with error
+            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        }
     }
     _dataSource = [bags copy];
 }

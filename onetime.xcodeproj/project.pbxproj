@@ -38,6 +38,8 @@
 		FA7F915D231056B600FD2A04 /* OTNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F915C231056B600FD2A04 /* OTNavigationController.m */; };
 		FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F91662310D96900FD2A04 /* NSString+OTDistance.m */; };
 		FA7F916A2311C12200FD2A04 /* _OTBagScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F91692311C12200FD2A04 /* _OTBagScore.m */; };
+		FA7F916F23131C1000FD2A04 /* OTSecError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F916B231313BC00FD2A04 /* OTSecError.m */; };
+		FA7F917023131C1100FD2A04 /* OTSecError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F916B231313BC00FD2A04 /* OTSecError.m */; };
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
 		FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */; };
@@ -135,6 +137,8 @@
 		FA7F91662310D96900FD2A04 /* NSString+OTDistance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+OTDistance.m"; sourceTree = "<group>"; };
 		FA7F91682311C12200FD2A04 /* _OTBagScore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _OTBagScore.h; sourceTree = "<group>"; };
 		FA7F91692311C12200FD2A04 /* _OTBagScore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _OTBagScore.m; sourceTree = "<group>"; };
+		FA7F916B231313BC00FD2A04 /* OTSecError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTSecError.m; sourceTree = "<group>"; };
+		FA7F916D231313D300FD2A04 /* OTSecError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTSecError.h; sourceTree = "<group>"; };
 		FAB40B9622FD1857007E607F /* OTPassRowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPassRowController.h; sourceTree = "<group>"; };
 		FAB40B9722FD1857007E607F /* OTPassRowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassRowController.m; sourceTree = "<group>"; };
 		FAB89DF92308582900F1FA08 /* OTCaptureVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTCaptureVideoView.h; sourceTree = "<group>"; };
@@ -305,6 +309,8 @@
 				FA0E258F22FA357F007DC512 /* OTBag.m */,
 				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
 				FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */,
+				FA7F916D231313D300FD2A04 /* OTSecError.h */,
+				FA7F916B231313BC00FD2A04 /* OTSecError.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -475,6 +481,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */,
+				FA7F916F23131C1000FD2A04 /* OTSecError.m in Sources */,
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA7F916A2311C12200FD2A04 /* _OTBagScore.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
@@ -500,6 +507,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA0E256C22F9E132007DC512 /* OTExtensionDelegate.m in Sources */,
+				FA7F917023131C1100FD2A04 /* OTSecError.m in Sources */,
 				FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258522F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E258922F9F703007DC512 /* OTPHash.m in Sources */,

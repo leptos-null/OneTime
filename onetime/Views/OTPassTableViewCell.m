@@ -9,7 +9,9 @@
 #import "OTPassTableViewCell.h"
 #import "../Services/OTSecondKeeper.h"
 
-@implementation OTPassTableViewCell
+@implementation OTPassTableViewCell {
+    uint64_t _lastFactor;
+}
 
 + (NSString *)reusableIdentifier {
     return @"PassCell";
@@ -47,6 +49,7 @@
 - (void)setBag:(OTBag *)bag {
     _bag = bag;
     
+    _lastFactor = -1;
     [OTSecondKeeper.keepCenter removeObserver:self name:OTSecondKeeper.everySecondName object:nil];
     [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     
@@ -102,8 +105,12 @@
 
 - (void)_updateFactorIndicator {
     __kindof OTPBase *generator = self.bag.generator;
-    // TODO: Store factor, as to not recalculate every time
-    self.passcodeLabel.text = generator.password;
+    uint64_t currentFactor = generator.factor;
+    if (_lastFactor != currentFactor) {
+        self.passcodeLabel.text = [generator passwordForFactor:currentFactor];
+        _lastFactor = currentFactor;
+    }
+    
     if ([generator isKindOfClass:[OTPTime class]]) {
         OTPTime *totp = generator;
         NSDate *now = [NSDate date];

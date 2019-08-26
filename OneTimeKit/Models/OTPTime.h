@@ -19,7 +19,7 @@
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits step:(NSTimeInterval)step;
 
-- (NSString *)passwordForDate:(NSDate *)date;
+- (uint64_t)factorForDate:(NSDate *)date;
 
 // when the period for the next step will start after a given date
 - (NSDate *)nextStepPeriodForDate:(NSDate *)date;

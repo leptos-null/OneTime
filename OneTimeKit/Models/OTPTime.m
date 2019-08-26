@@ -53,13 +53,12 @@
     return self;
 }
 
-- (NSString *)passwordForDate:(NSDate *)date {
-    uint64_t factor = date.timeIntervalSince1970 / self.step;
-    return [super passwordForFactor:factor];
+- (uint64_t)factorForDate:(NSDate *)date {
+    return date.timeIntervalSince1970 / self.step;
 }
 
-- (NSString *)password {
-    return [self passwordForDate:[NSDate date]];
+- (uint64_t)factor {
+    return [self factorForDate:[NSDate date]];
 }
 
 - (NSDate *)nextStepPeriodForDate:(NSDate *)date {

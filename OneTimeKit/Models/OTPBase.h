@@ -44,6 +44,7 @@ typedef NS_ENUM(NSInteger, OTPropertiesVersion) {
 - (NSString *)passwordForFactor:(uint64_t)factor;
 
 // subclasses should provide a default `factor` implementation
+- (uint64_t)factor;
 - (NSString *)password;
 
 - (NSURLQueryItem *)specificQuery;

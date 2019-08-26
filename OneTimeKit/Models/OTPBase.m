@@ -141,8 +141,12 @@
     return done;
 }
 
-- (NSString *)password {
+- (uint64_t)factor {
     __builtin_unreachable();
+}
+
+- (NSString *)password {
+    return [self passwordForFactor:[self factor]];
 }
 
 - (NSDictionary *)properties {

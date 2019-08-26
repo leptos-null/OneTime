@@ -53,8 +53,8 @@
     return self;
 }
 
-- (NSString *)password {
-    return [super passwordForFactor:_counter];
+- (uint64_t)factor {
+    return _counter;
 }
 
 - (void)incrementCounter {

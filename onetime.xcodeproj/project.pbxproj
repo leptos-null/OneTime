@@ -43,6 +43,11 @@
 		FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB40B9722FD1857007E607F /* OTPassRowController.m */; };
 		FAB89DFB2308582900F1FA08 /* OTCaptureVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */; };
 		FADD93AA2309C03A00EAAC69 /* OTSecondKeeper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */; };
+		FADECB7B2321F82D003052AD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB7A2321F82D003052AD /* AppDelegate.m */; };
+		FADECB812321F82D003052AD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB802321F82D003052AD /* ViewController.m */; };
+		FADECB842321F82D003052AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB822321F82D003052AD /* Main.storyboard */; };
+		FADECB892321F82F003052AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB872321F82F003052AD /* LaunchScreen.storyboard */; };
+		FADECB8C2321F82F003052AD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB8B2321F82F003052AD /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -145,6 +150,16 @@
 		FAB89DFA2308582900F1FA08 /* OTCaptureVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTCaptureVideoView.m; sourceTree = "<group>"; };
 		FADD93A82309C03A00EAAC69 /* OTSecondKeeper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTSecondKeeper.h; sourceTree = "<group>"; };
 		FADD93A92309C03A00EAAC69 /* OTSecondKeeper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTSecondKeeper.m; sourceTree = "<group>"; };
+		FADECB772321F82D003052AD /* OneTIcon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneTIcon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FADECB792321F82D003052AD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FADECB7A2321F82D003052AD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		FADECB7F2321F82D003052AD /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		FADECB802321F82D003052AD /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		FADECB832321F82D003052AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		FADECB882321F82F003052AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		FADECB8A2321F82F003052AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FADECB8B2321F82F003052AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FADECB922321F88E003052AD /* oneticon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = oneticon.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +177,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FADECB742321F82D003052AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -172,6 +194,7 @@
 				FA0E250122F9DB3E007DC512 /* onetime */,
 				FA0E255722F9E131007DC512 /* nanonetime */,
 				FA0E256622F9E132007DC512 /* nanonetimext */,
+				FADECB782321F82D003052AD /* oneticon */,
 				FA0E250022F9DB3E007DC512 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -182,6 +205,7 @@
 				FA0E24FF22F9DB3E007DC512 /* onetime.app */,
 				FA0E255622F9E131007DC512 /* nanonetime.app */,
 				FA0E256222F9E132007DC512 /* nanonetimext.appex */,
+				FADECB772321F82D003052AD /* OneTIcon.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -348,6 +372,38 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		FADECB782321F82D003052AD /* oneticon */ = {
+			isa = PBXGroup;
+			children = (
+				FADECB902321F84F003052AD /* AppDelegate */,
+				FADECB912321F86D003052AD /* ViewControllers */,
+				FADECB822321F82D003052AD /* Main.storyboard */,
+				FADECB872321F82F003052AD /* LaunchScreen.storyboard */,
+				FADECB8A2321F82F003052AD /* Info.plist */,
+				FADECB922321F88E003052AD /* oneticon.entitlements */,
+				FADECB8B2321F82F003052AD /* main.m */,
+			);
+			path = oneticon;
+			sourceTree = "<group>";
+		};
+		FADECB902321F84F003052AD /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				FADECB792321F82D003052AD /* AppDelegate.h */,
+				FADECB7A2321F82D003052AD /* AppDelegate.m */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		FADECB912321F86D003052AD /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				FADECB7F2321F82D003052AD /* ViewController.h */,
+				FADECB802321F82D003052AD /* ViewController.m */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -404,6 +460,23 @@
 			productReference = FA0E256222F9E132007DC512 /* nanonetimext.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
+		FADECB762321F82D003052AD /* oneticon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FADECB8F2321F82F003052AD /* Build configuration list for PBXNativeTarget "oneticon" */;
+			buildPhases = (
+				FADECB732321F82D003052AD /* Sources */,
+				FADECB742321F82D003052AD /* Frameworks */,
+				FADECB752321F82D003052AD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = oneticon;
+			productName = oneticon;
+			productReference = FADECB772321F82D003052AD /* OneTIcon.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -421,6 +494,9 @@
 						CreatedOnToolsVersion = 11.0;
 					};
 					FA0E256122F9E132007DC512 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					FADECB762321F82D003052AD = {
 						CreatedOnToolsVersion = 11.0;
 					};
 				};
@@ -441,6 +517,7 @@
 				FA0E24FE22F9DB3E007DC512 /* onetime */,
 				FA0E255522F9E131007DC512 /* nanonetime */,
 				FA0E256122F9E132007DC512 /* nanonetimext */,
+				FADECB762321F82D003052AD /* oneticon */,
 			);
 		};
 /* End PBXProject section */
@@ -470,6 +547,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FADECB752321F82D003052AD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FADECB892321F82F003052AD /* LaunchScreen.storyboard in Resources */,
+				FADECB842321F82D003052AD /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,6 +601,16 @@
 				FA0E258D22F9F736007DC512 /* OTPTime.m in Sources */,
 				FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */,
 				FA0E256922F9E132007DC512 /* OTInterfaceController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FADECB732321F82D003052AD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FADECB812321F82D003052AD /* ViewController.m in Sources */,
+				FADECB7B2321F82D003052AD /* AppDelegate.m in Sources */,
+				FADECB8C2321F82F003052AD /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,6 +661,22 @@
 				FA59A8922304A8AE00463A3F /* Base */,
 			);
 			name = Manual.storyboard;
+			sourceTree = "<group>";
+		};
+		FADECB822321F82D003052AD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FADECB832321F82D003052AD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		FADECB872321F82F003052AD /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FADECB882321F82F003052AD /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -802,6 +914,36 @@
 			};
 			name = Release;
 		};
+		FADECB8D2321F82F003052AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = oneticon/oneticon.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				INFOPLIST_FILE = oneticon/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.oneticon;
+				PRODUCT_NAME = OneTIcon;
+				SUPPORTS_MACCATALYST = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FADECB8E2321F82F003052AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = oneticon/oneticon.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				INFOPLIST_FILE = oneticon/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.oneticon;
+				PRODUCT_NAME = OneTIcon;
+				SUPPORTS_MACCATALYST = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -837,6 +979,15 @@
 			buildConfigurations = (
 				FA0E257422F9E132007DC512 /* Debug */,
 				FA0E257522F9E132007DC512 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FADECB8F2321F82F003052AD /* Build configuration list for PBXNativeTarget "oneticon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FADECB8D2321F82F003052AD /* Debug */,
+				FADECB8E2321F82F003052AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

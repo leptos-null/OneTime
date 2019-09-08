@@ -29,8 +29,7 @@ typedef NS_ENUM(NSInteger, OTPropertiesVersion) {
 // mirror of the class property
 @property (strong, nonatomic, readonly) NSString *domain;
 
-/// Random key of default length
-@property (class, strong, nonatomic, readonly) NSData *randomKey;
++ (NSData *)randomKeyForAlgorithm:(CCHmacAlgorithm)algorithm;
 @property (class, nonatomic, readonly) CCHmacAlgorithm defaultAlgorithm;
 @property (class, nonatomic, readonly) size_t defaultDigits;
 

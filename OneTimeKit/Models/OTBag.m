@@ -143,7 +143,7 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
                 counter = strtoull(queryItem.value.UTF8String, NULL, 10);
             } else if ([queryItem.name isEqualToString:@"period"]) {
                 step = queryItem.value.doubleValue;
-            } else if ([queryItem.value isEqualToString:@"issuer"]) {
+            } else if ([queryItem.name isEqualToString:@"issuer"]) {
                 _issuer = queryItem.value;
             }
         }

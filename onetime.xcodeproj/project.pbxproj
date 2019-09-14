@@ -159,7 +159,6 @@
 		FADECB882321F82F003052AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FADECB8A2321F82F003052AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADECB8B2321F82F003052AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FADECB922321F88E003052AD /* oneticon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = oneticon.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,7 +379,6 @@
 				FADECB822321F82D003052AD /* Main.storyboard */,
 				FADECB872321F82F003052AD /* LaunchScreen.storyboard */,
 				FADECB8A2321F82F003052AD /* Info.plist */,
-				FADECB922321F88E003052AD /* oneticon.entitlements */,
 				FADECB8B2321F82F003052AD /* main.m */,
 			);
 			path = oneticon;
@@ -917,7 +915,6 @@
 		FADECB8D2321F82F003052AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = oneticon/oneticon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = oneticon/Info.plist;
@@ -932,7 +929,6 @@
 		FADECB8E2321F82F003052AD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = oneticon/oneticon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				INFOPLIST_FILE = oneticon/Info.plist;

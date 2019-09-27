@@ -12,6 +12,8 @@
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
 
+#import "UIViewController+UMSurfacer.h"
+
 #import "OTPadTextField.h"
 
 @protocol OTEditingDataSource <NSObject>
@@ -26,6 +28,7 @@
 
 @property (strong, nonatomic) OTBag *bag;
 @property (weak, nonatomic) id<OTEditingDataSource> editSource;
+@property (weak, nonatomic) id<OTUserMessageSurfacer> messageSurfacer;
 
 @property (strong, nonatomic) IBOutlet OTPadTextField *issuerField;
 @property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;

@@ -33,7 +33,7 @@
     self.editButtonItem.target = self;
     self.editButtonItem.action = @selector(_editButtonHit:);
     
-    // Settings should include local auth preferences
+    // Settings should include local auth, code display/format preferences
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
     
     [self updateDataSource];
@@ -119,8 +119,10 @@
             newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
             newSource[row] = bag;
         } else {
-            // TODO: Update user interface with error
-            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+            NSString *errorStr = OTSecErrorToString(syncStatus);
+            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            NSString *message = [@"Failed to add token to keychain: " stringByAppendingString:errorStr];
+            [self surfaceUserMessage:message viewHint:nil dismissAfter:0];
         }
     }];
     
@@ -170,8 +172,8 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
                 if (error) {
-                    // TODO: Present error to user
                     NSLog(@"bagsForQRCodeInImage: %@", error);
+                    [picker surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
                     return;
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -179,7 +181,7 @@
                         [picker dismissViewControllerAnimated:YES completion:NULL];
                         [weakself _addBagsToTable:bags scroll:YES animated:YES];
                     } else {
-                        // TODO: Warn user no bags found
+                        [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
                     }
                 });
             }];
@@ -205,8 +207,8 @@
 }
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
-    // TODO: Present error to user
     NSLog(@"qrScanControllerDidFailWithError: %@", error);
+    [self surfaceUserMessage:error.localizedDescription viewHint:nil  dismissAfter:0];
     [controller.navigationController popViewControllerAnimated:YES];
 }
 
@@ -232,6 +234,7 @@
     NSString *identifier = OTPassTableViewCell.reusableIdentifier;
     OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     cell.editSource = self;
+    cell.messageSurfacer = self;
     cell.bag = self.activeDataSource[indexPath.row];
     if (cell.bag.index != indexPath.row && !self.searchController.active) {
         cell.bag.index = indexPath.row;
@@ -299,12 +302,19 @@
     OTBag *target = bags[fromIndexPath.row];
     [bags removeObjectAtIndex:fromIndexPath.row];
     [bags insertObject:target atIndex:toIndexPath.row];
+    BOOL hasPresentedErr = NO;
     for (NSInteger i = start; i <= stop; i++) {
         bags[i].index = i;
         OSStatus syncStatus = [bags[i] syncToKeychain];
         if (syncStatus != errSecSuccess) {
-            // TODO: Update user interface with error
-            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+            NSString *errorStr = OTSecErrorToString(syncStatus);
+            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            if (!hasPresentedErr) {
+                hasPresentedErr = YES;
+                UIView *viewHint = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+                NSString *message = [@"Failed to sync keychain token order: " stringByAppendingString:errorStr];
+                [self surfaceUserMessage:message viewHint:viewHint dismissAfter:0];
+            }
         }
     }
     _dataSource = [bags copy];

@@ -25,9 +25,15 @@
     // per storyboard constraints
     size.height += 16;
     size.width += 16;
+    
     UIEdgeInsets containerInsets = self.textView.textContainerInset;
     size.width += (containerInsets.left + containerInsets.right);
     size.height += (containerInsets.top + containerInsets.bottom);
+    
+    UIEdgeInsets marginInsets = self.textView.layoutMargins;
+    size.width += (marginInsets.left + marginInsets.right);
+    size.height += (marginInsets.top + marginInsets.bottom);
+    
     self.preferredContentSize = size;
 }
 

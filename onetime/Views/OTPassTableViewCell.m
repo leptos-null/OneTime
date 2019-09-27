@@ -159,8 +159,10 @@
         self.passcodeLabel.text = hotp.password;
         OSStatus syncStatus = [bag syncToKeychain];
         if (syncStatus != errSecSuccess) {
-            // TODO: Update user interface with error
-            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+            NSString *errorStr = OTSecErrorToString(syncStatus);
+            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            NSString *message = [@"Failed to update token counter in keychain: " stringByAppendingString:errorStr];
+            [self.messageSurfacer surfaceUserMessage:message viewHint:self dismissAfter:0];
         }
     }
 }
@@ -210,8 +212,10 @@
     }
     OSStatus syncStatus = [bag syncToKeychain];
     if (syncStatus != errSecSuccess) {
-        // TODO: Update user interface with error
-        NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
+        NSString *errorStr = OTSecErrorToString(syncStatus);
+        NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+        NSString *message = [@"Failed to update token metadata in keychain: " stringByAppendingString:errorStr];
+        [self.messageSurfacer surfaceUserMessage:message viewHint:textField dismissAfter:0];
     }
 }
 

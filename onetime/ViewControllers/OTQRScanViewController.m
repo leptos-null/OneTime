@@ -18,6 +18,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         _queue = dispatch_queue_create("null.leptos.onetime.qrscan", DISPATCH_QUEUE_SERIAL);
+        self.title = @"Scan QR Code (Live)";
     }
     return self;
 }

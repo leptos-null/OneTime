@@ -14,6 +14,7 @@
 
 #import "../Models/NSString+OTDistance.h"
 #import "../Models/_OTBagScore.h"
+#import "../Services/OTLaunchOptions.h"
 
 @implementation OTPassTableViewController {
     NSArray<OTBag *> *_dataSource;
@@ -48,6 +49,12 @@
         self.tableView.tableHeaderView = searchController.searchBar;
     }
     _searchController = searchController;
+    
+    if (OTLaunchOptions.defaultOptions.shouldPushLiveQR) {
+        OTQRScanViewController *qrScanner = [OTQRScanViewController new];
+        qrScanner.delegate = self;
+        [self.navigationController pushViewController:qrScanner animated:NO];
+    }
 }
 
 - (NSArray<OTBag *> *)activeDataSource {
@@ -199,7 +206,7 @@
         if (bag) {
             // we're good- stop receiving delegate calls (a little bit of a hack)
             controller.delegate = nil;
-            [controller.navigationController popViewControllerAnimated:YES];
+            [controller.navigationController popToViewController:self animated:YES];
             [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
             return;
         }
@@ -209,13 +216,13 @@
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
     NSLog(@"qrScanControllerDidFailWithError: %@", error);
     [self surfaceUserMessage:error.localizedDescription viewHint:nil  dismissAfter:0];
-    [controller.navigationController popViewControllerAnimated:YES];
+    [controller.navigationController popToViewController:self animated:YES];
 }
 
 // MARK: - OTManualEntryControllerDelegate
 
 - (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
-    [controller.navigationController popViewControllerAnimated:YES];
+    [controller.navigationController popToViewController:self animated:YES];
     [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
 }
 

@@ -24,6 +24,8 @@ One-Time Password (OTP) iOS client
 
     - 1 to 10 digits
 
+        - The limitation of 10 digits is due to [Section 5.3 of the HOTP](https://tools.ietf.org/html/rfc4226#section-5.3) specification. The largest value described is "2^{31}-1" (`2147483647`) which is 10 digits.
+
     - SHA1, MD5, SHA256, SHA384, SHA512, and SHA224 hashing algorithms
 
     - Time based factor with any time step/period

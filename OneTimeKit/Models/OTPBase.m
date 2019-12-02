@@ -7,6 +7,7 @@
 //
 
 #import "OTPBase.h"
+#import "NSData+OTBase32.h"
 
 @implementation OTPBase {
     size_t _macLength;
@@ -46,15 +47,9 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
 + (unsigned)type {
     return 'base';
 }
-- (unsigned)type {
-    return [[self class] type];
-}
 
 + (NSString *)domain {
     return @"otp";
-}
-- (NSString *)domain {
-    return [[self class] domain];
 }
 
 + (NSData *)randomKeyForAlgorithm:(CCHmacAlgorithm)algorithm {
@@ -116,6 +111,35 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
     }
 }
 
+- (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents {
+    CCHmacAlgorithm alg = [OTPBase defaultAlgorithm];
+    NSData *key = nil;
+    size_t digits = [[self class] defaultDigits];
+    
+    for (NSURLQueryItem *queryItem in urlComponents.queryItems) {
+        if ([queryItem.name isEqualToString:@"algorithm"]) {
+            if ([queryItem.value isEqualToString:@"SHA1"]) {
+                alg = kCCHmacAlgSHA1;
+            } else if ([queryItem.value isEqualToString:@"MD5"]) {
+                alg = kCCHmacAlgMD5;
+            } else if ([queryItem.value isEqualToString:@"SHA256"]) {
+                alg = kCCHmacAlgSHA256;
+            } else if ([queryItem.value isEqualToString:@"SHA384"]) {
+                alg = kCCHmacAlgSHA384;
+            } else if ([queryItem.value isEqualToString:@"SHA512"]) {
+                alg = kCCHmacAlgSHA512;
+            } else if ([queryItem.value isEqualToString:@"SHA224"]) {
+                alg = kCCHmacAlgSHA224;
+            }
+        } else if ([queryItem.name isEqualToString:@"secret"]) {
+            key = [[NSData alloc] initWithBase32EncodedString:queryItem.value options:0];
+        } else if ([queryItem.name isEqualToString:@"digits"]) {
+            digits = queryItem.value.integerValue;
+        }
+    }
+    return [self initWithKey:key algorithm:alg digits:digits];
+}
+
 // based on https://wikipedia.org/wiki/HMAC-based_One-time_Password_algorithm#HOTP_value
 - (NSString *)passwordForFactor:(uint64_t)factor {
     factor = htonll(factor);
@@ -151,6 +175,7 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
 }
 
 - (uint64_t)factor {
+    NSAssert(0, @"Subclasses must implement %@, and may not call super", NSStringFromSelector(_cmd));
     __builtin_unreachable();
 }
 
@@ -165,13 +190,43 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
     };
 }
 
-- (NSURLQueryItem *)specificQuery {
-    __builtin_unreachable();
+- (NSString *)_stringForAlgorithm:(CCHmacAlgorithm)algorithm {
+    switch (algorithm) {
+        case kCCHmacAlgSHA1:
+            return @"SHA1";
+        case kCCHmacAlgMD5:
+            return @"MD5";
+        case kCCHmacAlgSHA256:
+            return @"SHA256";
+        case kCCHmacAlgSHA384:
+            return @"SHA384";
+        case kCCHmacAlgSHA512:
+            return @"SHA512";
+        case kCCHmacAlgSHA224:
+            return @"SHA224";
+        default:
+            return nil;
+    }
+}
+
+- (NSArray<NSURLQueryItem *> *)queryItems {
+    CCHmacAlgorithm const algorithm = self.algorithm;
+    NSString *algorithmName = [self _stringForAlgorithm:algorithm];
+    NSAssert(algorithmName, @"Unknown algorithm: %" __UINT32_FMTu__ , algorithm);
+    
+    NSString *secret = [self.key base32EncodedStringWithOptions:NSDataBase32EncodingOptionsNoPad];
+    
+    return @[
+        [NSURLQueryItem queryItemWithName:@"algorithm" value:algorithmName],
+        [NSURLQueryItem queryItemWithName:@"secret" value:secret],
+        [NSURLQueryItem queryItemWithName:@"digits" value:@(self.digits).stringValue],
+    ];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p> algorithm: %" __UINT32_FMTu__ ", digits: %" __SIZE_FMTu__,
-            [self class], self, self.algorithm, self.digits];
+    CCHmacAlgorithm const algorithm = self.algorithm;
+    return [NSString stringWithFormat:@"<%@: %p> algorithm: %@ (%" __UINT32_FMTu__ "), digits: %" __SIZE_FMTu__,
+            [self class], self, [self _stringForAlgorithm:algorithm], algorithm, self.digits];
 }
 
 @end

@@ -13,7 +13,7 @@ NSString *OTSecErrorToString(OSStatus status) {
     if (@available(iOS 11.3, watchOS 4.3, *)) {
         ret = CFBridgingRelease(SecCopyErrorMessageString(status, NULL));
     } else {
-        // In a localized lookup, support statuses that are likely to be returned by keychain functions
+        // todo: In a localized lookup, support statuses that are likely to be returned by keychain functions
         if (ret == nil) {
             int const unixErr = status - 100000;
             if (unixErr <= sys_nerr) {

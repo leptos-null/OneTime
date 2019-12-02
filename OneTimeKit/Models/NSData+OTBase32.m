@@ -80,11 +80,12 @@ static int __pure2 OTBase32_decode_char(char c) {
     
     NSUInteger const shift = 5;
     
-    uint8_t *const plain = malloc(base32Length * shift / 8);
+    NSMutableData *data = [NSMutableData dataWithCapacity:(base32Length * shift / 8)];
+    uint8_t *const plain = data.mutableBytes;
     size_t written = 0;
     
     uint32_t buffer = 0;
-    int bitsLeft = 0;
+    unsigned bitsLeft = 0;
     for (NSUInteger i = 0; i < base32Length; i++) {
         int val = OTBase32_decode_char(coded[i]);
         if (val < 0) {
@@ -102,11 +103,11 @@ static int __pure2 OTBase32_decode_char(char c) {
         }
     }
     
-    if (bitsLeft && buffer & ((1 << bitsLeft) - 1)) {
+    if (bitsLeft && (buffer & ((1 << bitsLeft) - 1))) {
         return nil;
     }
-    
-    return [self initWithBytesNoCopy:plain length:written freeWhenDone:YES];
+    data.length = written;
+    return [self initWithData:data];
 }
 
 - (NSData *)base32EncodedDataWithOptions:(NSDataBase32EncodingOptions)options {

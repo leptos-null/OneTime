@@ -20,33 +20,38 @@ typedef NS_ENUM(NSInteger, OTPropertiesVersion) {
 
 // abstract superclass, do not use directly
 @interface OTPBase : NSObject
-
+/// A unique identifier that can be used to determine
+/// the type of password generation (e.g. time based)
 @property (class, nonatomic, readonly) unsigned type;
-// mirror of the class property
-@property (nonatomic, readonly) unsigned type;
-
+/// A unique identifier used to determine the type
+/// of password generation. The domain should correspond
+/// to the scheme @c https://github.com/google/google-authenticator/wiki/Key-Uri-Format
 @property (class, strong, nonatomic, readonly) NSString *domain;
-// mirror of the class property
-@property (strong, nonatomic, readonly) NSString *domain;
 
+/// Generates a cryptographically random key
+/// of length recommended for the given algorithm
 + (NSData *)randomKeyForAlgorithm:(CCHmacAlgorithm)algorithm;
 @property (class, nonatomic, readonly) CCHmacAlgorithm defaultAlgorithm;
 @property (class, nonatomic, readonly) size_t defaultDigits;
 
+/// The shared secret key used by the hashing algorithm
 @property (strong, nonatomic, readonly) NSData *key;
+/// The algorithm used to generate passwords
 @property (nonatomic, readonly) CCHmacAlgorithm algorithm;
+/// The number of digits the password is
 @property (nonatomic, readonly) size_t digits;
 
 - (instancetype)initWithKey:(NSData *)key algorithm:(CCHmacAlgorithm)algorithm digits:(size_t)digits;
 - (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version;
+- (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents;
 
 - (NSString *)passwordForFactor:(uint64_t)factor;
 
-// subclasses should provide a default `factor` implementation
+// subclasses must provide a default `factor` implementation
 - (uint64_t)factor;
 - (NSString *)password;
 
-- (NSURLQueryItem *)specificQuery;
+- (NSArray<NSURLQueryItem *> *)queryItems;
 
 // always OTPropertiesVersionLatest
 - (NSDictionary *)properties;

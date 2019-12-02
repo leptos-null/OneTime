@@ -53,6 +53,19 @@
     return self;
 }
 
+- (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents {
+    if (self = [super initWithURLComponents:urlComponents]) {
+        NSTimeInterval step = [OTPTime defaultStep];
+        
+        for (NSURLQueryItem *queryItem in urlComponents.queryItems) {
+            if ([queryItem.name isEqualToString:@"period"]) {
+                step = queryItem.value.doubleValue;
+            }
+        }
+    }
+    return self;
+}
+
 - (uint64_t)factorForDate:(NSDate *)date {
     return date.timeIntervalSince1970 / self.step;
 }
@@ -74,8 +87,9 @@
     return props;
 }
 
-- (NSURLQueryItem *)specificQuery {
-    return [NSURLQueryItem queryItemWithName:@"period" value:@(self.step).stringValue];
+- (NSArray<NSURLQueryItem *> *)queryItems {
+    NSArray<NSURLQueryItem *> *items = [super queryItems];
+    return [items arrayByAddingObject:[NSURLQueryItem queryItemWithName:@"period" value:@(self.step).stringValue]];
 }
 
 - (NSString *)description {

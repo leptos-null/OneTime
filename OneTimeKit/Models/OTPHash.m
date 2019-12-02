@@ -53,6 +53,19 @@
     return self;
 }
 
+- (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents {
+    if (self = [super initWithURLComponents:urlComponents]) {
+        uint64_t counter = [[self class] defaultCounter];
+        
+        for (NSURLQueryItem *queryItem in urlComponents.queryItems) {
+            if ([queryItem.name isEqualToString:@"counter"]) {
+                counter = strtoull(queryItem.value.UTF8String, NULL, 10);
+            }
+        }
+    }
+    return self;
+}
+
 - (uint64_t)factor {
     return _counter;
 }
@@ -67,8 +80,9 @@
     return props;
 }
 
-- (NSURLQueryItem *)specificQuery {
-    return [NSURLQueryItem queryItemWithName:@"counter" value:@(self.counter).stringValue];
+- (NSArray<NSURLQueryItem *> *)queryItems {
+    NSArray<NSURLQueryItem *> *items = [super queryItems];
+    return [items arrayByAddingObject:[NSURLQueryItem queryItemWithName:@"counter" value:@(self.counter).stringValue]];
 }
 
 - (NSString *)description {

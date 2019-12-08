@@ -42,9 +42,10 @@
 - (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version {
     if (self = [super initWithKey:key properties:properties version:version]) {
         switch (version) {
-            case OTPropertiesVersion1:
-                _step = [properties[OTPStepPropertyKey] doubleValue];
-                break;
+            case OTPropertiesVersion1: {
+                NSNumber *step = properties[OTPStepPropertyKey];
+                _step = step ? step.doubleValue : [[self class] defaultStep];
+            } break;
                 
             default:
                 break;
@@ -55,13 +56,14 @@
 
 - (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents {
     if (self = [super initWithURLComponents:urlComponents]) {
-        NSTimeInterval step = [OTPTime defaultStep];
+        NSTimeInterval step = [[self class] defaultStep];
         
         for (NSURLQueryItem *queryItem in urlComponents.queryItems) {
             if ([queryItem.name isEqualToString:@"period"]) {
                 step = queryItem.value.doubleValue;
             }
         }
+        _step = step;
     }
     return self;
 }

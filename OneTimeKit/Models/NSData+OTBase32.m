@@ -80,7 +80,7 @@ static int __pure2 OTBase32_decode_char(char c) {
     
     NSUInteger const shift = 5;
     
-    NSMutableData *data = [NSMutableData dataWithCapacity:(base32Length * shift / 8)];
+    NSMutableData *data = [NSMutableData dataWithLength:(base32Length * shift / 8)];
     uint8_t *const plain = data.mutableBytes;
     size_t written = 0;
     

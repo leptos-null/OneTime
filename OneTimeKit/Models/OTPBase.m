@@ -100,8 +100,10 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
 - (instancetype)initWithKey:(NSData *)key properties:(NSDictionary *)properties version:(OTPropertiesVersion)version {
     switch (version) {
         case OTPropertiesVersion1: {
-            CCHmacAlgorithm alg = [properties[OTPAlgorithmPropertyKey] unsignedIntValue];
-            size_t digits = [properties[OTPDigitPropertyKey] unsignedLongValue];
+            NSNumber *algBox = properties[OTPAlgorithmPropertyKey];
+            NSNumber *digitsBox = properties[OTPDigitPropertyKey];
+            CCHmacAlgorithm alg = algBox ? algBox.unsignedIntValue : [[self class] defaultAlgorithm];
+            size_t digits = digitsBox ? digitsBox.unsignedLongValue : [[self class] defaultDigits];
             return [self initWithKey:key algorithm:alg digits:digits];
         } break;
             
@@ -112,7 +114,7 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
 }
 
 - (instancetype)initWithURLComponents:(NSURLComponents *)urlComponents {
-    CCHmacAlgorithm alg = [OTPBase defaultAlgorithm];
+    CCHmacAlgorithm alg = [[self class] defaultAlgorithm];
     NSData *key = nil;
     size_t digits = [[self class] defaultDigits];
     

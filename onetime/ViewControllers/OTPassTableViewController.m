@@ -24,6 +24,13 @@
     BOOL _editModeFromButton;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        [self updateDataSource];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -36,8 +43,6 @@
     
     // Settings should include local auth, code display/format preferences
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
-    
-    [self updateDataSource];
     
     UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     searchController.obscuresBackgroundDuringPresentation = NO;
@@ -114,7 +119,7 @@
     });
 }
 
-- (void)_addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
+- (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
     NSInteger const rowTarget = _dataSource.count;
     NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
     NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
@@ -138,11 +143,13 @@
         [self.tableView scrollToRowAtIndexPath:scrollTarget atScrollPosition:UITableViewScrollPositionBottom animated:animated];
     }
     _dataSource = [newSource copy];
-    UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
-    [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
+    if (!self.searchController.active) {
+        UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
+        [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
+    }
 }
 
-- (void)bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {
+- (void)_bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {
     VNRequestCompletionHandler barcodeHandler = ^(VNRequest *request, NSError *error) {
         if (error) {
             completion(nil, error);
@@ -177,7 +184,7 @@
         UIImage *image = info[UIImagePickerControllerOriginalImage];
         __weak __typeof(self) weakself = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
+            [weakself _bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
                 if (error) {
                     NSLog(@"bagsForQRCodeInImage: %@", error);
                     [picker surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
@@ -186,7 +193,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (bags.count) {
                         [picker dismissViewControllerAnimated:YES completion:NULL];
-                        [weakself _addBagsToTable:bags scroll:YES animated:YES];
+                        [weakself addBagsToTable:bags scroll:YES animated:YES];
                     } else {
                         [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
                     }
@@ -207,7 +214,7 @@
             // we're good- stop receiving delegate calls (a little bit of a hack)
             controller.delegate = nil;
             [controller.navigationController popToViewController:self animated:YES];
-            [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
+            [self addBagsToTable:@[ bag ] scroll:YES animated:YES];
             return;
         }
     }
@@ -223,7 +230,7 @@
 
 - (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
     [controller.navigationController popToViewController:self animated:YES];
-    [self _addBagsToTable:@[ bag ] scroll:YES animated:YES];
+    [self addBagsToTable:@[ bag ] scroll:YES animated:YES];
 }
 
 // MARK: - UITableViewDataSource
@@ -247,17 +254,11 @@
         cell.bag.index = indexPath.row;
         OSStatus syncStatus = [cell.bag syncToKeychain];
         if (syncStatus != errSecSuccess) {
-            // this isn't a user initiated event, the user doesn't need to know about it (but we might!)
+            // this isn't a user initiated event, the user doesn't need to know about it (but we might)
             NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
         }
     }
     return cell;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSParameterAssert(tableView == self.tableView);
-    NSParameterAssert(indexPath.section == 0);
-    return !self.searchController.active;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -269,23 +270,44 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(indexPath.section == 0);
-    if (self.searchController.active) {
-        return;
-    }
+    
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         __weak __typeof(self) weakself = self;
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:@"Deleting a token cannot be undone. This action will not turn off 2FA for the account." preferredStyle:UIAlertControllerStyleAlert];
+        OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        OTBag *bag = cell.bag;
+        
+        NSString *alertMsg = [NSString stringWithFormat:@""
+                              "Deleting a token cannot be undone. This action will not turn off 2FA for the account.\n"
+                              "%@: %@", bag.issuer, bag.account];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
         [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            [cell.bag deleteFromKeychain];
+            OSStatus syncStatus = [bag deleteFromKeychain];
+            if (syncStatus != errSecSuccess) {
+                NSString *errorStr = OTSecErrorToString(syncStatus);
+                NSLog(@"deleteFromKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+                NSString *message = [@"Failed to delete from keychain: " stringByAppendingString:errorStr];
+                [weakself surfaceUserMessage:message viewHint:cell dismissAfter:0];
+                return;
+            }
             if (weakself) {
                 __typeof(self) strongself = weakself;
-                NSMutableArray<OTBag *> *patchSource = [strongself->_dataSource mutableCopy];
-                [patchSource removeObjectAtIndex:indexPath.row];
-                strongself->_dataSource = [patchSource copy];
-                [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                
+                NSMutableArray<OTBag *> *dataSourcePatch = [strongself->_dataSource mutableCopy];
+                NSUInteger index = [dataSourcePatch indexOfObjectIdenticalTo:bag];
+                if (index != NSNotFound) {
+                    [dataSourcePatch removeObjectAtIndex:index];
+                }
+                strongself->_dataSource = [dataSourcePatch copy];
+                
+                dataSourcePatch = [strongself->_filteredSource mutableCopy];
+                index = [dataSourcePatch indexOfObjectIdenticalTo:bag];
+                if (index != NSNotFound) {
+                    [dataSourcePatch removeObjectAtIndex:index];
+                }
+                strongself->_filteredSource = [dataSourcePatch copy];
             }
+            [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }]];
         [self presentViewController:alert animated:YES completion:NULL];
     } else {
@@ -297,9 +319,8 @@
     NSParameterAssert(tableView == self.tableView);
     NSParameterAssert(fromIndexPath.section == 0);
     NSParameterAssert(toIndexPath.section == 0);
-    if (self.searchController.active) {
-        return;
-    }
+    
+    NSAssert(!self.searchController.active, @"canMoveRowAtIndexPath: should prevent this getting called");
     
     NSInteger const
     start = MIN(fromIndexPath.row, toIndexPath.row),

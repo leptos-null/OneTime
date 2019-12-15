@@ -44,14 +44,19 @@
     CGColorRef borderColor = editing ? UIColor.systemGrayColor.CGColor : UIColor.clearColor.CGColor;
     self.issuerField.layer.borderColor = borderColor;
     self.accountField.layer.borderColor = borderColor;
+    
+    self.factorIndicator.hidden = editing;
 }
 
 - (void)setBag:(OTBag *)bag {
     _bag = bag;
     
     _lastFactor = -1;
-    [OTSecondKeeper.keepCenter removeObserver:self name:OTSecondKeeper.everySecondName object:nil];
-    [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    NSNotificationCenter *keepCenter = OTSecondKeeper.keepCenter;
+    NSNotificationCenter *defaultCenter = NSNotificationCenter.defaultCenter;
+    [keepCenter removeObserver:self name:OTSecondKeeper.everySecondName object:nil];
+    [defaultCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     
     self.issuerField.text = bag.issuer;
     self.accountField.text = bag.account;
@@ -62,8 +67,9 @@
         self.factorIndicator.accessibilityLabel = @"Expires in";
         self.factorIndicator.accessibilityTraits = UIAccessibilityTraitUpdatesFrequently;
         
-        [OTSecondKeeper.keepCenter addObserver:self selector:@selector(_updateFactorIndicator) name:OTSecondKeeper.everySecondName object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_updateFactorIndicator) name:UIApplicationWillEnterForegroundNotification object:nil];
+        SEL const updateSel = @selector(_updateFactorIndicator);
+        [keepCenter addObserver:self selector:updateSel name:OTSecondKeeper.everySecondName object:nil];
+        [keepCenter addObserver:self selector:updateSel name:UIApplicationWillEnterForegroundNotification object:nil];
     } else {
         self.factorIndicator.userInteractionEnabled = YES;
         self.factorIndicator.accessibilityLabel = @"New code";

@@ -29,8 +29,13 @@
         borderFieldLayer.borderColor = UIColor.clearColor.CGColor;
     }
     
-    UILongPressGestureRecognizer *longTouch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longGestureRecognizerFire:)];
-    [self addGestureRecognizer:longTouch];
+    if (@available(iOS 13.0, *)) {
+        UIContextMenuInteraction *menuInteraction = [[UIContextMenuInteraction alloc] initWithDelegate:self];
+        [self addInteraction:menuInteraction];
+    } else {
+        UILongPressGestureRecognizer *longTouch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longGestureRecognizerFire:)];
+        [self addGestureRecognizer:longTouch];
+    }
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -173,19 +178,13 @@
     }
 }
 
-- (void)_longGestureRecognizerFire:(UILongPressGestureRecognizer *)gesture {
+- (void)_longGestureRecognizerFire:(UILongPressGestureRecognizer *)gesture API_DEPRECATED("Use context menu", ios(3.2, 13.0)) {
     if (gesture.state == UIGestureRecognizerStateBegan && !self.editing) {
         [self becomeFirstResponder];
         
         UIMenuController *menu = UIMenuController.sharedMenuController;
-        UIView *showView = self;
-        CGRect showRect = self.passcodeLabel.frame;
-        if (@available(iOS 13.0, *)) {
-            [menu showMenuFromView:showView rect:showRect];
-        } else {
-            [menu setTargetRect:showRect inView:showView];
-            [menu setMenuVisible:YES animated:YES];
-        }
+        [menu setTargetRect:self.passcodeLabel.frame inView:self];
+        [menu setMenuVisible:YES animated:YES];
     }
 }
 
@@ -238,6 +237,26 @@
 
 - (void)copy:(id)sender {
     UIPasteboard.generalPasteboard.string = self.passcodeLabel.text;
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+- (UIContextMenuConfiguration *)contextMenuInteraction:(UIContextMenuInteraction *)interaction configurationForMenuAtLocation:(CGPoint)location API_AVAILABLE(ios(13.0)) {
+    // don't respond if we're editing, because most users
+    //   long press on cells to enter the drag lift state
+    if (self.editing) {
+        return nil;
+    }
+    return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil
+                                                    actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+        return [UIMenu menuWithTitle:@"" image:nil identifier:nil options:0 children:@[
+            [UIKeyCommand commandWithTitle:@"Copy Code"
+                                     image:[UIImage systemImageNamed:@"doc.on.doc"]
+                                    action:@selector(copy:)
+                                     input:@"c" modifierFlags:UIKeyModifierCommand
+                              propertyList:nil]
+        ]];
+    }];
 }
 
 @end

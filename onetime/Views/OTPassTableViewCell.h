@@ -22,7 +22,7 @@
 
 @end
 
-@interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate>
+@interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate, UIContextMenuInteractionDelegate>
 
 @property (class, strong, nonatomic, readonly) NSString *reusableIdentifier;
 

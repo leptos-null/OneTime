@@ -48,6 +48,9 @@
     searchController.obscuresBackgroundDuringPresentation = NO;
     searchController.searchResultsUpdater = self;
     if (@available(iOS 11.0, *)) {
+        // unrelated to search controller, but requires iOS 11 too
+        [self.view addInteraction:[[UIDropInteraction alloc] initWithDelegate:self]];
+        
         self.navigationItem.searchController = searchController;
         self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     } else {
@@ -187,7 +190,9 @@
             [weakself _bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
                 if (error) {
                     NSLog(@"bagsForQRCodeInImage: %@", error);
-                    [picker surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [picker surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
+                    });
                     return;
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -222,7 +227,7 @@
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
     NSLog(@"qrScanControllerDidFailWithError: %@", error);
-    [self surfaceUserMessage:error.localizedDescription viewHint:nil  dismissAfter:0];
+    [self surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
     [controller.navigationController popToViewController:self animated:YES];
 }
 
@@ -406,6 +411,57 @@
 
 - (BOOL)interfaceIsEditing {
     return _editModeFromButton;
+}
+
+// MARK: - UIDropInteractionDelegate
+
+- (BOOL)dropInteraction:(UIDropInteraction *)interaction canHandleSession:(id<UIDropSession>)session API_AVAILABLE(ios(11.0)) {
+    return [session canLoadObjectsOfClass:[UIImage class]];
+}
+
+- (UIDropProposal *)dropInteraction:(UIDropInteraction *)interaction sessionDidUpdate:(id<UIDropSession>)session API_AVAILABLE(ios(11.0)) {
+    return [[UIDropProposal alloc] initWithDropOperation:UIDropOperationCopy];
+}
+
+- (void)dropInteraction:(UIDropInteraction *)interaction performDrop:(id<UIDropSession>)session API_AVAILABLE(ios(11.0)) {
+    __typeof(self) weakself = self;
+    Class<NSItemProviderReading> const imageClass = [UIImage class];
+    
+    for (UIDragItem *item in session.items) {
+        NSItemProvider *provider = item.itemProvider;
+        if (![provider canLoadObjectOfClass:imageClass]) {
+            continue;
+        }
+        [provider loadObjectOfClass:imageClass completionHandler:^(id<NSItemProviderReading> image, NSError *loadErr) {
+            if (loadErr) {
+                NSLog(@"loadObjectOfClassCompletedWithError: %@", loadErr);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakself surfaceUserMessage:loadErr.localizedDescription viewHint:nil dismissAfter:0];
+                });
+                return;
+            }
+            if (![image isKindOfClass:imageClass]) {
+                NSLog(@"loadObjectOfUIImageClass object is not UIImage");
+                return;
+            }
+            [weakself _bagsForQRCodeInImage:(UIImage *)image completionHandler:^(NSArray<OTBag *> *bags, NSError *parseErr) {
+                if (parseErr) {
+                    NSLog(@"_bagsForQRCodeInImageCompletedWithError: %@", parseErr);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakself surfaceUserMessage:parseErr.localizedDescription viewHint:nil dismissAfter:0];
+                    });
+                    return;
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (bags.count) {
+                        [weakself addBagsToTable:bags scroll:YES animated:YES];
+                    } else {
+                        [weakself surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0];
+                    }
+                });
+            }];
+        }];
+    }
 }
 
 @end

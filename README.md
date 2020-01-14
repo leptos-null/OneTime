@@ -6,11 +6,15 @@ One-Time Password (OTP) iOS client
 
 - Add Software Two Factor Tokens using:
 
-    - live camera
+    - QR scanner in-app
 
-    - saved images
+    - Open otpauth URL
 
-    - manual entry
+    - QR codes in saved images
+
+    - Drag-and-drop QR code into app
+
+    - Manually enter generator configuration
 
 - Store tokens in iCloud Keychain
 

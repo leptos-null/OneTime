@@ -141,14 +141,16 @@
         }
     }];
     
-    if (shouldScroll && (rowTarget >= 1)) {
-        NSIndexPath *scrollTarget = [NSIndexPath indexPathForRow:(rowTarget - 1) inSection:0];
-        [self.tableView scrollToRowAtIndexPath:scrollTarget atScrollPosition:UITableViewScrollPositionBottom animated:animated];
-    }
     _dataSource = [newSource copy];
     if (!self.searchController.active) {
         UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
         [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
+        
+        UITableViewScrollPosition posit = shouldScroll ? UITableViewScrollPositionMiddle : UITableViewScrollPositionNone;
+        for (NSIndexPath *indexPath in newPaths) {
+            [self.tableView selectRowAtIndexPath:indexPath animated:animated scrollPosition:posit];
+            [self.tableView deselectRowAtIndexPath:indexPath animated:animated];
+        }
     }
 }
 

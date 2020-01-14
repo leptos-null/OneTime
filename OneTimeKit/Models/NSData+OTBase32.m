@@ -17,43 +17,43 @@
 
 @implementation NSData (OTBase32)
 
+#define OTBase32_fiveBitMask 0x1f /* 0001 1111 */
+#define OTBase32_AlphabetaLength 26 /* len(['a', ... , 'z']) */
+
 /**
  * Convert a 5 bits value into a base32 character.
  * Only the 5 least significant bits are used.
  * https://tools.ietf.org/html/rfc3548#section-5
  */
 static char __pure2 OTBase32_encode_char(uint8_t c, BOOL uppercase) {
-    c &= 0x1f; // 0001 1111
+    c &= OTBase32_fiveBitMask;
     char retval = 0;
-    if (c < 26) {
+    if (c < OTBase32_AlphabetaLength) {
         if (uppercase) {
             retval = c + 'A';
         } else {
             retval = c + 'a';
         }
     } else {
-        retval = c + '2' - 26;
+        retval = c + '2' - OTBase32_AlphabetaLength;
     }
     
     return retval;
 }
 /**
  * Decode given character into a 5 bits value.
- * Returns @c -1 if the argument given was an invalid base32 character
- * or a padding character.
+ * Returns @c -1 if the argument given was an invalid
+ * base32 character or a padding character.
  */
-static int __pure2 OTBase32_decode_char(char c) {
-    int retval = -1;
-    
+static uint8_t __pure2 OTBase32_decode_char(char c) {
+    uint8_t retval = -1;
     if (c >= '2' && c <= '7') {
-        retval = c - '2' + 26;
+        retval = c - '2' + OTBase32_AlphabetaLength;
     } else if (c >= 'A' && c <= 'Z') {
         retval = c - 'A';
     } else if (c >= 'a' && c <= 'z') {
         retval = c - 'a';
     }
-    assert((retval == -1) || ((retval & 0x1f) == retval));
-    
     return retval;
 }
 
@@ -72,7 +72,7 @@ static int __pure2 OTBase32_decode_char(char c) {
     }
     NSUInteger base32Length = base32Data.length;
     const char *padStart = memchr(coded, '=', base32Length);
-    // not clear how to deal with padding characters if `IgnoreUnknownCharacters` is set
+    // not clear how to deal with padding characters if `IgnoreUnknownCharacters` is set.
     // should the padding characters only be searched for within the last octet?
     if (padStart) {
         base32Length = padStart - coded;
@@ -87,8 +87,8 @@ static int __pure2 OTBase32_decode_char(char c) {
     uint32_t buffer = 0;
     unsigned bitsLeft = 0;
     for (NSUInteger i = 0; i < base32Length; i++) {
-        int val = OTBase32_decode_char(coded[i]);
-        if (val < 0) {
+        uint8_t val = OTBase32_decode_char(coded[i]);
+        if (val > OTBase32_fiveBitMask) {
             if (options & NSDataBase32DecodingOptionsIgnoreUnknownCharacters) {
                 continue;
             }

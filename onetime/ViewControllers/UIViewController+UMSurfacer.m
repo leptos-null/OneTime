@@ -11,7 +11,7 @@
 
 @implementation UIViewController (OTViewControllerUserMessageSurfacer)
 
-- (void)surfaceUserMessage:(NSString *)message viewHint:(UIView *)viewHint dismissAfter:(CGFloat)duration {
+- (void)surfaceUserMessage:(NSString *)message viewHint:(UIView *)viewHint dismissAfter:(NSTimeInterval)duration {
     UIView *sourceView = self.view;
     
     OTInfoViewController *info = [OTInfoViewController new];

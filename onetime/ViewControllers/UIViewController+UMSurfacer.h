@@ -10,7 +10,7 @@
 
 @protocol OTUserMessageSurfacer <NSObject>
 
-- (void)surfaceUserMessage:(NSString *)message viewHint:(UIView *)viewHint dismissAfter:(CGFloat)duration;
+- (void)surfaceUserMessage:(NSString *)message viewHint:(UIView *)viewHint dismissAfter:(NSTimeInterval)duration;
 
 @end
 

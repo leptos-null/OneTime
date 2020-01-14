@@ -39,7 +39,7 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
     if (!bag) {
         return NO;
     }
-    UINavigationController *navController = (__kindof UIViewController *)app.keyWindow.rootViewController;
+    UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
     
     OTPassTableViewController *target = nil;
     for (__kindof UIViewController *controller in navController.viewControllers) {
@@ -48,8 +48,11 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
         }
     }
     if (target) {
-        // todo: (bug) scroll does not work
-        [target addBagsToTable:@[ bag ] scroll:YES animated:YES];
+        // this should be on the main thread already,
+        // but we want to return before attempting animations
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [target addBagsToTable:@[ bag ] scroll:YES animated:YES];
+        });
         return YES;
     }
     return NO;
@@ -57,7 +60,7 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
 
 - (void)application:(UIApplication *)app performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
     if ([shortcutItem.type isEqualToString:OTAppShortcutAddQRType]) {
-        UINavigationController *navController = (__kindof UIViewController *)app.keyWindow.rootViewController;
+        UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
         
         OTPassTableViewController *target = nil;
         for (__kindof UIViewController *controller in navController.viewControllers) {
@@ -72,16 +75,9 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
         if (target) {
             OTQRScanViewController *qrScanner = [OTQRScanViewController new];
             qrScanner.delegate = target;
-            void (^readyBlock)(void) = ^{
-                [target.navigationController pushViewController:qrScanner animated:NO];
-                completionHandler(YES);
-            };
-            UIViewController *presentedController = target.presentedViewController;
-            if (presentedController) {
-                [presentedController dismissViewControllerAnimated:NO completion:readyBlock];
-            } else {
-                readyBlock();
-            }
+            [navController popToViewController:target animated:NO];
+            [navController pushViewController:qrScanner animated:NO];
+            completionHandler(YES);
             return;
         }
     }

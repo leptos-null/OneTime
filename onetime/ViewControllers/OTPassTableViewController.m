@@ -73,6 +73,61 @@
     _dataSource = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
 }
 
+- (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
+    NSInteger const rowTarget = _dataSource.count;
+    NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
+    NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
+    [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
+        NSInteger const row = rowTarget + idx;
+        bag.index = row;
+        OSStatus syncStatus = [bag syncToKeychain];
+        if (syncStatus == errSecSuccess) {
+            newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
+            newSource[row] = bag;
+        } else {
+            NSString *errorStr = OTSecErrorToString(syncStatus);
+            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            NSString *message = [@"Failed to add token to keychain: " stringByAppendingString:errorStr];
+            [self surfaceUserMessage:message viewHint:nil dismissAfter:0];
+        }
+    }];
+    
+    _dataSource = [newSource copy];
+    if (!self.searchController.active) {
+        UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
+        [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
+        
+        if (animated) {
+            for (NSIndexPath *indexPath in newPaths) {
+                [self _accentuateRowAtIndexPath:indexPath duration:0.25];
+            }
+        }
+    }
+}
+
+- (BOOL)accentuateCellWithBagID:(NSString *)identifier {
+    __block NSInteger target = NSNotFound;
+    [self.activeDataSource enumerateObjectsUsingBlock:^(OTBag *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj.uniqueIdentifier isEqualToString:identifier]) {
+            target = idx;
+            *stop = YES;
+        }
+    }];
+    if (target == NSNotFound) {
+        return NO;
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:target inSection:0];
+    [self _accentuateRowAtIndexPath:indexPath duration:0.5];
+    return YES;
+}
+
+- (void)_accentuateRowAtIndexPath:(NSIndexPath *)indexPath duration:(NSTimeInterval)duration {
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    });
+}
+
 - (void)_addButtonHit:(UIBarButtonItem *)button {
     __weak __typeof(self) weakself = self;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add Code" message:nil
@@ -120,38 +175,6 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/4), dispatch_get_main_queue(), ^{
         [control endRefreshing];
     });
-}
-
-- (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
-    NSInteger const rowTarget = _dataSource.count;
-    NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
-    NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
-    [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
-        NSInteger const row = rowTarget + idx;
-        bag.index = row;
-        OSStatus syncStatus = [bag syncToKeychain];
-        if (syncStatus == errSecSuccess) {
-            newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
-            newSource[row] = bag;
-        } else {
-            NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
-            NSString *message = [@"Failed to add token to keychain: " stringByAppendingString:errorStr];
-            [self surfaceUserMessage:message viewHint:nil dismissAfter:0];
-        }
-    }];
-    
-    _dataSource = [newSource copy];
-    if (!self.searchController.active) {
-        UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
-        [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
-        
-        UITableViewScrollPosition posit = shouldScroll ? UITableViewScrollPositionMiddle : UITableViewScrollPositionNone;
-        for (NSIndexPath *indexPath in newPaths) {
-            [self.tableView selectRowAtIndexPath:indexPath animated:animated scrollPosition:posit];
-            [self.tableView deselectRowAtIndexPath:indexPath animated:animated];
-        }
-    }
 }
 
 - (void)_bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {

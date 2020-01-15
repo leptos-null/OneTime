@@ -35,8 +35,10 @@
 	<string>1</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
-	<key>LSRequiresIPhoneOS</key>
+	<key>CoreSpotlightContinuation</key>
 	<true/>
+	<key>LSRequiresIPhoneOS</key>
+	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>The camera is used to scan QR codes</string>
 	<key>UILaunchStoryboardName</key>

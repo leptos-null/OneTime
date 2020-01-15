@@ -10,6 +10,7 @@
 #import "../Services/OTLaunchOptions.h"
 #import "../ViewControllers/OTPassTableViewController.h"
 #import "../../OneTimeKit/Models/OTBag.h"
+#import "../../OneTimeKit/Models/OTBag+CSItem.h"
 
 static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
 
@@ -82,6 +83,39 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
         }
     }
     completionHandler(NO);
+}
+
+- (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
+    NSArray<NSString *> *supported = @[
+        CSSearchableItemActionType,
+        CSQueryContinuationActionType
+    ];
+    return [supported containsObject:userActivityType];
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
+ restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> *))restorationHandler {
+    OTPassTableViewController *target = nil;
+    UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
+    for (__kindof UIViewController *controller in navController.viewControllers) {
+        if ([controller isKindOfClass:[OTPassTableViewController class]]) {
+            target = controller;
+        }
+    }
+    if (target) {
+        if ([userActivity.activityType isEqualToString:CSQueryContinuationActionType]) {
+            NSString *searchKey = userActivity.userInfo[CSSearchQueryString];
+            target.searchController.searchBar.text = searchKey;
+            target.searchController.active = YES;
+            CGFloat navHeight = CGRectGetMaxY(target.navigationController.navigationBar.frame);
+            target.tableView.contentOffset = CGPointMake(0, -navHeight);
+            return YES;
+        } else if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
+            NSString *uniqueID = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+            return [target accentuateCellWithBagID:uniqueID];
+        }
+    }
+    return NO;
 }
 
 @end

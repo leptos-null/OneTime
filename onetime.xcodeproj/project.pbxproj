@@ -51,6 +51,8 @@
 		FADECB842321F82D003052AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB822321F82D003052AD /* Main.storyboard */; };
 		FADECB892321F82F003052AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB872321F82F003052AD /* LaunchScreen.storyboard */; };
 		FADECB8C2321F82F003052AD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB8B2321F82F003052AD /* main.m */; };
+		FAEA804023CEE02C00A6D214 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEA803E23CED40900A6D214 /* CoreServices.framework */; };
+		FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +169,9 @@
 		FADECB882321F82F003052AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FADECB8A2321F82F003052AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADECB8B2321F82F003052AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FAEA803E23CED40900A6D214 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OTBag+CSItem.h"; sourceTree = "<group>"; };
+		FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OTBag+CSItem.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAEA804023CEE02C00A6D214 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +210,7 @@
 				FA0E256622F9E132007DC512 /* nanonetimext */,
 				FADECB782321F82D003052AD /* oneticon */,
 				FA0E250022F9DB3E007DC512 /* Products */,
+				FAEA803D23CED40800A6D214 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -341,6 +348,8 @@
 				FA0E258B22F9F736007DC512 /* OTPTime.m */,
 				FA0E258E22FA357F007DC512 /* OTBag.h */,
 				FA0E258F22FA357F007DC512 /* OTBag.m */,
+				FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */,
+				FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */,
 				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
 				FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */,
 				FA7F916D231313D300FD2A04 /* OTSecError.h */,
@@ -413,6 +422,14 @@
 				FADECB802321F82D003052AD /* ViewController.m */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		FAEA803D23CED40800A6D214 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FAEA803E23CED40900A6D214 /* CoreServices.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -584,6 +601,7 @@
 				FA59A8962304A95B00463A3F /* OTManualEntryViewController.m in Sources */,
 				FA7F916A2311C12200FD2A04 /* _OTBagScore.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
+				FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */,
 				FA87DCDE2369507A006A39C9 /* OTLaunchOptions.m in Sources */,
 				FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */,
 				FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */,

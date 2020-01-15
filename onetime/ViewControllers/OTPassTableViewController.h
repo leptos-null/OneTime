@@ -18,5 +18,6 @@
 @property (strong, nonatomic, readonly) UISearchController *searchController;
 
 - (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated;
+- (BOOL)accentuateCellWithBagID:(NSString *)identifier;
 
 @end

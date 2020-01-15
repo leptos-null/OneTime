@@ -53,6 +53,19 @@
 		FADECB8C2321F82F003052AD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB8B2321F82F003052AD /* main.m */; };
 		FAEA804023CEE02C00A6D214 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEA803E23CED40900A6D214 /* CoreServices.framework */; };
 		FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */; };
+		FAEA804C23CEF1D000A6D214 /* OTIndexRequestHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */; };
+		FAEA805023CEF1D000A6D214 /* onetimespotlight.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FAEA804823CEF1D000A6D214 /* onetimespotlight.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FAEA805623CEF4FE00A6D214 /* OTPBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258322F9E52F007DC512 /* OTPBase.m */; };
+		FAEA805723CEF4FE00A6D214 /* OTPHash.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258722F9F703007DC512 /* OTPHash.m */; };
+		FAEA805823CEF50500A6D214 /* OTPTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258B22F9F736007DC512 /* OTPTime.m */; };
+		FAEA805923CEF50500A6D214 /* OTBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E258F22FA357F007DC512 /* OTBag.m */; };
+		FAEA805A23CEF50500A6D214 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FAEA805B23CEF50500A6D214 /* OTSecError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F916B231313BC00FD2A04 /* OTSecError.m */; };
+		FAEA805C23CEF50800A6D214 /* OTBag+CSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */; };
+		FAEA805D23CEF56E00A6D214 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEA803E23CED40900A6D214 /* CoreServices.framework */; };
+		FAF0EAEE23CEF7E400364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
+		FAF0EAEF23CEF81E00364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
+		FAF0EAF023CEF81F00364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +82,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = FA0E255522F9E131007DC512;
 			remoteInfo = nano;
+		};
+		FAEA804E23CEF1D000A6D214 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA0E24F722F9DB3E007DC512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAEA804723CEF1D000A6D214;
+			remoteInfo = spotlight;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -91,6 +111,17 @@
 			dstSubfolderSpec = 13;
 			files = (
 				FA0E256322F9E132007DC512 /* nanonetimext.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAEA805423CEF1D000A6D214 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FAEA805023CEF1D000A6D214 /* onetimespotlight.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -172,6 +203,13 @@
 		FAEA803E23CED40900A6D214 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OTBag+CSItem.h"; sourceTree = "<group>"; };
 		FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OTBag+CSItem.m"; sourceTree = "<group>"; };
+		FAEA804823CEF1D000A6D214 /* onetimespotlight.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = onetimespotlight.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAEA804A23CEF1D000A6D214 /* OTIndexRequestHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTIndexRequestHandler.h; sourceTree = "<group>"; };
+		FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTIndexRequestHandler.m; sourceTree = "<group>"; };
+		FAEA804D23CEF1D000A6D214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAEA805523CEF2BB00A6D214 /* spotlight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = spotlight.entitlements; sourceTree = "<group>"; };
+		FAF0EAEC23CEF7E400364D38 /* NSArray+OTMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+OTMap.h"; sourceTree = "<group>"; };
+		FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+OTMap.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +235,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAEA804523CEF1D000A6D214 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEA805D23CEF56E00A6D214 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -206,6 +252,7 @@
 				FA4A15BE2380A267005AD686 /* README.md */,
 				FA0E258122F9E3A7007DC512 /* OneTimeKit */,
 				FA0E250122F9DB3E007DC512 /* onetime */,
+				FAEA804923CEF1D000A6D214 /* onetimespotlight */,
 				FA0E255722F9E131007DC512 /* nanonetime */,
 				FA0E256622F9E132007DC512 /* nanonetimext */,
 				FADECB782321F82D003052AD /* oneticon */,
@@ -221,6 +268,7 @@
 				FA0E255622F9E131007DC512 /* nanonetime.app */,
 				FA0E256222F9E132007DC512 /* nanonetimext.appex */,
 				FADECB772321F82D003052AD /* OneTIcon.app */,
+				FAEA804823CEF1D000A6D214 /* onetimespotlight.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -352,6 +400,8 @@
 				FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */,
 				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
 				FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */,
+				FAF0EAEC23CEF7E400364D38 /* NSArray+OTMap.h */,
+				FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */,
 				FA7F916D231313D300FD2A04 /* OTSecError.h */,
 				FA7F916B231313BC00FD2A04 /* OTSecError.m */,
 			);
@@ -432,6 +482,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FAEA804923CEF1D000A6D214 /* onetimespotlight */ = {
+			isa = PBXGroup;
+			children = (
+				FAEA804A23CEF1D000A6D214 /* OTIndexRequestHandler.h */,
+				FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */,
+				FAEA805523CEF2BB00A6D214 /* spotlight.entitlements */,
+				FAEA804D23CEF1D000A6D214 /* Info.plist */,
+			);
+			path = onetimespotlight;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -443,11 +504,13 @@
 				FA0E24FC22F9DB3E007DC512 /* Frameworks */,
 				FA0E24FD22F9DB3E007DC512 /* Resources */,
 				FA0E257322F9E132007DC512 /* Embed Watch Content */,
+				FAEA805423CEF1D000A6D214 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				FA0E257122F9E132007DC512 /* PBXTargetDependency */,
+				FAEA804F23CEF1D000A6D214 /* PBXTargetDependency */,
 			);
 			name = onetime;
 			productName = onetime;
@@ -505,6 +568,23 @@
 			productReference = FADECB772321F82D003052AD /* OneTIcon.app */;
 			productType = "com.apple.product-type.application";
 		};
+		FAEA804723CEF1D000A6D214 /* onetimespotlight */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAEA805123CEF1D000A6D214 /* Build configuration list for PBXNativeTarget "onetimespotlight" */;
+			buildPhases = (
+				FAEA804423CEF1D000A6D214 /* Sources */,
+				FAEA804523CEF1D000A6D214 /* Frameworks */,
+				FAEA804623CEF1D000A6D214 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = onetimespotlight;
+			productName = spotlight;
+			productReference = FAEA804823CEF1D000A6D214 /* onetimespotlight.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -527,6 +607,9 @@
 					FADECB762321F82D003052AD = {
 						CreatedOnToolsVersion = 11.0;
 					};
+					FAEA804723CEF1D000A6D214 = {
+						CreatedOnToolsVersion = 11.3;
+					};
 				};
 			};
 			buildConfigurationList = FA0E24FA22F9DB3E007DC512 /* Build configuration list for PBXProject "onetime" */;
@@ -546,6 +629,7 @@
 				FA0E255522F9E131007DC512 /* nanonetime */,
 				FA0E256122F9E132007DC512 /* nanonetimext */,
 				FADECB762321F82D003052AD /* oneticon */,
+				FAEA804723CEF1D000A6D214 /* onetimespotlight */,
 			);
 		};
 /* End PBXProject section */
@@ -588,6 +672,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAEA804623CEF1D000A6D214 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -603,6 +694,7 @@
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
 				FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */,
 				FA87DCDE2369507A006A39C9 /* OTLaunchOptions.m in Sources */,
+				FAF0EAEE23CEF7E400364D38 /* NSArray+OTMap.m in Sources */,
 				FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */,
 				FA7F914C230BDEB300FD2A04 /* OTInfoViewController.m in Sources */,
 				FA0E25A022FA9D79007DC512 /* OTPassTableViewCell.m in Sources */,
@@ -626,6 +718,7 @@
 			files = (
 				FA0E256C22F9E132007DC512 /* OTExtensionDelegate.m in Sources */,
 				FA7F917023131C1100FD2A04 /* OTSecError.m in Sources */,
+				FAF0EAEF23CEF81E00364D38 /* NSArray+OTMap.m in Sources */,
 				FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258522F9E52F007DC512 /* OTPBase.m in Sources */,
 				FA0E258922F9F703007DC512 /* OTPHash.m in Sources */,
@@ -646,6 +739,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAEA804423CEF1D000A6D214 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEA805B23CEF50500A6D214 /* OTSecError.m in Sources */,
+				FAEA805723CEF4FE00A6D214 /* OTPHash.m in Sources */,
+				FAEA805923CEF50500A6D214 /* OTBag.m in Sources */,
+				FAF0EAF023CEF81F00364D38 /* NSArray+OTMap.m in Sources */,
+				FAEA805623CEF4FE00A6D214 /* OTPBase.m in Sources */,
+				FAEA805A23CEF50500A6D214 /* NSData+OTBase32.m in Sources */,
+				FAEA805823CEF50500A6D214 /* OTPTime.m in Sources */,
+				FAEA805C23CEF50800A6D214 /* OTBag+CSItem.m in Sources */,
+				FAEA804C23CEF1D000A6D214 /* OTIndexRequestHandler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -659,6 +768,11 @@
 			platformFilter = ios;
 			target = FA0E255522F9E131007DC512 /* nanonetime */;
 			targetProxy = FA0E257022F9E132007DC512 /* PBXContainerItemProxy */;
+		};
+		FAEA804F23CEF1D000A6D214 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAEA804723CEF1D000A6D214 /* onetimespotlight */;
+			targetProxy = FAEA804E23CEF1D000A6D214 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -964,6 +1078,49 @@
 			};
 			name = Release;
 		};
+		FAEA805223CEF1D000A6D214 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = onetimespotlight/spotlight.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				GCC_DYNAMIC_NO_PIC = NO;
+				INFOPLIST_FILE = onetimespotlight/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.spotlight;
+				PRODUCT_NAME = onetimespotlight;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+			};
+			name = Debug;
+		};
+		FAEA805323CEF1D000A6D214 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = onetimespotlight/spotlight.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				INFOPLIST_FILE = onetimespotlight/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.spotlight;
+				PRODUCT_NAME = onetimespotlight;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1008,6 +1165,15 @@
 			buildConfigurations = (
 				FADECB8D2321F82F003052AD /* Debug */,
 				FADECB8E2321F82F003052AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAEA805123CEF1D000A6D214 /* Build configuration list for PBXNativeTarget "onetimespotlight" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAEA805223CEF1D000A6D214 /* Debug */,
+				FAEA805323CEF1D000A6D214 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

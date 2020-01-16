@@ -46,3 +46,15 @@ One-Time Password (OTP) iOS client
 [mattrubin/OneTimePassword](https://github.com/mattrubin/OneTimePassword) (Swift OTP library)
 
 [google/google-authenticator](https://github.com/google/google-authenticator) (Google OTP client)
+
+### Screenshots
+
+<img width="46.5%" src="Screenshots/iOS_home.png"><img width="46.5%" src="Screenshots/iOS_copy.png">
+<img width="46.5%" src="Screenshots/iOS_search.png"><img width="46.5%" src="Screenshots/iOS_edit.png">
+<img width="46.5%" src="Screenshots/iOS_menu.png"><img width="46.5%" src="Screenshots/iOS_manual.png">
+<img width="46.5%" src="Screenshots/iOS_spotlight.png">
+<br>
+<img width="94%" src="Screenshots/macOS_home.png">
+<img width="94%" src="Screenshots/macOS_search.png">
+<img width="94%" src="Screenshots/macOS_edit.png">
+<img width="94%" src="Screenshots/macOS_manual.png">

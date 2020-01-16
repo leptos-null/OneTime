@@ -30,29 +30,46 @@ reindexAllSearchableItemsWithAcknowledgementHandler:(void (^)(void))acknowledgem
             }];
         }
     }];
-}   
+}
 
 - (void)searchableIndex:(CSSearchableIndex *)searchableIndex
-reindexSearchableItemsWithIdentifiers:(NSArray <NSString *> *)identifiers
+reindexSearchableItemsWithIdentifiers:(NSArray<NSString *> *)identifiers
  acknowledgementHandler:(void (^)(void))acknowledgementHandler {
+    NSMutableArray<NSString *> *requestIDs = [identifiers mutableCopy];
     NSArray<CSSearchableItem *> *items = [OTBag.keychainBags compactMap:^CSSearchableItem *(OTBag *bag) {
-        if ([identifiers containsObject:bag.uniqueIdentifier]) {
-            return bag.searchableItem;
+        NSUInteger indx = [requestIDs indexOfObject:bag.uniqueIdentifier];
+        if (indx == NSNotFound) {
+            return nil;
         }
-        return nil;
+        [requestIDs removeObjectAtIndex:indx];
+        [requestIDs exchangeObjectAtIndex:indx withObjectAtIndex:(requestIDs.count - 1)];
+        return bag.searchableItem;
     }];
-    [searchableIndex deleteSearchableItemsWithIdentifiers:identifiers completionHandler:^(NSError *delErr) {
-        if (delErr) {
-            NSLog(@"deleteSearchableItemsWithIdentifiersCompletedWithError: %@", delErr);
-        } else {
+    [searchableIndex fetchLastClientStateWithCompletionHandler:^(NSData *clientState, NSError *fetchErr) {
+        if (fetchErr) {
+            NSLog(@"fetchLastClientStateCompletedWithError: %@", fetchErr);
+            return;
+        }
+        [searchableIndex beginIndexBatch];
+        [searchableIndex deleteSearchableItemsWithIdentifiers:identifiers completionHandler:^(NSError *delErr) {
+            if (delErr) {
+                NSLog(@"deleteSearchableItemsWithIdentifiersCompletedWithError: %@", delErr);
+                return;
+            }
             [searchableIndex indexSearchableItems:items completionHandler:^(NSError *addErr) {
                 if (addErr) {
                     NSLog(@"indexSearchableItemsCompletedWithError: %@", addErr);
-                } else {
-                    acknowledgementHandler();
+                    return;
                 }
+                [searchableIndex endIndexBatchWithClientState:clientState completionHandler:^(NSError *endErr) {
+                    if (endErr) {
+                        NSLog(@"endIndexBatchCompletedWithError: %@", endErr);
+                        return;
+                    }
+                    acknowledgementHandler();
+                }];
             }];
-        }
+        }];
     }];
 }
 

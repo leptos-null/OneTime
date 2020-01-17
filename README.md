@@ -49,10 +49,10 @@ One-Time Password (OTP) iOS client
 
 ### Screenshots
 
-<img width="46.5%" src="Screenshots/iOS_home.png"><img width="46.5%" src="Screenshots/iOS_copy.png">
-<img width="46.5%" src="Screenshots/iOS_search.png"><img width="46.5%" src="Screenshots/iOS_edit.png">
-<img width="46.5%" src="Screenshots/iOS_menu.png"><img width="46.5%" src="Screenshots/iOS_manual.png">
-<img width="46.5%" src="Screenshots/iOS_spotlight.png">
+<img align="left" width="46.5%" src="Screenshots/iOS_home.png"><img align="right" width="46.5%" src="Screenshots/iOS_copy.png">
+<img align="left" width="46.5%" src="Screenshots/iOS_search.png"><img align="right" width="46.5%" src="Screenshots/iOS_edit.png">
+<img align="left" width="46.5%" src="Screenshots/iOS_menu.png"><img align="right" width="46.5%" src="Screenshots/iOS_manual.png">
+<img align="left" width="46.5%" src="Screenshots/iOS_spotlight.png">
 <br>
 <img width="94%" src="Screenshots/macOS_home.png">
 <img width="94%" src="Screenshots/macOS_search.png">

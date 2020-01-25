@@ -9,6 +9,7 @@
 #import "OTAppDelegate.h"
 #import "../Services/OTLaunchOptions.h"
 #import "../ViewControllers/OTPassTableViewController.h"
+#import "../ViewControllers/UIViewController+OTDismissChildren.h"
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Models/OTBag+CSItem.h"
 
@@ -49,11 +50,9 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
         }
     }
     if (target) {
-        // this should be on the main thread already,
-        // but we want to return before attempting animations
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [target dismissAllChilderenAnimated:NO completion:^{
             [target addBagsToTable:@[ bag ] scroll:YES animated:YES];
-        });
+        }];
         return YES;
     }
     return NO;
@@ -76,9 +75,10 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
         if (target) {
             OTQRScanViewController *qrScanner = [OTQRScanViewController new];
             qrScanner.delegate = target;
-            [navController popToViewController:target animated:NO];
-            [navController pushViewController:qrScanner animated:NO];
-            completionHandler(YES);
+            [target dismissAllChilderenAnimated:NO completion:^{
+                [navController pushViewController:qrScanner animated:NO];
+                completionHandler(YES);
+            }];
             return;
         }
     }
@@ -105,13 +105,17 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
     if (target) {
         if ([userActivity.activityType isEqualToString:CSQueryContinuationActionType]) {
             NSString *searchKey = userActivity.userInfo[CSSearchQueryString];
-            target.searchController.searchBar.text = searchKey;
-            target.searchController.active = YES;
-            CGFloat navHeight = CGRectGetMaxY(target.navigationController.navigationBar.frame);
-            target.tableView.contentOffset = CGPointMake(0, -navHeight);
+            [target dismissAllChilderenAnimated:NO completion:^{
+                // this doesn't seem to work as expected sometimes
+                target.searchController.searchBar.text = searchKey;
+                target.searchController.active = YES;
+                CGFloat navHeight = CGRectGetMaxY(target.navigationController.navigationBar.frame);
+                target.tableView.contentOffset = CGPointMake(0, -navHeight);
+            }];
             return YES;
         } else if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
             NSString *uniqueID = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+            [target dismissAllChilderenAnimated:NO completion:NULL];
             return [target accentuateCellWithBagID:uniqueID];
         }
     }

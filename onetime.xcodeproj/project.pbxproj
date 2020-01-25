@@ -30,6 +30,7 @@
 		FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */; };
 		FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
 		FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FA18BF9623D14BF6002D87AF /* UIViewController+OTDismissChildren.m in Sources */ = {isa = PBXBuildFile; fileRef = FA18BF9523D14BF6002D87AF /* UIViewController+OTDismissChildren.m */; };
 		FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FA357D5A2307B22B0026F646 /* OTPadTextField.m */; };
 		FA4979EA2338AA2C008E548B /* UIViewController+UMSurfacer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4979E92338AA2C008E548B /* UIViewController+UMSurfacer.m */; };
 		FA4A15BF2380A267005AD686 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA4A15BE2380A267005AD686 /* README.md */; };
@@ -163,6 +164,8 @@
 		FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewController.m; sourceTree = "<group>"; };
 		FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+OTBase32.h"; sourceTree = "<group>"; };
 		FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+OTBase32.m"; sourceTree = "<group>"; };
+		FA18BF9423D14BF6002D87AF /* UIViewController+OTDismissChildren.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OTDismissChildren.h"; sourceTree = "<group>"; };
+		FA18BF9523D14BF6002D87AF /* UIViewController+OTDismissChildren.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OTDismissChildren.m"; sourceTree = "<group>"; };
 		FA357D592307B22B0026F646 /* OTPadTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPadTextField.h; sourceTree = "<group>"; };
 		FA357D5A2307B22B0026F646 /* OTPadTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPadTextField.m; sourceTree = "<group>"; };
 		FA4979E82338AA2C008E548B /* UIViewController+UMSurfacer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+UMSurfacer.h"; sourceTree = "<group>"; };
@@ -301,6 +304,8 @@
 			children = (
 				FA4979E82338AA2C008E548B /* UIViewController+UMSurfacer.h */,
 				FA4979E92338AA2C008E548B /* UIViewController+UMSurfacer.m */,
+				FA18BF9423D14BF6002D87AF /* UIViewController+OTDismissChildren.h */,
+				FA18BF9523D14BF6002D87AF /* UIViewController+OTDismissChildren.m */,
 				FA7F915B231056B600FD2A04 /* OTNavigationController.h */,
 				FA7F915C231056B600FD2A04 /* OTNavigationController.m */,
 				FA0E25A222FA9D97007DC512 /* OTPassTableViewController.h */,
@@ -693,6 +698,7 @@
 				FA7F916A2311C12200FD2A04 /* _OTBagScore.m in Sources */,
 				FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */,
 				FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */,
+				FA18BF9623D14BF6002D87AF /* UIViewController+OTDismissChildren.m in Sources */,
 				FA87DCDE2369507A006A39C9 /* OTLaunchOptions.m in Sources */,
 				FAF0EAEE23CEF7E400364D38 /* NSArray+OTMap.m in Sources */,
 				FA7F91672310D96900FD2A04 /* NSString+OTDistance.m in Sources */,

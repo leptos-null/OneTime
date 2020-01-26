@@ -86,7 +86,7 @@
             newSource[row] = bag;
         } else {
             NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
             NSString *message = [@"Failed to add token to keychain: " stringByAppendingString:errorStr];
             [self surfaceUserMessage:message viewHint:nil dismissAfter:0];
         }
@@ -315,7 +315,7 @@
             OSStatus syncStatus = [bag deleteFromKeychain];
             if (syncStatus != errSecSuccess) {
                 NSString *errorStr = OTSecErrorToString(syncStatus);
-                NSLog(@"deleteFromKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+                NSLog(@"deleteFromKeychain: %@ (%d)", errorStr, (int)syncStatus);
                 NSString *message = [@"Failed to delete from keychain: " stringByAppendingString:errorStr];
                 [weakself surfaceUserMessage:message viewHint:cell dismissAfter:0];
                 return;
@@ -366,7 +366,7 @@
         OSStatus syncStatus = [bags[i] syncToKeychain];
         if (syncStatus != errSecSuccess) {
             NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%" __INT32_FMTd__ ")", errorStr, syncStatus);
+            NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
             if (!hasPresentedErr) {
                 hasPresentedErr = YES;
                 UIView *viewHint = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];

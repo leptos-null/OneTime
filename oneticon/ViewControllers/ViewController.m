@@ -14,7 +14,7 @@
 
 @implementation ViewController
 
-- (UIImage *)iconForDimension:(CGFloat)dimension scale:(CGFloat)scale inset:(BOOL)inset {
+- (UIImage *)iconForDimension:(CGFloat)dimension scale:(CGFloat)scale inset:(BOOL)inset fill:(BOOL)fillBackground {
     CGFloat const offset = inset ? dimension/16 : 0;
     CGRect const fullFrame = CGRectMake(0, 0, dimension, dimension);
     dimension -= (offset * 2);
@@ -23,6 +23,10 @@
     
     UIGraphicsBeginImageContextWithOptions(fullFrame.size, NO, scale);
     
+    if (fillBackground) {
+        [[UIColor blackColor] setFill];
+        [[UIBezierPath bezierPathWithRect:fullFrame] fill];
+    }
     [[UIColor lightGrayColor] setFill];
     [[UIBezierPath bezierPathWithOvalInRect:frame] fill];
     
@@ -81,6 +85,12 @@
     NSData *parse = [NSData dataWithContentsOfFile:manifest];
     NSError *error = nil;
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:parse options:(NSJSONReadingMutableContainers) error:&error];
+    NSArray<NSString *> *fillIdioms = @[
+        @"iphone",
+        @"ipad",
+        @"ios-marketing",
+        @"watch-marketing"
+    ];
     NSArray<NSMutableDictionary<NSString *, NSString *> *> *images = dict[@"images"];
     for (NSMutableDictionary<NSString *, NSString *> *image in images) {
         NSString *scale = image[@"scale"];
@@ -95,7 +105,8 @@
         assert([numSize isEqualToString:sizeParts.lastObject]);
         
         NSString *fileName = [NSString stringWithFormat:@"AppIcon%@@%@.png", size, scale];
-        UIImage *render = [self iconForDimension:numSize.doubleValue scale:numScale.doubleValue inset:inset];
+        BOOL fill = [fillIdioms containsObject:image[@"idiom"]];
+        UIImage *render = [self iconForDimension:numSize.doubleValue scale:numScale.doubleValue inset:inset fill:fill];
         NSData *fileData = UIImagePNGRepresentation(render);
         assert([fileData writeToFile:[appiconset stringByAppendingPathComponent:fileName] atomically:YES]);
         image[@"filename"] = fileName;
@@ -120,7 +131,7 @@
     
     UIImageView *imageView = self.imageView;
     CGRect const rect = imageView.frame;
-    imageView.image = [self iconForDimension:fmin(rect.size.width, rect.size.height) scale:0 inset:NO];
+    imageView.image = [self iconForDimension:fmin(rect.size.width, rect.size.height) scale:0 inset:NO fill:NO];
 }
 
 @end

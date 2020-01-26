@@ -1,0 +1,30 @@
+/* this is just a marker for WebKit, I think */
+:root {
+    color-scheme: light dark;
+}
+
+:root {
+    color: #000000;
+    background-color: #ffffff;
+}
+
+a:link {
+    color: #0e0eff;
+}
+a:visited {
+    color: #3900a0;
+}
+
+@media(prefers-color-scheme: dark) {
+    :root {
+        color: #ffffff;
+        background-color: #1f1f24;
+    }
+
+    a:link {
+        color: #9e9eff;
+    }
+    a:visited {
+        color: #d09eff;
+    }
+}

@@ -50,6 +50,7 @@
 		FADECB842321F82D003052AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB822321F82D003052AD /* Main.storyboard */; };
 		FADECB892321F82F003052AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FADECB872321F82F003052AD /* LaunchScreen.storyboard */; };
 		FADECB8C2321F82F003052AD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADECB8B2321F82F003052AD /* main.m */; };
+		FAE71A7823DE19D00079321A /* _OTDemoBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE71A7723DE19D00079321A /* _OTDemoBag.m */; };
 		FAEA804023CEE02C00A6D214 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEA803E23CED40900A6D214 /* CoreServices.framework */; };
 		FAEA804323CEE0BD00A6D214 /* OTBag+CSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */; };
 		FAEA804C23CEF1D000A6D214 /* OTIndexRequestHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */; };
@@ -164,6 +165,8 @@
 		FADECB882321F82F003052AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FADECB8A2321F82F003052AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADECB8B2321F82F003052AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FAE71A7623DE19D00079321A /* _OTDemoBag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _OTDemoBag.h; sourceTree = "<group>"; };
+		FAE71A7723DE19D00079321A /* _OTDemoBag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _OTDemoBag.m; sourceTree = "<group>"; };
 		FAEA803E23CED40900A6D214 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OTBag+CSItem.h"; sourceTree = "<group>"; };
 		FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OTBag+CSItem.m"; sourceTree = "<group>"; };
@@ -362,6 +365,8 @@
 				FA0E258B22F9F736007DC512 /* OTPTime.m */,
 				FA0E258E22FA357F007DC512 /* OTBag.h */,
 				FA0E258F22FA357F007DC512 /* OTBag.m */,
+				FAE71A7623DE19D00079321A /* _OTDemoBag.h */,
+				FAE71A7723DE19D00079321A /* _OTDemoBag.m */,
 				FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */,
 				FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */,
 				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
@@ -668,6 +673,7 @@
 				FA7F915D231056B600FD2A04 /* OTNavigationController.m in Sources */,
 				FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
 				FA0E258822F9F703007DC512 /* OTPHash.m in Sources */,
+				FAE71A7823DE19D00079321A /* _OTDemoBag.m in Sources */,
 				FA59A89023035B0200463A3F /* OTQRScanViewController.m in Sources */,
 				FA0E259022FA357F007DC512 /* OTBag.m in Sources */,
 				FA0E251522F9DB40007DC512 /* main.m in Sources */,
@@ -808,6 +814,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -834,6 +841,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
+				VERSIONING_SYSTEM = "apple-generic";
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
@@ -867,6 +875,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -889,6 +898,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
@@ -1008,6 +1018,7 @@
 		FADECB8D2321F82F003052AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = oneticon/Info.plist;
@@ -1021,6 +1032,7 @@
 		FADECB8E2321F82F003052AD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = oneticon/Info.plist;

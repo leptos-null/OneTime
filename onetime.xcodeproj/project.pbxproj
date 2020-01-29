@@ -29,6 +29,7 @@
 		FA0E25A422FA9D97007DC512 /* OTPassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */; };
 		FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
 		FA0E25AD22FB6245007DC512 /* NSData+OTBase32.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */; };
+		FA1426C823E102EC009BD9C8 /* OTScreenshots.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1426C723E102EC009BD9C8 /* OTScreenshots.m */; };
 		FA18BF9623D14BF6002D87AF /* UIViewController+OTDismissChildren.m in Sources */ = {isa = PBXBuildFile; fileRef = FA18BF9523D14BF6002D87AF /* UIViewController+OTDismissChildren.m */; };
 		FA357D5B2307B22B0026F646 /* OTPadTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FA357D5A2307B22B0026F646 /* OTPadTextField.m */; };
 		FA4979EA2338AA2C008E548B /* UIViewController+UMSurfacer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4979E92338AA2C008E548B /* UIViewController+UMSurfacer.m */; };
@@ -74,6 +75,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = FA0E256122F9E132007DC512;
 			remoteInfo = "nano Extension";
+		};
+		FA1426CA23E102EC009BD9C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA0E24F722F9DB3E007DC512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA0E24FE22F9DB3E007DC512;
+			remoteInfo = onetime;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -126,6 +134,9 @@
 		FA0E25A322FA9D97007DC512 /* OTPassTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTPassTableViewController.m; sourceTree = "<group>"; };
 		FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+OTBase32.h"; sourceTree = "<group>"; };
 		FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+OTBase32.m"; sourceTree = "<group>"; };
+		FA1426C523E102EC009BD9C8 /* onetimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = onetimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA1426C723E102EC009BD9C8 /* OTScreenshots.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTScreenshots.m; sourceTree = "<group>"; };
+		FA1426C923E102EC009BD9C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA18BF9423D14BF6002D87AF /* UIViewController+OTDismissChildren.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OTDismissChildren.h"; sourceTree = "<group>"; };
 		FA18BF9523D14BF6002D87AF /* UIViewController+OTDismissChildren.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OTDismissChildren.m"; sourceTree = "<group>"; };
 		FA357D592307B22B0026F646 /* OTPadTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTPadTextField.h; sourceTree = "<group>"; };
@@ -195,6 +206,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA1426C223E102EC009BD9C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FADECB742321F82D003052AD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -223,6 +241,7 @@
 				FA0E255722F9E131007DC512 /* nanonetime */,
 				FA0E256622F9E132007DC512 /* nanonetimext */,
 				FADECB782321F82D003052AD /* oneticon */,
+				FA1426C623E102EC009BD9C8 /* onetimeUITests */,
 				FA0E250022F9DB3E007DC512 /* Products */,
 				FAEA803D23CED40800A6D214 /* Frameworks */,
 			);
@@ -236,6 +255,7 @@
 				FA0E256222F9E132007DC512 /* nanonetimext.appex */,
 				FADECB772321F82D003052AD /* OneTIcon.app */,
 				FAEA804823CEF1D000A6D214 /* onetimespotlight.appex */,
+				FA1426C523E102EC009BD9C8 /* onetimeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -392,6 +412,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		FA1426C623E102EC009BD9C8 /* onetimeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FA1426C723E102EC009BD9C8 /* OTScreenshots.m */,
+				FA1426C923E102EC009BD9C8 /* Info.plist */,
+			);
+			path = onetimeUITests;
+			sourceTree = "<group>";
+		};
 		FA7F91642310D94F00FD2A04 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -518,6 +547,24 @@
 			productReference = FA0E256222F9E132007DC512 /* nanonetimext.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
+		FA1426C423E102EC009BD9C8 /* onetimeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA1426CE23E102EC009BD9C8 /* Build configuration list for PBXNativeTarget "onetimeUITests" */;
+			buildPhases = (
+				FA1426C123E102EC009BD9C8 /* Sources */,
+				FA1426C223E102EC009BD9C8 /* Frameworks */,
+				FA1426C323E102EC009BD9C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA1426CB23E102EC009BD9C8 /* PBXTargetDependency */,
+			);
+			name = onetimeUITests;
+			productName = onetimeUITests;
+			productReference = FA1426C523E102EC009BD9C8 /* onetimeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		FADECB762321F82D003052AD /* oneticon */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FADECB8F2321F82F003052AD /* Build configuration list for PBXNativeTarget "oneticon" */;
@@ -571,6 +618,10 @@
 					FA0E256122F9E132007DC512 = {
 						CreatedOnToolsVersion = 11.0;
 					};
+					FA1426C423E102EC009BD9C8 = {
+						CreatedOnToolsVersion = 11.3;
+						TestTargetID = FA0E24FE22F9DB3E007DC512;
+					};
 					FADECB762321F82D003052AD = {
 						CreatedOnToolsVersion = 11.0;
 					};
@@ -597,6 +648,7 @@
 				FA0E256122F9E132007DC512 /* nanonetimext */,
 				FADECB762321F82D003052AD /* oneticon */,
 				FAEA804723CEF1D000A6D214 /* onetimespotlight */,
+				FA1426C423E102EC009BD9C8 /* onetimeUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -623,6 +675,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		FA0E256022F9E132007DC512 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA1426C323E102EC009BD9C8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -697,6 +756,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA1426C123E102EC009BD9C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA1426C823E102EC009BD9C8 /* OTScreenshots.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FADECB732321F82D003052AD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -730,6 +797,11 @@
 			isa = PBXTargetDependency;
 			target = FA0E256122F9E132007DC512 /* nanonetimext */;
 			targetProxy = FA0E256422F9E132007DC512 /* PBXContainerItemProxy */;
+		};
+		FA1426CB23E102EC009BD9C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA0E24FE22F9DB3E007DC512 /* onetime */;
+			targetProxy = FA1426CA23E102EC009BD9C8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1015,6 +1087,40 @@
 			};
 			name = Release;
 		};
+		FA1426CC23E102EC009BD9C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				INFOPLIST_FILE = onetimeUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetimeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = onetime;
+			};
+			name = Debug;
+		};
+		FA1426CD23E102EC009BD9C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				INFOPLIST_FILE = onetimeUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetimeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = onetime;
+			};
+			name = Release;
+		};
 		FADECB8D2321F82F003052AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1121,6 +1227,15 @@
 			buildConfigurations = (
 				FA0E257422F9E132007DC512 /* Debug */,
 				FA0E257522F9E132007DC512 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA1426CE23E102EC009BD9C8 /* Build configuration list for PBXNativeTarget "onetimeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA1426CC23E102EC009BD9C8 /* Debug */,
+				FA1426CD23E102EC009BD9C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -38,6 +38,12 @@
         } else {
             [fileManager createDirectoryAtPath:pathHead withIntermediateDirectories:YES attributes:nil error:nil];
         }
+        NSMutableString *readme = [NSMutableString string];
+        // [readme appendFormat:@"SIMULATOR_VERSION_INFO=%s\n", getenv("SIMULATOR_VERSION_INFO")];
+        [readme appendFormat:@"SIMULATOR_DEVICE_NAME=%s\n", getenv("SIMULATOR_DEVICE_NAME")];
+        [readme appendFormat:@"SIMULATOR_RUNTIME_VERSION=%s\n", getenv("SIMULATOR_RUNTIME_VERSION")];
+        NSString *path = [pathHead stringByAppendingPathComponent:@"README.txt"];
+        [readme writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
     });
     NSString *path = [pathHead stringByAppendingPathComponent:name];
     return [screenshot.PNGRepresentation writeToFile:[path stringByAppendingPathExtension:@"png"] atomically:YES];
@@ -55,30 +61,30 @@
     XCUIElement *mainNavBar = app.navigationBars[@"One-Time Passwords"];
     
     [mainNavBar.buttons[@"Add"] tap];
-    [self _writeScreenshot:app.screenshot name:@"menu"];
+    [self _writeScreenshot:app.screenshot name:@"3_menu"];
     
     [app.sheets[@"Add Code"].scrollViews.otherElements.buttons[@"Manual Entry"] tap];
     XCUIElement *manualNavBar = app.navigationBars[@"Manual Entry"];
     [manualNavBar.staticTexts[@"Manual Entry"] tap]; /* we're not waiting on this screen long enough to get the screenshot */
-    [self _writeScreenshot:app.screenshot name:@"manual"];
+    [self _writeScreenshot:app.screenshot name:@"4_manual"];
     
     [manualNavBar.buttons[@"One-Time Passwords"] tap];
-    [self _writeScreenshot:app.screenshot name:@"home"];
+    [self _writeScreenshot:app.screenshot name:@"0_home"];
     
     [mainNavBar.buttons[@"Edit"] tap];
-    [self _writeScreenshot:app.screenshot name:@"edit"];
+    [self _writeScreenshot:app.screenshot name:@"5_edit"];
     [mainNavBar.buttons[@"Done"] tap];
     
     XCUIElement *searchField = mainNavBar.searchFields[@"Search"];
     [searchField tap];
     [searchField typeText:@"G"];
-    [self _writeScreenshot:app.screenshot name:@"search"];
+    [self _writeScreenshot:app.screenshot name:@"2_search"];
     [mainNavBar.buttons[@"Cancel"] tap];
     
     XCUIElement *table = app.tables.element;
     XCUIElement *twitter = [table.cells elementBoundByIndex:1];
     [twitter pressForDuration:1.2];
-    [self _writeScreenshot:app.screenshot name:@"copy"];
+    [self _writeScreenshot:app.screenshot name:@"1_copy"];
 }
 
 @end

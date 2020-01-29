@@ -49,12 +49,6 @@ One-Time Password (OTP) iOS client
 
 ### Screenshots
 
-<img align="left" width="46.5%" src="Screenshots/iOS_home.png"><img align="right" width="46.5%" src="Screenshots/iOS_copy.png">
-<img align="left" width="46.5%" src="Screenshots/iOS_search.png"><img align="right" width="46.5%" src="Screenshots/iOS_edit.png">
-<img align="left" width="46.5%" src="Screenshots/iOS_menu.png"><img align="right" width="46.5%" src="Screenshots/iOS_manual.png">
-<img align="left" width="46.5%" src="Screenshots/iOS_spotlight.png">
-<br>
-<img width="94%" src="Screenshots/macOS_home.png">
-<img width="94%" src="Screenshots/macOS_search.png">
-<img width="94%" src="Screenshots/macOS_edit.png">
-<img width="94%" src="Screenshots/macOS_manual.png">
+![Screenshots/iPhone12,5](Screenshots/iPhone12,5/0_home.png) ![Screenshots/iPhone12,5](Screenshots/iPhone12,5/1_copy.png)
+![Screenshots/iPhone12,5](Screenshots/iPhone12,5/2_search.png) ![Screenshots/iPhone12,5](Screenshots/iPhone12,5/3_menu.png)
+![Screenshots/iPhone12,5](Screenshots/iPhone12,5/4_manual.png) ![Screenshots/iPhone12,5](Screenshots/iPhone12,5/5_edit.png)

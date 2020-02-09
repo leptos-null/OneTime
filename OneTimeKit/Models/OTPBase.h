@@ -12,6 +12,18 @@
 #define OTPDigitPropertyKey @"null.leptos.onetime.base.digits"
 #define OTPAlgorithmPropertyKey @"null.leptos.onetime.base.algorithm"
 
+#if DEBUG
+#   define debugassert(e, msg) (__builtin_expect(!(e), 0) ? __assert_rtn(__func__, __FILE__, __LINE__, msg) : (void)0)
+#else
+#   define debugassert(e, msg) ((void)0)
+#endif
+
+#define OTKindofClass(obj, cls) ({ \
+    BOOL const _iskind = [obj isKindOfClass:[cls class]]; \
+    debugassert(_iskind || !obj, # obj " is not kind of " # cls); \
+    _iskind; \
+})
+
 typedef NS_ENUM(NSInteger, OTPropertiesVersion) {
     OTPropertiesVersionUnknown,
     OTPropertiesVersion1,

@@ -44,7 +44,7 @@
         switch (version) {
             case OTPropertiesVersion1: {
                 NSNumber *step = properties[OTPStepPropertyKey];
-                _step = step ? step.doubleValue : [[self class] defaultStep];
+                _step = OTKindofClass(step, NSNumber) ? step.doubleValue : [[self class] defaultStep];
             } break;
                 
             default:

@@ -126,7 +126,11 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
         if (![properties isKindOfClass:[NSDictionary class]]) {
             return nil;
         }
-        OTPropertiesVersion const version = [properties[OTPropertiesVersionPropertyKey] integerValue];
+        NSNumber *versionObj = properties[OTPropertiesVersionPropertyKey];
+        if (!OTKindofClass(versionObj, NSNumber)) {
+            return nil;
+        }
+        OTPropertiesVersion const version = versionObj.integerValue;
         OTPBase *generator;
         if (generatorType == OTPHash.type) {
             generator = [[OTPHash alloc] initWithKey:key properties:properties version:version];
@@ -136,9 +140,12 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
             return nil;
         }
         switch (version) {
-            case OTPropertiesVersion1:
-                _index = [properties[OTBagIndexPropertyKey] integerValue];
-                break;
+            case OTPropertiesVersion1: {
+                NSNumber *idxObj = properties[OTBagIndexPropertyKey];
+                if (OTKindofClass(idxObj, NSNumber)) {
+                    _index = idxObj.integerValue;
+                }
+            } break;
                 
             default:
                 break;

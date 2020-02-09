@@ -44,7 +44,7 @@
         switch (version) {
             case OTPropertiesVersion1: {
                 NSNumber *counter = properties[OTPCounterPropertyKey];
-                _counter = counter ? counter.unsignedLongLongValue : [[self class] defaultCounter];
+                _counter = OTKindofClass(counter, NSNumber) ? counter.unsignedLongLongValue : [[self class] defaultCounter];
             } break;
                 
             default:

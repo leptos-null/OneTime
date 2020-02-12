@@ -11,6 +11,7 @@
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
+#import "../../OneTimeKit/Models/_OTDemoBag.h"
 
 #import "../Models/NSString+OTDistance.h"
 #import "../Models/_OTBagScore.h"
@@ -70,7 +71,11 @@
 }
 
 - (void)updateDataSource {
+#if OTShouldUseDemoBags
+    _dataSource = _OTDemoBag.demoBags;
+#else
     _dataSource = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+#endif
 }
 
 - (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {

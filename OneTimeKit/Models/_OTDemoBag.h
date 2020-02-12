@@ -6,6 +6,10 @@
 //  Copyright © 2020 Leptos. All rights reserved.
 //
 
+#ifndef OTShouldUseDemoBags
+#   define OTShouldUseDemoBags 0
+#endif
+
 #import "OTBag.h"
 
 @interface _OTDemoBag : OTBag

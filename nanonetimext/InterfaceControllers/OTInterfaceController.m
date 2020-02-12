@@ -9,6 +9,8 @@
 #import "OTInterfaceController.h"
 #import "OTPassRowController.h"
 
+#import "../../OneTimeKit/Models/_OTDemoBag.h"
+
 @implementation OTInterfaceController
 
 - (void)didAppear {
@@ -37,25 +39,11 @@
 }
 
 - (void)updatePasscodesTable {
-#if TARGET_OS_SIMULATOR || 1 /* currently watchOS: "No iCloud Keychain" */
-    uint32_t const bagCount = arc4random_uniform(8) + 2;
-    NSMutableArray<OTBag *> *bags = [NSMutableArray arrayWithCapacity:bagCount];
-    for (uint32_t i = 0; i < bagCount; i++) {
-        OTPBase *generator = arc4random_uniform(2) ? [OTPTime new] : [OTPHash new];
-        OTBag *bag = [[OTBag alloc] initWithGenerator:generator];
-        /* Strings used for visual purposes only
-         *   Issuer
-         *   Is___r
-         *
-         *   account
-         *   ac___nt
-         */
-        bag.issuer  = [NSString stringWithFormat:@"Is%03dr",  arc4random_uniform(1000)];
-        bag.account = [NSString stringWithFormat:@"ac%03dnt", arc4random_uniform(1000)];
-        bags[i] = bag;
-    }
+    NSArray<OTBag *> *bags;
+#if OTShouldUseDemoBags
+    bags = _OTDemoBag.demoBags;
 #else
-    NSArray<OTBag *> *bags = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+    bags = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
 #endif
     [self.passcodesTable setNumberOfRows:bags.count withRowType:OTPassRowController.reusableIdentifier];
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {

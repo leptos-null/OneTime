@@ -10,6 +10,8 @@
 #import "OTPHash.h"
 #import "OTPTime.h"
 
+#if OTShouldUseDemoBags
+
 @implementation _OTDemoBag
 
 + (NSArray<OTBag *> *)keychainBags {
@@ -60,3 +62,5 @@
 }
 
 @end
+
+#endif /* OTShouldUseDemoBags */

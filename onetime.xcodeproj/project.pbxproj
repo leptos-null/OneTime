@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA02E56E23F3CBC300989277 /* _OTDemoBag.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE71A7723DE19D00079321A /* _OTDemoBag.m */; };
 		FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E250322F9DB3E007DC512 /* OTAppDelegate.m */; };
 		FA0E250F22F9DB40007DC512 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA0E250E22F9DB40007DC512 /* Assets.xcassets */; };
 		FA0E251522F9DB40007DC512 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0E251422F9DB40007DC512 /* main.m */; };
@@ -753,6 +754,7 @@
 				FA0E258D22F9F736007DC512 /* OTPTime.m in Sources */,
 				FAB40B9822FD1857007E607F /* OTPassRowController.m in Sources */,
 				FA0E256922F9E132007DC512 /* OTInterfaceController.m in Sources */,
+				FA02E56E23F3CBC300989277 /* _OTDemoBag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -986,6 +988,10 @@
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				"GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"OTShouldUseDemoBags=1",
+				);
 				INFOPLIST_FILE = onetime/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1006,6 +1012,10 @@
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				"GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"OTShouldUseDemoBags=1",
+				);
 				INFOPLIST_FILE = onetime/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1094,6 +1104,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"$(inherited)",
+					"OTShouldUseDemoBags=1",
+				);
 				INFOPLIST_FILE = onetimeUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1111,6 +1125,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"$(inherited)",
+					"OTShouldUseDemoBags=1",
+				);
 				INFOPLIST_FILE = onetimeUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -25,25 +25,37 @@
     static NSString *pathHead;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        const char *model = getenv("SIMULATOR_MODEL_IDENTIFIER");
-        NSCAssert(model, @"Screenshot collection should be run in the simulator");
+        NSFileManager *fileManager = NSFileManager.defaultManager;
+        
         NSString *compilePath = @__FILE__;
         NSString *root = compilePath.stringByDeletingLastPathComponent.stringByDeletingLastPathComponent;
+        assert([fileManager fileExistsAtPath:root]);
+        
+        const char *model = getenv("SIMULATOR_MODEL_IDENTIFIER");
+        NSCAssert(model, @"Screenshot collection should be run in the simulator");
         pathHead = [[root stringByAppendingPathComponent:@"Screenshots"] stringByAppendingPathComponent:@(model)];
         
-        NSFileManager *fileManager = NSFileManager.defaultManager;
         BOOL isDir = NO;
         if ([fileManager fileExistsAtPath:pathHead isDirectory:&isDir]) {
             NSCAssert(isDir, @"File exists at %@", pathHead);
         } else {
             [fileManager createDirectoryAtPath:pathHead withIntermediateDirectories:YES attributes:nil error:nil];
         }
+        
+        const char *const envKeys[] = {
+            /* "SIMULATOR_VERSION_INFO", */
+            "SIMULATOR_DEVICE_NAME",
+            "SIMULATOR_RUNTIME_VERSION",
+        };
+        const size_t envKeysCount = sizeof(envKeys)/sizeof(envKeys[0]);
+        const char *const *const envKeysEnd = envKeys + envKeysCount;
+        
         NSMutableString *readme = [NSMutableString string];
-        // [readme appendFormat:@"SIMULATOR_VERSION_INFO=%s\n", getenv("SIMULATOR_VERSION_INFO")];
-        [readme appendFormat:@"SIMULATOR_DEVICE_NAME=%s\n", getenv("SIMULATOR_DEVICE_NAME")];
-        [readme appendFormat:@"SIMULATOR_RUNTIME_VERSION=%s\n", getenv("SIMULATOR_RUNTIME_VERSION")];
+        for (const char *const *envKey = envKeys; envKey < envKeysEnd; envKey++) {
+            [readme appendFormat:@"%s=%s\n", *envKey, getenv(*envKey)];
+        }
         NSString *path = [pathHead stringByAppendingPathComponent:@"README.txt"];
-        [readme writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+        [readme writeToFile:path atomically:YES encoding:NSASCIIStringEncoding error:NULL];
     });
     NSString *path = [pathHead stringByAppendingPathComponent:name];
     return [screenshot.PNGRepresentation writeToFile:[path stringByAppendingPathExtension:@"png"] atomically:YES];

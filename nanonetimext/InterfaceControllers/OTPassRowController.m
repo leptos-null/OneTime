@@ -8,6 +8,8 @@
 
 #import "OTPassRowController.h"
 
+#import "../../OneTimeKit/Services/OTBagCenter.h"
+
 @implementation OTPassRowController {
     NSTimer *_validityTiming;
 }
@@ -72,10 +74,7 @@
         OTPHash *hotp = bag.generator;
         [hotp incrementCounter];
         [self updateTimingElements];
-        OSStatus syncStatus = [bag syncToKeychain];
-        if (syncStatus != errSecSuccess) {
-            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
-        }
+        [OTBagCenter.defaultCenter updateMetadata:bag];
     }
 }
 

@@ -9,6 +9,7 @@
 #import "OTInterfaceController.h"
 #import "OTPassRowController.h"
 
+#import "../../OneTimeKit/Services/OTBagCenter.h"
 #import "../../OneTimeKit/Models/_OTDemoBag.h"
 
 @implementation OTInterfaceController
@@ -43,7 +44,7 @@
 #if OTShouldUseDemoBags
     bags = _OTDemoBag.demoBags;
 #else
-    bags = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+    bags = [OTBagCenter.defaultCenter keychainBagsCache:NO];
 #endif
     [self.passcodesTable setNumberOfRows:bags.count withRowType:OTPassRowController.reusableIdentifier];
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {

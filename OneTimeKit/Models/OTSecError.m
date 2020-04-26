@@ -16,7 +16,7 @@ NSString *OTSecErrorToString(OSStatus status) {
         // todo: In a localized lookup, support statuses that are likely to be returned by keychain functions
         if (ret == nil) {
             int const unixErr = status - 100000;
-            if (unixErr <= sys_nerr) {
+            if (unixErr > 0 && unixErr <= sys_nerr) {
                 // Apple does `UNIX[%s]`
                 ret = @(sys_errlist[unixErr]);
             } else {
@@ -29,7 +29,7 @@ NSString *OTSecErrorToString(OSStatus status) {
 
 NSError *OTSecErrorToError(OSStatus status) {
     int const unixErr = status - 100000;
-    if (unixErr <= sys_nerr) {
+    if (unixErr > 0 && unixErr <= sys_nerr) {
         return [NSError errorWithDomain:NSPOSIXErrorDomain code:unixErr userInfo:@{
             NSLocalizedDescriptionKey : @(sys_errlist[unixErr])
         }];

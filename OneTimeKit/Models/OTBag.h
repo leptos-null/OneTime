@@ -17,9 +17,6 @@
 
 @interface OTBag : NSObject
 
-+ (NSArray<OTBag *> *)keychainBags;
-
-
 @property (strong, nonatomic, readonly) __kindof OTPBase *generator;
 
 @property (strong, nonatomic, readonly) NSString *uniqueIdentifier;
@@ -41,14 +38,7 @@
 @property (strong, nonatomic) NSString *issuer;
 @property (strong, nonatomic) NSString *account;
 @property (strong, nonatomic) NSString *comment;
-@property NSInteger index;
+@property (nonatomic) NSInteger index;
 NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context);
-
-// syncs current bag properties to the keychain
-// this method doesn't mutate the current object,
-// other than potentially updating the keychainAttributes property
-- (OSStatus)syncToKeychain;
-// deletes the key and other attributes from keychain, not recoverable
-- (OSStatus)deleteFromKeychain;
 
 @end

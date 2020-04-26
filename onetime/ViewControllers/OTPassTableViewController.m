@@ -27,6 +27,7 @@
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
     if (self = [super initWithCoder:coder]) {
+        OTBagCenter.defaultCenter.observer = self;
         [self updateDataSource];
     }
     return self;
@@ -74,40 +75,8 @@
 #if OTShouldUseDemoBags
     _dataSource = _OTDemoBag.demoBags;
 #else
-    _dataSource = [OTBag.keychainBags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+    _dataSource = [OTBagCenter.defaultCenter keychainBagsCache:NO];
 #endif
-}
-
-- (void)addBagsToTable:(NSArray<OTBag *> *)bags scroll:(BOOL)shouldScroll animated:(BOOL)animated {
-    NSInteger const rowTarget = _dataSource.count;
-    NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
-    NSMutableArray<OTBag *> *newSource = [_dataSource mutableCopy];
-    [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
-        NSInteger const row = rowTarget + idx;
-        bag.index = row;
-        OSStatus syncStatus = [bag syncToKeychain];
-        if (syncStatus == errSecSuccess) {
-            newPaths[idx] = [NSIndexPath indexPathForRow:row inSection:0];
-            newSource[row] = bag;
-        } else {
-            NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
-            NSString *message = [@"Failed to add token to keychain: " stringByAppendingString:errorStr];
-            [self surfaceUserMessage:message viewHint:nil dismissAfter:0];
-        }
-    }];
-    
-    _dataSource = [newSource copy];
-    if (!self.searchController.active) {
-        UITableViewRowAnimation anim = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
-        [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:anim];
-        
-        if (animated) {
-            for (NSIndexPath *indexPath in newPaths) {
-                [self _accentuateRowAtIndexPath:indexPath duration:0.25];
-            }
-        }
-    }
 }
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier {
@@ -228,7 +197,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (bags.count) {
                         [picker dismissViewControllerAnimated:YES completion:NULL];
-                        [weakself addBagsToTable:bags scroll:YES animated:YES];
+                        [OTBagCenter.defaultCenter addBags:bags];
                     } else {
                         [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
                     }
@@ -236,6 +205,59 @@
             }];
         });
     }
+}
+
+// MARK: - OTBagCenterObserver
+
+- (void)bagCenter:(OTBagCenter *)bagCenter addedBags:(NSArray<OTBag *> *)bags {
+    NSInteger const originalDataSourceCount = _dataSource.count;
+    
+    _dataSource = [bagCenter keychainBagsCache:YES];
+    if (!self.searchController.active) {
+        NSInteger const addedCount = bags.count;
+        NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
+        
+        for (NSInteger indexRow = 0; indexRow < addedCount; indexRow++) {
+            newPaths[indexRow] = [NSIndexPath indexPathForRow:(originalDataSourceCount + indexRow) inSection:0];
+        }
+        
+        [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        for (NSIndexPath *indexPath in newPaths) {
+            [self _accentuateRowAtIndexPath:indexPath duration:0.25];
+        }
+    }
+}
+
+- (void)bagCenter:(OTBagCenter *)bagCenter removedBags:(NSArray<OTBag *> *)bags {
+    NSMutableArray<NSIndexPath *> *removePaths = [NSMutableArray arrayWithCapacity:bags.count];
+    [[self activeDataSource] enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger row, BOOL *stop) {
+        if ([bags indexOfObjectIdenticalTo:bag] != NSNotFound) {
+            [removePaths addObject:[NSIndexPath indexPathForRow:row inSection:0]];
+        }
+    }];
+    
+    _dataSource = [bagCenter keychainBagsCache:YES];
+    
+    NSMutableArray<OTBag *> *filterPatch = [_filteredSource mutableCopy];
+    for (OTBag *bag in bags) {
+        [filterPatch removeObjectIdenticalTo:bag];
+    }
+    _filteredSource = [filterPatch copy];
+    
+    [self.tableView deleteRowsAtIndexPaths:removePaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)bagCenter:(OTBagCenter *)bagCenter bag:(OTBag *)bag encounteredError:(NSError *)error {
+    NSLog(@"bagCenter: %@ bag: %@ encounteredError: %@", bagCenter, bagCenter, error);
+    NSString *message = [NSString stringWithFormat:@"'%@' ('%@') encountered: %@", bag.issuer, bag.account, error.localizedDescription];
+    
+    NSUInteger bagIndex = [[self activeDataSource] indexOfObjectIdenticalTo:bag];
+    UIView *viewHint = nil;
+    if (bagIndex != NSNotFound) {
+        NSIndexPath *bagPath = [NSIndexPath indexPathForRow:bagIndex inSection:0];
+        viewHint = [self.tableView cellForRowAtIndexPath:bagPath];
+    }
+    [self surfaceUserMessage:message viewHint:viewHint dismissAfter:0];
 }
 
 // MARK: - OTQRScanControllerDelegate
@@ -249,7 +271,7 @@
             // we're good- stop receiving delegate calls (a little bit of a hack)
             controller.delegate = nil;
             [controller.navigationController popToViewController:self animated:YES];
-            [self addBagsToTable:@[ bag ] scroll:YES animated:YES];
+            [OTBagCenter.defaultCenter addBags:@[ bag ]];
             return;
         }
     }
@@ -265,7 +287,7 @@
 
 - (void)manualEntryController:(OTManualEntryViewController *)controller createdBag:(OTBag *)bag {
     [controller.navigationController popToViewController:self animated:YES];
-    [self addBagsToTable:@[ bag ] scroll:YES animated:YES];
+    [OTBagCenter.defaultCenter addBags:@[ bag ]];
 }
 
 // MARK: - UITableViewDataSource
@@ -287,11 +309,7 @@
     cell.bag = self.activeDataSource[indexPath.row];
     if (cell.bag.index != indexPath.row && !self.searchController.active) {
         cell.bag.index = indexPath.row;
-        OSStatus syncStatus = [cell.bag syncToKeychain];
-        if (syncStatus != errSecSuccess) {
-            // this isn't a user initiated event, the user doesn't need to know about it (but we might)
-            NSLog(@"syncToKeychain: %@", OTSecErrorToString(syncStatus));
-        }
+        [OTBagCenter.defaultCenter updateMetadata:cell.bag];
     }
     return cell;
 }
@@ -307,7 +325,6 @@
     NSParameterAssert(indexPath.section == 0);
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        __weak __typeof(self) weakself = self;
         OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         OTBag *bag = cell.bag;
         
@@ -317,32 +334,7 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
         [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            OSStatus syncStatus = [bag deleteFromKeychain];
-            if (syncStatus != errSecSuccess) {
-                NSString *errorStr = OTSecErrorToString(syncStatus);
-                NSLog(@"deleteFromKeychain: %@ (%d)", errorStr, (int)syncStatus);
-                NSString *message = [@"Failed to delete from keychain: " stringByAppendingString:errorStr];
-                [weakself surfaceUserMessage:message viewHint:cell dismissAfter:0];
-                return;
-            }
-            if (weakself) {
-                __typeof(self) strongself = weakself;
-                
-                NSMutableArray<OTBag *> *dataSourcePatch = [strongself->_dataSource mutableCopy];
-                NSUInteger index = [dataSourcePatch indexOfObjectIdenticalTo:bag];
-                if (index != NSNotFound) {
-                    [dataSourcePatch removeObjectAtIndex:index];
-                }
-                strongself->_dataSource = [dataSourcePatch copy];
-                
-                dataSourcePatch = [strongself->_filteredSource mutableCopy];
-                index = [dataSourcePatch indexOfObjectIdenticalTo:bag];
-                if (index != NSNotFound) {
-                    [dataSourcePatch removeObjectAtIndex:index];
-                }
-                strongself->_filteredSource = [dataSourcePatch copy];
-            }
-            [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [OTBagCenter.defaultCenter removeBags:@[ bag ]];
         }]];
         [self presentViewController:alert animated:YES completion:NULL];
     } else {
@@ -365,20 +357,9 @@
     OTBag *target = bags[fromIndexPath.row];
     [bags removeObjectAtIndex:fromIndexPath.row];
     [bags insertObject:target atIndex:toIndexPath.row];
-    BOOL hasPresentedErr = NO;
     for (NSInteger i = start; i <= stop; i++) {
         bags[i].index = i;
-        OSStatus syncStatus = [bags[i] syncToKeychain];
-        if (syncStatus != errSecSuccess) {
-            NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
-            if (!hasPresentedErr) {
-                hasPresentedErr = YES;
-                UIView *viewHint = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-                NSString *message = [@"Failed to sync keychain token order: " stringByAppendingString:errorStr];
-                [self surfaceUserMessage:message viewHint:viewHint dismissAfter:0];
-            }
-        }
+        [OTBagCenter.defaultCenter updateMetadata:bags[i]];
     }
     _dataSource = [bags copy];
 }
@@ -484,7 +465,7 @@
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (bags.count) {
-                        [weakself addBagsToTable:bags scroll:YES animated:YES];
+                        [OTBagCenter.defaultCenter addBags:bags];
                     } else {
                         [weakself surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0];
                     }

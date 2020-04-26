@@ -11,6 +11,7 @@
 #import "../ViewControllers/OTPassTableViewController.h"
 #import "../ViewControllers/UIViewController+OTDismissChildren.h"
 #import "../../OneTimeKit/Models/OTBag.h"
+#import "../../OneTimeKit/Services/OTBagCenter.h"
 #import "../../OneTimeKit/Models/OTBag+CSItem.h"
 
 static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
@@ -41,21 +42,9 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
     if (!bag) {
         return NO;
     }
-    UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
     
-    OTPassTableViewController *target = nil;
-    for (__kindof UIViewController *controller in navController.viewControllers) {
-        if ([controller isKindOfClass:[OTPassTableViewController class]]) {
-            target = controller;
-        }
-    }
-    if (target) {
-        [target dismissAllChilderenAnimated:NO completion:^{
-            [target addBagsToTable:@[ bag ] scroll:YES animated:YES];
-        }];
-        return YES;
-    }
-    return NO;
+    [OTBagCenter.defaultCenter addBags:@[ bag ]];
+    return YES;
 }
 
 - (void)application:(UIApplication *)app performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {

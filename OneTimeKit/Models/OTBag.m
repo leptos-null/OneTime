@@ -7,33 +7,12 @@
 //
 
 #import "OTBag.h"
+#import "OTBag+OTKeychain.h"
 #import "OTPHash.h"
 #import "OTPTime.h"
 #import "NSData+OTBase32.h"
 
 @implementation OTBag
-
-+ (NSArray<OTBag *> *)keychainBags {
-    NSDictionary *attribs = @{
-        (NSString *)kSecClass : (NSString *)kSecClassGenericPassword,
-        (NSString *)kSecAttrSynchronizable : @(YES),
-        (NSString *)kSecMatchLimit : (NSString *)kSecMatchLimitAll,
-        (NSString *)kSecReturnAttributes : @(YES),
-        (NSString *)kSecReturnData : @(YES)
-    };
-    
-    CFTypeRef result = NULL;
-    SecItemCopyMatching((CFDictionaryRef)attribs, &result);
-    NSArray<NSDictionary *> *matching = CFBridgingRelease(result);
-    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:matching.count];
-    for (NSDictionary *attrs in matching) {
-        OTBag *bag = [[self alloc] initWithKeychainAttributes:attrs];
-        if (bag) {
-            [ret addObject:bag];
-        }
-    }
-    return ret;
-}
 
 static inline __pure2 char singleHexChar(uint8_t hex) {
     hex &= 0xf;
@@ -168,6 +147,32 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
     };
 }
 
+
+- (NSURL *)URL {
+    NSURLQueryItem *issuerItem = [NSURLQueryItem queryItemWithName:@"issuer" value:self.issuer];
+    
+    NSURLComponents *urlComps = [NSURLComponents new];
+    urlComps.scheme = @"otpauth";
+    urlComps.host = [[self.generator class] domain];
+    urlComps.path = [NSString stringWithFormat:@"/%@:%@", self.issuer, self.account];
+    urlComps.queryItems = [self.generator.queryItems arrayByAddingObject:issuerItem];
+    
+    return urlComps.URL;
+}
+
+NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
+    return a.index - b.index;
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p> generator: %@, issuer: %@, account: %@, index: %@",
+            [self class], self, self.generator, self.issuer, self.account, @(self.index)];
+}
+
+@end
+
+@implementation OTBag (OTKeychain)
+
 - (OSStatus)syncToKeychain {
     NSMutableDictionary *properties = [self.generator.properties mutableCopy];
     properties[OTBagIndexPropertyKey] = @(self.index);
@@ -212,29 +217,8 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
     return ret;
 }
 
-- (NSURL *)URL {
-    NSURLQueryItem *issuerItem = [NSURLQueryItem queryItemWithName:@"issuer" value:self.issuer];
-    
-    NSURLComponents *urlComps = [NSURLComponents new];
-    urlComps.scheme = @"otpauth";
-    urlComps.host = [[self.generator class] domain];
-    urlComps.path = [NSString stringWithFormat:@"/%@:%@", self.issuer, self.account];
-    urlComps.queryItems = [self.generator.queryItems arrayByAddingObject:issuerItem];
-    
-    return urlComps.URL;
-}
-
-NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
-    return a.index - b.index;
-}
-
 - (OSStatus)deleteFromKeychain {
     return SecItemDelete((__bridge CFDictionaryRef)[self _uniqueKeychainQuery]);
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p> generator: %@, issuer: %@, account: %@, index: %@",
-            [self class], self, self.generator, self.issuer, self.account, @(self.index)];
 }
 
 @end

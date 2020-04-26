@@ -8,6 +8,7 @@
 
 #import "OTPassTableViewCell.h"
 #import "../Services/OTSecondKeeper.h"
+#import "../../OneTimeKit/Services/OTBagCenter.h"
 
 @implementation OTPassTableViewCell {
     uint64_t _lastFactor;
@@ -168,13 +169,7 @@
         OTPHash *hotp = bag.generator;
         [hotp incrementCounter];
         self.passcodeLabel.text = hotp.password;
-        OSStatus syncStatus = [bag syncToKeychain];
-        if (syncStatus != errSecSuccess) {
-            NSString *errorStr = OTSecErrorToString(syncStatus);
-            NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
-            NSString *message = [@"Failed to update token counter in keychain: " stringByAppendingString:errorStr];
-            [self.messageSurfacer surfaceUserMessage:message viewHint:self dismissAfter:0];
-        }
+        [OTBagCenter.defaultCenter updateMetadata:bag];
     }
 }
 
@@ -215,13 +210,7 @@
     } else {
         return;
     }
-    OSStatus syncStatus = [bag syncToKeychain];
-    if (syncStatus != errSecSuccess) {
-        NSString *errorStr = OTSecErrorToString(syncStatus);
-        NSLog(@"syncToKeychain: %@ (%d)", errorStr, (int)syncStatus);
-        NSString *message = [@"Failed to update token metadata in keychain: " stringByAppendingString:errorStr];
-        [self.messageSurfacer surfaceUserMessage:message viewHint:textField dismissAfter:0];
-    }
+    [OTBagCenter.defaultCenter updateMetadata:bag];
 }
 
 // MARK: - UIResponder overrides

@@ -9,12 +9,13 @@
 #import "OTIndexRequestHandler.h"
 #import "../OneTimeKit/Models/OTBag+CSItem.h"
 #import "../OneTimeKit/Models/NSArray+OTMap.h"
+#import "../OneTimeKit/Services/OTBagCenter.h"
 
 @implementation OTIndexRequestHandler
 
 - (void)searchableIndex:(CSSearchableIndex *)searchableIndex
 reindexAllSearchableItemsWithAcknowledgementHandler:(void (^)(void))acknowledgementHandler {
-    NSArray<CSSearchableItem *> *items = [OTBag.keychainBags map:^CSSearchableItem *(OTBag *bag) {
+    NSArray<CSSearchableItem *> *items = [[OTBagCenter.defaultCenter keychainBagsCache:NO] map:^CSSearchableItem *(OTBag *bag) {
         return bag.searchableItem;
     }];
     [searchableIndex deleteAllSearchableItemsWithCompletionHandler:^(NSError *delErr) {
@@ -36,7 +37,7 @@ reindexAllSearchableItemsWithAcknowledgementHandler:(void (^)(void))acknowledgem
 reindexSearchableItemsWithIdentifiers:(NSArray<NSString *> *)identifiers
  acknowledgementHandler:(void (^)(void))acknowledgementHandler {
     NSMutableArray<NSString *> *requestIDs = [identifiers mutableCopy];
-    NSArray<CSSearchableItem *> *items = [OTBag.keychainBags compactMap:^CSSearchableItem *(OTBag *bag) {
+    NSArray<CSSearchableItem *> *items = [[OTBagCenter.defaultCenter keychainBagsCache:NO] compactMap:^CSSearchableItem *(OTBag *bag) {
         NSUInteger indx = [requestIDs indexOfObject:bag.uniqueIdentifier];
         if (indx == NSNotFound) {
             return nil;

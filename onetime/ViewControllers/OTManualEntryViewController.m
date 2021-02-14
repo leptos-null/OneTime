@@ -158,7 +158,7 @@
     OTInfoViewController *info = [OTInfoViewController new];
     [info loadViewIfNeeded];
     info.textView.text = text;
-    [info updatePreferredContentSizeForMaxSize:self.view.bounds.size];
+    [info updatePreferredContentSizeForViewController:self];
     
     info.popoverPresentationController.sourceView = self.view;
     info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];

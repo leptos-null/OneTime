@@ -18,21 +18,24 @@
     return controller;
 }
 
+- (void)updatePreferredContentSizeForViewController:(UIViewController *)viewController {
+    CGSize size = viewController.view.frame.size;
+    // approximation of the inset popovers have from the edge of their presenter
+    size.width -= 38;
+    size.height -= 38;
+    [self updatePreferredContentSizeForMaxSize:size];
+}
+
 - (void)updatePreferredContentSizeForMaxSize:(CGSize)maxSize {
-    NSAttributedString *text = self.textView.attributedText;
-    CGRect textRender = [text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    CGSize size = textRender.size;
-    // per storyboard constraints
-    size.height += 16;
-    size.width += 16;
+    // a representation of storyboard constraints
+    UIEdgeInsets storyboardConstraints = UIEdgeInsetsMake(8, 8, 8, 8);
     
-    UIEdgeInsets containerInsets = self.textView.textContainerInset;
-    size.width += (containerInsets.left + containerInsets.right);
-    size.height += (containerInsets.top + containerInsets.bottom);
+    maxSize.width -= (storyboardConstraints.left + storyboardConstraints.right);
+    maxSize.height -= (storyboardConstraints.top + storyboardConstraints.bottom);
     
-    UIEdgeInsets marginInsets = self.textView.layoutMargins;
-    size.width += (marginInsets.left + marginInsets.right);
-    size.height += (marginInsets.top + marginInsets.bottom);
+    CGSize size = [self.textView sizeThatFits:maxSize];
+    size.width += (storyboardConstraints.left + storyboardConstraints.right);
+    size.height += (storyboardConstraints.top + storyboardConstraints.bottom);
     
     self.preferredContentSize = size;
 }
@@ -40,7 +43,7 @@
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
     
-    [self updatePreferredContentSizeForMaxSize:self.presentingViewController.view.bounds.size];
+    [self updatePreferredContentSizeForViewController:self.presentingViewController];
 }
 
 // MARK: - UIAdaptivePresentationControllerDelegate

@@ -17,7 +17,7 @@
     OTInfoViewController *info = [OTInfoViewController new];
     [info loadViewIfNeeded];
     info.textView.text = message;
-    [info updatePreferredContentSizeForMaxSize:sourceView.bounds.size];
+    [info updatePreferredContentSizeForViewController:self];
     
     CGRect sourceRect = viewHint ? ({
         [sourceView convertRect:viewHint.frame fromView:viewHint.superview];

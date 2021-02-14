@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) IBOutlet UITextView *textView;
 
+- (void)updatePreferredContentSizeForViewController:(UIViewController *)viewController;
 - (void)updatePreferredContentSizeForMaxSize:(CGSize)maxSize;
 
 @end

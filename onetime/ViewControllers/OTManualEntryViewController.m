@@ -23,15 +23,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // I'm setting this in the storyboard, but for some reason it's not working
-    self.lengthStepper.value = 6;
+    self.lengthStepper.value = OTPBase.defaultDigits;
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
     saveButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = saveButton;
     
-    _counterStoredValue = @"1";
-    _timeStoredValue = @"30";
+    _counterStoredValue = [@(OTPHash.defaultCounter) stringValue];
+    _timeStoredValue = [@(OTPTime.defaultStep) stringValue];
     [self _updateFactorFieldForSelectedSegment];
     
     _algorithms = @[
@@ -42,6 +41,7 @@
         @"SHA512",
         @"SHA224"
     ];
+    [self.algorithmPicker selectRow:OTPBase.defaultAlgorithm inComponent:0 animated:NO];
 }
 
 - (void)saveFieldsToBagRequest {

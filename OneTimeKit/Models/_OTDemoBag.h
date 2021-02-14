@@ -12,9 +12,10 @@
 
 #import "OTBag.h"
 
+/// Bags used for demonstration purposes.
+/// These bags will not, and are not able to sync to Keychain
 @interface _OTDemoBag : OTBag
 
-+ (NSArray<OTBag *> *)keychainBags NS_UNAVAILABLE;
 + (NSArray<OTBag *> *)demoBags;
 
 @end

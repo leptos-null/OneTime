@@ -40,12 +40,7 @@
 }
 
 - (void)updatePasscodesTable {
-    NSArray<OTBag *> *bags;
-#if OTShouldUseDemoBags
-    bags = _OTDemoBag.demoBags;
-#else
-    bags = [OTBagCenter.defaultCenter keychainBagsCache:NO];
-#endif
+    NSArray<OTBag *> *bags = [OTBagCenter.defaultCenter keychainBagsCache:NO];
     [self.passcodesTable setNumberOfRows:bags.count withRowType:OTPassRowController.reusableIdentifier];
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
         OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];

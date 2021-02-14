@@ -7,16 +7,13 @@
 //
 
 #import "_OTDemoBag.h"
+#import "OTBag+OTKeychain.h"
 #import "OTPHash.h"
 #import "OTPTime.h"
 
 #if OTShouldUseDemoBags
 
 @implementation _OTDemoBag
-
-+ (NSArray<OTBag *> *)keychainBags {
-    return nil;
-}
 
 + (NSArray<OTBag *> *)demoBags {
     static NSArray<OTBag *> *bags;

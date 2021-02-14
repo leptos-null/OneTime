@@ -10,7 +10,9 @@
 
 @interface NSArray<__covariant ObjectType> (OTMap)
 
+/// Returns an array containing the results of calling the given transformation with each element of the receiver
 - (NSArray *)map:(id(^)(ObjectType obj))transform;
+/// Returns an array containing the non-nil results of calling the given transformation with each element of the receiver
 - (NSArray *)compactMap:(id(^)(ObjectType obj))transform;
 
 @end

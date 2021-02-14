@@ -7,7 +7,9 @@
 //
 
 #import "OTBagCenter.h"
-#import "OTBag+OTKeychain.h"
+#import "../Models/OTBag+OTKeychain.h"
+#import "../Models/_OTDemoBag.h"
+#import "../Models/NSArray+OTMap.h"
 
 @implementation OTBagCenter {
     NSArray<OTBag *> *_bagCache;
@@ -24,6 +26,9 @@
 
 - (NSArray<OTBag *> *)keychainBagsCache:(BOOL)hitCache {
     if (!_bagCache || !hitCache) {
+#if OTShouldUseDemoBags
+        _bagCache = [_OTDemoBag demoBags];
+#else
         NSDictionary *attribs = @{
             (NSString *)kSecClass : (NSString *)kSecClassGenericPassword,
             (NSString *)kSecAttrSynchronizable : @(YES),
@@ -35,14 +40,11 @@
         CFTypeRef result = NULL;
         SecItemCopyMatching((CFDictionaryRef)attribs, &result);
         NSArray<NSDictionary *> *matching = CFBridgingRelease(result);
-        NSMutableArray *bags = [NSMutableArray arrayWithCapacity:matching.count];
-        for (NSDictionary *attrs in matching) {
-            OTBag *bag = [[OTBag alloc] initWithKeychainAttributes:attrs];
-            if (bag) {
-                [bags addObject:bag];
-            }
-        }
+        NSArray<OTBag *> *bags = [matching compactMap:^OTBag *(NSDictionary *attrs) {
+            return [[OTBag alloc] initWithKeychainAttributes:attrs];
+        }];
         _bagCache = [bags sortedArrayUsingFunction:OTBagCompareUsingIndex context:NULL];
+#endif
     }
     return _bagCache;
 }

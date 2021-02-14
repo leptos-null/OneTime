@@ -21,16 +21,17 @@ typedef NS_OPTIONS(NSInteger, NSDataBase32DecodingOptions) {
 
 @interface NSData (OTBase32)
 
-// Create an NSData from a Base-32 encoded NSString using the given options. By default, returns nil when the input is not recognized as valid Base-32.
+/// Create an NSData from a Base-32 encoded NSString using the given options.
+/// By default, returns nil when the input is not recognized as valid Base-32.
 - (instancetype)initWithBase32EncodedString:(NSString *)base32String options:(NSDataBase32DecodingOptions)options;
 
-// Create a Base-32 encoded NSString from the receiver's contents using the given options.
+/// Create a Base-32 encoded NSString from the receiver's contents using the given options.
 - (NSString *)base32EncodedStringWithOptions:(NSDataBase32EncodingOptions)options;
 
-// Create an NSData from a Base-32, UTF-8 encoded NSData. By default, returns nil when the input is not recognized as valid Base-32.
+/// Create an NSData from a Base-32, UTF-8 encoded NSData. By default, returns nil when the input is not recognized as valid Base-32.
 - (instancetype)initWithBase32EncodedData:(NSData *)base32Data options:(NSDataBase32DecodingOptions)options;
 
-// Create a Base-32, UTF-8 encoded NSData from the receiver's contents using the given options.
+/// Create a Base-32, UTF-8 encoded NSData from the receiver's contents using the given options.
 - (NSData *)base32EncodedDataWithOptions:(NSDataBase32EncodingOptions)options;
 
 @end

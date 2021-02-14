@@ -6,9 +6,9 @@
 //  Copyright © 2020 Leptos. All rights reserved.
 //
 
-#import "OTBag+CSItem.h"
-
 #import <CoreServices/CoreServices.h>
+
+#import "OTBag+CSItem.h"
 
 @implementation OTBag (CSItem)
 

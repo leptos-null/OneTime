@@ -23,8 +23,9 @@
 
 @property (strong, nonatomic, readonly) NSDictionary *keychainAttributes; // nil if not added to keychain
 
+/// Creates a new bag with @c generator
 - (instancetype)initWithGenerator:(OTPBase *)generator;
-
+/// Creates a bag from Keychain attributes
 - (instancetype)initWithKeychainAttributes:(NSDictionary *)attributes;
 
 // https://github.com/google/google-authenticator/wiki/Key-Uri-Format
@@ -35,9 +36,16 @@
 + (instancetype)new NS_UNAVAILABLE;
 
 // modifying any of these values should be accompanied by a subsequent `syncToKeychain` call
+
+/// Human-readable string indicating the provider or service the receiver is associated with
+/// @discussion For example, "GitHub"
 @property (strong, nonatomic) NSString *issuer;
+/// Human-readable string indicating the account the receiver is associated with
+/// @discussion For example, "leptos_null"
 @property (strong, nonatomic) NSString *account;
+/// A user-provided comment
 @property (strong, nonatomic) NSString *comment;
+/// The index for which the receiver should appear in UI elements
 @property (nonatomic) NSInteger index;
 NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context);
 

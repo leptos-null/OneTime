@@ -21,7 +21,7 @@
 
 - (uint64_t)factorForDate:(NSDate *)date;
 
-// when the period for the next step will start after a given date
+/// The date when a @c password issued at @c date will expire
 - (NSDate *)nextStepPeriodForDate:(NSDate *)date;
 
 @end

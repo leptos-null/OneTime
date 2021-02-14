@@ -72,11 +72,7 @@
 }
 
 - (void)updateDataSource {
-#if OTShouldUseDemoBags
-    _dataSource = _OTDemoBag.demoBags;
-#else
     _dataSource = [OTBagCenter.defaultCenter keychainBagsCache:NO];
-#endif
 }
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier {

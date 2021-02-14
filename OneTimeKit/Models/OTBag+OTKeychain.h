@@ -11,11 +11,12 @@
 // Private
 @interface OTBag (OTKeychain)
 
-// syncs current bag properties to the keychain
-// this method doesn't mutate the current object,
-// other than potentially updating the keychainAttributes property
+/// Sync current bag properties to Keychain
+/// @discussion This method does not mutate the receiver object,
+///   other than potentially updating the keychainAttributes property
 - (OSStatus)syncToKeychain;
-// deletes the key and other attributes from keychain, not recoverable
+/// Deletes the key and other attributes from Keychain
+/// @note Not recoverable
 - (OSStatus)deleteFromKeychain;
 
 @end

@@ -135,7 +135,7 @@ static BOOL CCDigestLengthForHmacAlgorithm(CCHmacAlgorithm algorithm, size_t *le
                 alg = kCCHmacAlgSHA224;
             }
         } else if ([queryItem.name isEqualToString:@"secret"]) {
-            key = [[NSData alloc] initWithBase32EncodedString:queryItem.value options:0];
+            key = [[NSData alloc] initWithBase32EncodedString:queryItem.value options:NSDataBase32DecodingOptionsNone];
         } else if ([queryItem.name isEqualToString:@"digits"]) {
             digits = queryItem.value.integerValue;
         }

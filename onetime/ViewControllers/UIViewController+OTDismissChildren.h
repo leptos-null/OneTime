@@ -10,7 +10,7 @@
 
 @interface UIViewController (OTDismissChildren)
 
-/// dismiss all childeren view controllers on the navigation controller, and any presented view controllers
+/// Dismiss all childeren view controllers on the navigation controller, and any presented view controllers
 - (void)dismissAllChilderenAnimated:(BOOL)animated completion:(void(^)(void))completion;
 
 @end

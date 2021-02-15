@@ -36,12 +36,42 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem *editButtonItem = self.editButtonItem;
+    UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:nil action:nil];
     self.navigationItem.rightBarButtonItems = @[
-        self.editButtonItem,
-        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(_addButtonHit:)]
+        editButtonItem,
+        saveButtonItem
     ];
-    self.editButtonItem.target = self;
-    self.editButtonItem.action = @selector(_editButtonHit:);
+    editButtonItem.target = self;
+    editButtonItem.action = @selector(_editButtonHit:);
+    
+    if (@available(iOS 14.0, *)) {
+        __weak __typeof(self) weakself = self;
+        
+        NSMutableArray<UIAction *> *children = [NSMutableArray array];
+        if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+            UIImage *cameraImage = [UIImage systemImageNamed:@"camera"];
+            UIAction *liveScan = [UIAction actionWithTitle:@"Scan QR Code (Live)" image:cameraImage identifier:nil handler:^(UIAction *action) {
+                [weakself _pushLiveScanController:action.title];
+            }];
+            [children addObject:liveScan];
+        }
+        UIImage *qrImage = [UIImage systemImageNamed:@"qrcode"];
+        UIAction *savedScan = [UIAction actionWithTitle:@"Scan QR Code (Saved)" image:qrImage identifier:nil handler:^(UIAction *action) {
+            [weakself _pushSavedScanController:action.title];
+        }];
+        [children addObject:savedScan];
+        UIImage *writeImage = [UIImage systemImageNamed:@"rectangle.and.pencil.and.ellipsis"];
+        UIAction *manualEntry = [UIAction actionWithTitle:@"Manual Entry" image:writeImage identifier:nil handler:^(UIAction *action) {
+            [weakself _pushManualEntryController:action.title];
+        }];
+        [children addObject:manualEntry];
+        
+        saveButtonItem.menu = [UIMenu menuWithTitle:@"Add Code" children:children];
+    } else {
+        saveButtonItem.target = self;
+        saveButtonItem.action = @selector(_addButtonHit:);
+    }
     
     // Settings should include local auth, code display/format preferences
     // self.navigationItem.leftBarButtonItem = /* TODO: Settings */;
@@ -106,29 +136,41 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
     if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Live)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            OTQRScanViewController *qrScanner = [OTQRScanViewController new];
-            qrScanner.delegate = weakself;
-            qrScanner.title = action.title;
-            [weakself.navigationController pushViewController:qrScanner animated:YES];
+            [weakself _pushLiveScanController:action.title];
         }]];
     }
     if (@available(iOS 11.0, *)) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            UIImagePickerController *imagePicker = [UIImagePickerController new];
-            imagePicker.delegate = weakself;
-            [weakself presentViewController:imagePicker animated:YES completion:NULL];
+            [weakself _pushSavedScanController:action.title];
         }]];
     }
     [alert addAction:[UIAlertAction actionWithTitle:@"Manual Entry" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSBundle *manualBundle = [NSBundle bundleForClass:[OTManualEntryViewController class]];
-        UIStoryboard *manualStoryboard = [UIStoryboard storyboardWithName:@"Manual" bundle:manualBundle];
-        OTManualEntryViewController *manual = [manualStoryboard instantiateInitialViewController];
-        manual.delegate = weakself;
-        manual.title = action.title;
-        [weakself.navigationController pushViewController:manual animated:YES];
+        [weakself _pushManualEntryController:action.title];
     }]];
     alert.popoverPresentationController.barButtonItem = button;
     [self presentViewController:alert animated:YES completion:NULL];
+}
+
+- (void)_pushLiveScanController:(NSString *)title {
+    OTQRScanViewController *qrScanner = [OTQRScanViewController new];
+    qrScanner.delegate = self;
+    qrScanner.title = title;
+    [self.navigationController pushViewController:qrScanner animated:YES];
+}
+// this API is available prior to iOS 11, however the API used in the delegate callback
+//   is iOS 11+ so don't setup, otherwise the
+- (void)_pushSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0)) {
+    UIImagePickerController *imagePicker = [UIImagePickerController new];
+    imagePicker.delegate = self;
+    [self presentViewController:imagePicker animated:YES completion:NULL];
+}
+- (void)_pushManualEntryController:(NSString *)title {
+    NSBundle *manualBundle = [NSBundle bundleForClass:[OTManualEntryViewController class]];
+    UIStoryboard *manualStoryboard = [UIStoryboard storyboardWithName:@"Manual" bundle:manualBundle];
+    OTManualEntryViewController *manual = [manualStoryboard instantiateInitialViewController];
+    manual.delegate = self;
+    manual.title = title;
+    [self.navigationController pushViewController:manual animated:YES];
 }
 
 - (void)_editButtonHit:(UIBarButtonItem *)button {

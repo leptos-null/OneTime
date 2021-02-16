@@ -20,28 +20,35 @@
     NSString *_timeStoredValue;
 }
 
++ (instancetype)new {
+    NSBundle *manualBundle = [NSBundle bundleForClass:[OTManualEntryViewController class]];
+    UIStoryboard *manualStoryboard = [UIStoryboard storyboardWithName:@"Manual" bundle:manualBundle];
+    return [manualStoryboard instantiateInitialViewController];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        _counterStoredValue = [@(OTPHash.defaultCounter) stringValue];
+        _timeStoredValue = [@(OTPTime.defaultStep) stringValue];
+        
+        _algorithms = @[
+            @"SHA1",
+            @"MD5",
+            @"SHA256",
+            @"SHA384",
+            @"SHA512",
+            @"SHA224"
+        ];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.lengthStepper.value = OTPBase.defaultDigits;
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
     saveButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = saveButton;
-    
-    _counterStoredValue = [@(OTPHash.defaultCounter) stringValue];
-    _timeStoredValue = [@(OTPTime.defaultStep) stringValue];
-    [self _updateFactorFieldForSelectedSegment];
-    
-    _algorithms = @[
-        @"SHA1",
-        @"MD5",
-        @"SHA256",
-        @"SHA384",
-        @"SHA512",
-        @"SHA224"
-    ];
-    [self.algorithmPicker selectRow:OTPBase.defaultAlgorithm inComponent:0 animated:NO];
 }
 
 - (void)saveFieldsToBagRequest {
@@ -72,10 +79,6 @@
     [self.delegate manualEntryController:self createdBag:bag];
 }
 
-- (IBAction)_lengthStepperDidChange:(UIStepper *)sender {
-    self.lengthValueLabel.text = [NSString stringWithFormat:@"%.0f", sender.value];
-}
-
 - (NSCharacterSet *)_invertedBase32Set {
     static NSCharacterSet *ret;
     static dispatch_once_t onceToken;
@@ -88,6 +91,49 @@
         ret = ret.invertedSet;
     });
     return ret;
+}
+
+- (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
+    OTInfoViewController *info = [OTInfoViewController new];
+    [info loadViewIfNeeded];
+    info.textView.text = text;
+    [info updatePreferredContentSizeForViewController:self];
+    
+    info.popoverPresentationController.sourceView = self.view;
+    info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];
+    [self presentViewController:info animated:YES completion:NULL];
+}
+
+// MARK: - UI Setters
+
+- (void)setLengthStepper:(UIStepper *)lengthStepper {
+    _lengthStepper = lengthStepper;
+    
+    lengthStepper.value = OTPBase.defaultDigits;
+}
+
+- (void)setFactorField:(UITextField *)factorField {
+    _factorField = factorField;
+    
+    [self _updateFactorFieldForSelectedSegment];
+}
+
+- (void)setFactorTypeOption:(UISegmentedControl *)factorTypeOption {
+    _factorTypeOption = factorTypeOption;
+    
+    [self _updateFactorFieldForSelectedSegment];
+}
+
+- (void)setAlgorithmPicker:(UIPickerView *)algorithmPicker {
+    _algorithmPicker = algorithmPicker;
+    
+    [algorithmPicker selectRow:OTPBase.defaultAlgorithm inComponent:0 animated:NO];
+}
+
+// MARK: - UIControl Events
+
+- (IBAction)_lengthStepperDidChange:(UIStepper *)sender {
+    self.lengthValueLabel.text = [NSString stringWithFormat:@"%.0f", sender.value];
 }
 
 - (IBAction)_updateFactorFieldForSelectedSegment {
@@ -110,9 +156,7 @@
     }
     correspondingField.placeholder = infoText;
     correspondingField.accessibilityLabel = infoText;
-    if (correspondingField.isFirstResponder) {
-        [correspondingField reloadInputViews];
-    }
+    [correspondingField reloadInputViews];
 }
 
 - (IBAction)_factorFieldTextDidChange:(UITextField *)sender {
@@ -152,17 +196,6 @@
     }
     secretField.attributedText = markup;
     self.navigationItem.rightBarButtonItem.enabled = couldSave;
-}
-
-- (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
-    OTInfoViewController *info = [OTInfoViewController new];
-    [info loadViewIfNeeded];
-    info.textView.text = text;
-    [info updatePreferredContentSizeForViewController:self];
-    
-    info.popoverPresentationController.sourceView = self.view;
-    info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];
-    [self presentViewController:info animated:YES completion:NULL];
 }
 
 // MARK: - Help text trampolines

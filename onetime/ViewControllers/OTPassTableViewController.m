@@ -11,7 +11,7 @@
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
-#import "../../OneTimeKit/Models/_OTDemoBag.h"
+#import "../../OneTimeKit/Models/NSArray+OTMap.h"
 
 #import "../Models/NSString+OTDistance.h"
 #import "../Models/_OTBagScore.h"
@@ -81,7 +81,9 @@
     searchController.searchResultsUpdater = self;
     if (@available(iOS 11.0, *)) {
         // unrelated to search controller, but requires iOS 11 too
-        [self.view addInteraction:[[UIDropInteraction alloc] initWithDelegate:self]];
+        UIDropInteraction *dropInteraction = [[UIDropInteraction alloc] initWithDelegate:self];
+        dropInteraction.allowsSimultaneousDropSessions = YES;
+        [self.view addInteraction:dropInteraction];
         
         self.navigationItem.searchController = searchController;
         self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
@@ -91,9 +93,7 @@
     _searchController = searchController;
     
     if (OTLaunchOptions.defaultOptions.shouldPushLiveQR) {
-        OTQRScanViewController *qrScanner = [OTQRScanViewController new];
-        qrScanner.delegate = self;
-        [self.navigationController pushViewController:qrScanner animated:NO];
+        [self _pushLiveScanController:@"Scan QR Code (Live)"];
     }
 }
 
@@ -106,12 +106,8 @@
 }
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier {
-    __block NSInteger target = NSNotFound;
-    [self.activeDataSource enumerateObjectsUsingBlock:^(OTBag *obj, NSUInteger idx, BOOL *stop) {
-        if ([obj.uniqueIdentifier isEqualToString:identifier]) {
-            target = idx;
-            *stop = YES;
-        }
+    NSInteger target = [self.activeDataSource indexOfObjectPassingTest:^BOOL(OTBag *obj, NSUInteger idx, BOOL *stop) {
+        return [obj.uniqueIdentifier isEqualToString:identifier];
     }];
     if (target == NSNotFound) {
         return NO;
@@ -158,7 +154,7 @@
     [self.navigationController pushViewController:qrScanner animated:YES];
 }
 // this API is available prior to iOS 11, however the API used in the delegate callback
-//   is iOS 11+ so don't setup, otherwise the
+//   is iOS 11+ so don't setup, since the picker won't do anything on those versions
 - (void)_pushSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0)) {
     UIImagePickerController *imagePicker = [UIImagePickerController new];
     imagePicker.delegate = self;
@@ -190,24 +186,21 @@
 }
 
 - (void)_bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion API_AVAILABLE(ios(11.0), tvos(11.0)) {
-    VNRequestCompletionHandler barcodeHandler = ^(VNRequest *request, NSError *error) {
+    VNDetectBarcodesRequest *qrRequest = [[VNDetectBarcodesRequest alloc] initWithCompletionHandler:^(VNRequest *request, NSError *error) {
         if (error) {
             completion(nil, error);
             return;
         }
-        NSMutableArray<OTBag *> *bags = [NSMutableArray array];
-        for (VNBarcodeObservation *barcode in request.results) {
-            OTBag *bag = [[OTBag alloc] initWithURL:[NSURL URLWithString:barcode.payloadStringValue]];
-            if (bag) {
-                [bags addObject:bag];
+        NSArray<OTBag *> *bags = [request.results compactMap:^OTBag *(VNBarcodeObservation *barcode) {
+            if (!OTKindofClass(barcode, VNBarcodeObservation)) {
+                return nil;
             }
-        }
-        completion([bags copy], nil);
-    };
-    
-    VNDetectBarcodesRequest *qrRequest = [[VNDetectBarcodesRequest alloc] initWithCompletionHandler:barcodeHandler];
+            return [[OTBag alloc] initWithURL:[NSURL URLWithString:barcode.payloadStringValue]];
+        }];
+        completion(bags, nil);
+    }];
     qrRequest.symbologies = @[ VNBarcodeSymbologyQR ];
-    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:image.CGImage options:@{
+    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:[image CGImage] options:@{
         
     }];
     NSError *err = NULL;
@@ -220,9 +213,9 @@
 // MARK: - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    __weak __typeof(self) weakself = self;
     if (@available(iOS 11.0, *)) {
         UIImage *image = info[UIImagePickerControllerOriginalImage];
-        __weak __typeof(self) weakself = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [weakself _bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
                 if (error) {
@@ -242,6 +235,11 @@
                 });
             }];
         });
+    } else {
+        NSAssert(0, @"UIImagePickerController should not be presented for QR code selection on iOS < 11");
+        [picker dismissViewControllerAnimated:YES completion:^{
+            [weakself surfaceUserMessage:@"QR code recognition requires iOS 11 or newer" viewHint:nil dismissAfter:0];
+        }];
     }
 }
 
@@ -301,18 +299,15 @@
 // MARK: - OTQRScanControllerDelegate
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFindPayloads:(NSArray<NSString *> *)payloads {
-    // currently not handling multiple good payloads, but it's unlikely, and not a big issue
-    //   i.e. as soon as a good payload comes in, we return out, potentially ignoring another
-    for (NSString *payload in payloads) {
-        OTBag *bag = [[OTBag alloc] initWithURL:[NSURL URLWithString:payload]];
-        if (bag) {
-            // we're good- stop receiving delegate calls (a little bit of a hack)
-            controller.delegate = nil;
-            [controller.navigationController popToViewController:self animated:YES];
-            [OTBagCenter.defaultCenter addBags:@[ bag ]];
-            return;
-        }
+    NSArray<OTBag *> *bags = [payloads compactMap:^OTBag *(NSString *payload) {
+        return [[OTBag alloc] initWithURL:[NSURL URLWithString:payload]];
+    }];
+    if (bags.count != 0) {
+        // we're good- stop receiving delegate calls (a little bit of a hack)
+        controller.delegate = nil;
+        [controller.navigationController popToViewController:self animated:YES];
     }
+    [OTBagCenter.defaultCenter addBags:bags];
 }
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
@@ -442,14 +437,13 @@
                 __builtin_unreachable();
             }
         }];
-        NSMutableArray<OTBag *> *sorted = [NSMutableArray arrayWithCapacity:distances.count];
-        [distances enumerateObjectsUsingBlock:^(_OTBagScore *bagScore, NSUInteger idx, BOOL *stop) {
-            sorted[idx] = bagScore.bag;
+        NSArray<OTBag *> *sorted = [distances map:^OTBag *(_OTBagScore *bagScore) {
+            return bagScore.bag;
         }];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (weakself) {
                 __typeof(self) strongself = weakself;
-                strongself->_filteredSource = [sorted copy];
+                strongself->_filteredSource = sorted;
                 [weakself.tableView reloadData];
             }
         });
@@ -505,7 +499,7 @@
                     if (bags.count) {
                         [OTBagCenter.defaultCenter addBags:bags];
                     } else {
-                        [weakself surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0];
+                        [weakself surfaceUserMessage:@"No valid codes found" viewHint:interaction.view dismissAfter:0];
                     }
                 });
             }];

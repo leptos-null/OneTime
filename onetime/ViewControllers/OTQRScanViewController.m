@@ -11,6 +11,7 @@
 
 @implementation OTQRScanViewController  {
     AVCaptureSession *_avSession;
+    NSArray<CALayer *> *_highlightLayers;
 }
 
 @dynamic view;
@@ -37,13 +38,12 @@
             [self.delegate qrScanController:self didFailWithError:error];
             return;
         }
-        dispatch_queue_t queue = dispatch_queue_create("null.leptos.onetime.qrscan", DISPATCH_QUEUE_SERIAL);
         AVCaptureMetadataOutput *captureOutput = [AVCaptureMetadataOutput new];
         AVCaptureSession *captureSession = [AVCaptureSession new];
         
         [captureSession addInput:captureInput];
         [captureSession addOutput:captureOutput];
-        [captureOutput setMetadataObjectsDelegate:self queue:queue];
+        [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
         captureOutput.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode ];
         
         self.view.layer.session = captureSession;
@@ -100,16 +100,51 @@
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
-    NSArray<NSString *> *payloads = [metadataObjects compactMap:^NSString *(AVMetadataMachineReadableCodeObject *metadataObject) {
+    id<OTQRScanControllerDelegate> delegate = self.delegate;
+    
+    AVCaptureVideoPreviewLayer *previewLayer = self.view.layer;
+    NSMutableArray<CALayer *> *layers = [NSMutableArray arrayWithCapacity:metadataObjects.count];
+    NSMutableArray<NSString *> *payloads = [NSMutableArray arrayWithCapacity:metadataObjects.count];
+    
+    for (CALayer *layer in _highlightLayers) {
+        [layer removeFromSuperlayer];
+    }
+    
+    for (AVMetadataMachineReadableCodeObject *metadataObject in metadataObjects) {
         if ([metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode]) {
-            return metadataObject.stringValue;
+            NSString *payload = metadataObject.stringValue;
+            if (payload != nil) {
+                if ([delegate respondsToSelector:@selector(qrScanController:colorForPayload:)]) {
+                    UIBezierPath *path = [UIBezierPath bezierPath];
+                    for (NSDictionary *corner in metadataObject.corners) {
+                        CGPoint point;
+                        if (CGPointMakeWithDictionaryRepresentation((CFDictionaryRef)corner, &point)) {
+                            point = [previewLayer pointForCaptureDevicePointOfInterest:point];
+                            if (path.isEmpty) {
+                                [path moveToPoint:point];
+                            } else {
+                                [path addLineToPoint:point];
+                            }
+                        }
+                    }
+                    [path closePath];
+                    
+                    UIColor *color = [delegate qrScanController:self colorForPayload:payload];
+                    CAShapeLayer *layer = [CAShapeLayer layer];
+                    layer.path = [path CGPath];
+                    layer.strokeColor = [[color colorWithAlphaComponent:1.0] CGColor];
+                    layer.fillColor = [[color colorWithAlphaComponent:0.4] CGColor];
+                    [layers addObject:layer];
+                    
+                    [previewLayer addSublayer:layer];
+                }
+                [payloads addObject:payload];
+            }
         }
-        return nil;
-    }];
-    __weak __typeof(self) weakself = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [weakself.delegate qrScanController:weakself didFindPayloads:payloads];
-    });
+    }
+    _highlightLayers = layers;
+    
+    [delegate qrScanController:self didFindPayloads:payloads];
 }
 
 @end

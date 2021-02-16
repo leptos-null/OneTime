@@ -18,6 +18,11 @@
 - (void)qrScanController:(OTQRScanViewController *)controller didFindPayloads:(NSArray<NSString *> *)payloads;
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error;
 
+@optional
+/// The color to highlight a QR code of a given @c payload with
+/// @note The alpha component of the color is ignored
+- (UIColor *)qrScanController:(OTQRScanViewController *)controller colorForPayload:(NSString *)payload;
+
 @end
 
 

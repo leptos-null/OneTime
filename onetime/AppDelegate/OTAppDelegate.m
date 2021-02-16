@@ -9,7 +9,6 @@
 #import "OTAppDelegate.h"
 #import "../Services/OTLaunchOptions.h"
 #import "../ViewControllers/OTPassTableViewController.h"
-#import "../ViewControllers/OTPassTableViewController+OTAddDelegates.h"
 #import "../ViewControllers/UIViewController+OTDismissChildren.h"
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Services/OTBagCenter.h"
@@ -63,10 +62,8 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
             }
         }
         if (target) {
-            OTQRScanViewController *qrScanner = [OTQRScanViewController new];
-            qrScanner.delegate = target;
             [target dismissAllChilderenAnimated:NO completion:^{
-                [navController pushViewController:qrScanner animated:NO];
+                [target pushLiveScanController:@"Scan QR Code (Live)"];
                 completionHandler(YES);
             }];
             return;

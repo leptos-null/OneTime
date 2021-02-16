@@ -20,4 +20,8 @@
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier;
 
+- (void)pushLiveScanController:(NSString *)title;
+- (void)presentSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0));
+- (void)pushManualEntryController:(NSString *)title;
+
 @end

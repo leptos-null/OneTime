@@ -53,18 +53,18 @@
         if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
             UIImage *cameraImage = [UIImage systemImageNamed:@"camera"];
             UIAction *liveScan = [UIAction actionWithTitle:@"Scan QR Code (Live)" image:cameraImage identifier:nil handler:^(UIAction *action) {
-                [weakself _pushLiveScanController:action.title];
+                [weakself pushLiveScanController:action.title];
             }];
             [children addObject:liveScan];
         }
         UIImage *qrImage = [UIImage systemImageNamed:@"qrcode"];
         UIAction *savedScan = [UIAction actionWithTitle:@"Scan QR Code (Saved)" image:qrImage identifier:nil handler:^(UIAction *action) {
-            [weakself _pushSavedScanController:action.title];
+            [weakself presentSavedScanController:action.title];
         }];
         [children addObject:savedScan];
         UIImage *writeImage = [UIImage systemImageNamed:@"rectangle.and.pencil.and.ellipsis"];
         UIAction *manualEntry = [UIAction actionWithTitle:@"Manual Entry" image:writeImage identifier:nil handler:^(UIAction *action) {
-            [weakself _pushManualEntryController:action.title];
+            [weakself pushManualEntryController:action.title];
         }];
         [children addObject:manualEntry];
         
@@ -94,7 +94,7 @@
     _searchController = searchController;
     
     if (OTLaunchOptions.defaultOptions.shouldPushLiveQR) {
-        [self _pushLiveScanController:@"Scan QR Code (Live)"];
+        [self pushLiveScanController:@"Scan QR Code (Live)"];
     }
 }
 
@@ -118,6 +118,27 @@
     return YES;
 }
 
+- (void)pushLiveScanController:(NSString *)title {
+    OTQRScanViewController *qrScanner = [OTQRScanViewController new];
+    qrScanner.delegate = self;
+    qrScanner.title = title;
+    [self.navigationController pushViewController:qrScanner animated:YES];
+}
+// this API is available prior to iOS 11, however the API used in the delegate callback
+//   is iOS 11+ so don't setup, since the picker won't do anything on those versions
+- (void)presentSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0)) {
+    UIImagePickerController *imagePicker = [UIImagePickerController new];
+    imagePicker.delegate = self;
+    imagePicker.title = title;
+    [self presentViewController:imagePicker animated:YES completion:NULL];
+}
+- (void)pushManualEntryController:(NSString *)title {
+    OTManualEntryViewController *manual = [OTManualEntryViewController new];
+    manual.delegate = self;
+    manual.title = title;
+    [self.navigationController pushViewController:manual animated:YES];
+}
+
 - (void)_accentuateRowAtIndexPath:(NSIndexPath *)indexPath duration:(NSTimeInterval)duration {
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -133,41 +154,19 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
     if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Live)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [weakself _pushLiveScanController:action.title];
+            [weakself pushLiveScanController:action.title];
         }]];
     }
     if (@available(iOS 11.0, *)) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [weakself _pushSavedScanController:action.title];
+            [weakself presentSavedScanController:action.title];
         }]];
     }
     [alert addAction:[UIAlertAction actionWithTitle:@"Manual Entry" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [weakself _pushManualEntryController:action.title];
+        [weakself pushManualEntryController:action.title];
     }]];
     alert.popoverPresentationController.barButtonItem = button;
     [self presentViewController:alert animated:YES completion:NULL];
-}
-
-- (void)_pushLiveScanController:(NSString *)title {
-    OTQRScanViewController *qrScanner = [OTQRScanViewController new];
-    qrScanner.delegate = self;
-    qrScanner.title = title;
-    [self.navigationController pushViewController:qrScanner animated:YES];
-}
-// this API is available prior to iOS 11, however the API used in the delegate callback
-//   is iOS 11+ so don't setup, since the picker won't do anything on those versions
-- (void)_pushSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0)) {
-    UIImagePickerController *imagePicker = [UIImagePickerController new];
-    imagePicker.delegate = self;
-    [self presentViewController:imagePicker animated:YES completion:NULL];
-}
-- (void)_pushManualEntryController:(NSString *)title {
-    NSBundle *manualBundle = [NSBundle bundleForClass:[OTManualEntryViewController class]];
-    UIStoryboard *manualStoryboard = [UIStoryboard storyboardWithName:@"Manual" bundle:manualBundle];
-    OTManualEntryViewController *manual = [manualStoryboard instantiateInitialViewController];
-    manual.delegate = self;
-    manual.title = title;
-    [self.navigationController pushViewController:manual animated:YES];
 }
 
 - (void)_editButtonHit:(UIBarButtonItem *)button {

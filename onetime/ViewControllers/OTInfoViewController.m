@@ -29,12 +29,13 @@
 - (void)updatePreferredContentSizeForMaxSize:(CGSize)maxSize {
     // a representation of storyboard constraints
     UIEdgeInsets storyboardConstraints = UIEdgeInsetsMake(8, 8, 8, 8);
+    CGFloat horizontalOffset = TARGET_OS_MACCATALYST ? 4 : 0; // TARGET_OS_UIKITFORMAC
     
-    maxSize.width -= (storyboardConstraints.left + storyboardConstraints.right);
+    maxSize.width -= (storyboardConstraints.left + storyboardConstraints.right + horizontalOffset);
     maxSize.height -= (storyboardConstraints.top + storyboardConstraints.bottom);
     
     CGSize size = [self.textView sizeThatFits:maxSize];
-    size.width += (storyboardConstraints.left + storyboardConstraints.right);
+    size.width += (storyboardConstraints.left + storyboardConstraints.right + horizontalOffset);
     size.height += (storyboardConstraints.top + storyboardConstraints.bottom);
     
     self.preferredContentSize = size;

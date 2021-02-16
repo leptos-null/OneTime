@@ -9,6 +9,7 @@
 #import "OTAppDelegate.h"
 #import "../Services/OTLaunchOptions.h"
 #import "../ViewControllers/OTPassTableViewController.h"
+#import "../ViewControllers/OTPassTableViewController+OTAddDelegates.h"
 #import "../ViewControllers/UIViewController+OTDismissChildren.h"
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Services/OTBagCenter.h"

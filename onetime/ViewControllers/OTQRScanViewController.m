@@ -7,29 +7,19 @@
 //
 
 #import "OTQRScanViewController.h"
+#import "../../OneTimeKit/Models/NSArray+OTMap.h"
 
 @implementation OTQRScanViewController  {
-    dispatch_queue_t _queue;
     AVCaptureSession *_avSession;
 }
 
 @dynamic view;
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _queue = dispatch_queue_create("null.leptos.onetime.qrscan", DISPATCH_QUEUE_SERIAL);
-        self.title = @"Scan QR Code (Live)";
-    }
-    return self;
-}
-
 - (void)loadView {
-    self.view = [OTCaptureVideoView new];
+    OTCaptureVideoView *view = [OTCaptureVideoView new];
+    view.layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     
-    AVCaptureVideoPreviewLayer *previewLayer = self.view.layer;
-    previewLayer.session = _avSession;
-    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    [self updatePreviewLayerForCurrentOrientation];
+    self.view = view;
     
     if (@available(iOS 11.0, *)) {
         self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
@@ -47,12 +37,13 @@
             [self.delegate qrScanController:self didFailWithError:error];
             return;
         }
+        dispatch_queue_t queue = dispatch_queue_create("null.leptos.onetime.qrscan", DISPATCH_QUEUE_SERIAL);
         AVCaptureMetadataOutput *captureOutput = [AVCaptureMetadataOutput new];
         AVCaptureSession *captureSession = [AVCaptureSession new];
         
         [captureSession addInput:captureInput];
         [captureSession addOutput:captureOutput];
-        [captureOutput setMetadataObjectsDelegate:self queue:_queue];
+        [captureOutput setMetadataObjectsDelegate:self queue:queue];
         captureOutput.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode ];
         
         self.view.layer.session = captureSession;
@@ -60,6 +51,7 @@
         _avSession = captureSession;
     }
     [_avSession startRunning];
+    [self updatePreviewLayerForCurrentOrientation];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -71,30 +63,52 @@
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    [self updatePreviewLayerForCurrentOrientation];
+    __weak __typeof(self) weakself = self;
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [weakself updatePreviewLayerForCurrentOrientation];
+    } completion:nil];
 }
 
 - (void)updatePreviewLayerForCurrentOrientation {
-    // this seems odd to me, but it's what's reccomended (not sure how else to do it)
-    UIDeviceOrientation deviceOrientation = UIDevice.currentDevice.orientation;
-    if (UIDeviceOrientationIsValidInterfaceOrientation(deviceOrientation)) {
-        // just need the first three bits, and this makes for a clean cast
-        self.view.layer.connection.videoOrientation = deviceOrientation & 0b111;
+    UIInterfaceOrientation interfaceOrientation;
+    if (@available(iOS 13.0, *)) {
+        interfaceOrientation = self.view.window.windowScene.interfaceOrientation;
+    } else {
+        // this is recommended per UIViewController documentation
+        interfaceOrientation = UIApplication.sharedApplication.statusBarOrientation;
     }
+    AVCaptureVideoOrientation videoOrientation;
+    switch (interfaceOrientation) {
+        case UIInterfaceOrientationPortrait:
+            videoOrientation = AVCaptureVideoOrientationPortrait;
+            break;
+        case UIInterfaceOrientationPortraitUpsideDown:
+            videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+            videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+            break;
+        default:
+            videoOrientation = 0; // invalid
+    }
+    self.view.layer.connection.videoOrientation = videoOrientation;
 }
 
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
-    NSMutableArray<NSString *> *payloads = [NSMutableArray arrayWithCapacity:metadataObjects.count];
-    for (AVMetadataMachineReadableCodeObject *metadataObject in metadataObjects) {
+    NSArray<NSString *> *payloads = [metadataObjects compactMap:^NSString *(AVMetadataMachineReadableCodeObject *metadataObject) {
         if ([metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode]) {
-            [payloads addObject:metadataObject.stringValue];
+            return metadataObject.stringValue;
         }
-    }
+        return nil;
+    }];
     __weak __typeof(self) weakself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [weakself.delegate qrScanController:weakself didFindPayloads:[payloads copy]];
+        [weakself.delegate qrScanController:weakself didFindPayloads:payloads];
     });
 }
 

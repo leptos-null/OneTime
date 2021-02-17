@@ -10,11 +10,9 @@
 
 #import "../../OneTimeKit/Services/OTBagCenter.h"
 
-#import "OTQRScanViewController.h"
-#import "OTManualEntryViewController.h"
 #import "../Views/OTPassTableViewCell.h"
 
-@interface OTPassTableViewController : UITableViewController <UISearchResultsUpdating, OTEditingDataSource, OTBagCenterObserver>
+@interface OTPassTableViewController : UITableViewController <UISearchResultsUpdating, OTEditingDataSource, OTBagCenterObserver, OTBagActionDelegate>
 
 @property (strong, nonatomic, readonly) UISearchController *searchController;
 

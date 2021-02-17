@@ -9,6 +9,7 @@
 #import <Vision/Vision.h>
 
 #import "OTPassTableViewController+OTAddDelegates.h"
+#import "UIViewController+UMSurfacer.h"
 #import "../../OneTimeKit/Models/NSArray+OTMap.h"
 
 @implementation OTPassTableViewController (OTQRScanControllerDelegate)

@@ -8,6 +8,9 @@
 
 #import "OTPassTableViewController.h"
 
+#import "OTQRScanViewController.h"
+#import "OTManualEntryViewController.h"
+
 @interface OTPassTableViewController (OTQRScanControllerDelegate) <OTQRScanControllerDelegate>
 
 @end

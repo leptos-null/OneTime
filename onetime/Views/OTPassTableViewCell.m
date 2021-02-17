@@ -8,6 +8,8 @@
 
 #import "OTPassTableViewCell.h"
 #import "../Services/OTSecondKeeper.h"
+#import "../../OneTimeKit/Models/OTPTime.h"
+#import "../../OneTimeKit/Models/OTPHash.h"
 #import "../../OneTimeKit/Services/OTBagCenter.h"
 
 @implementation OTPassTableViewCell {
@@ -24,6 +26,7 @@
     NSArray<OTPadTextField *> *borderFields = @[ self.issuerField, self.accountField ];
     for (OTPadTextField *borderField in borderFields) {
         borderField.contentInsets = UIEdgeInsetsMake(6, 6, 6, 6);
+        
         CALayer *borderFieldLayer = borderField.layer;
         borderFieldLayer.borderWidth = 1;
         borderFieldLayer.cornerRadius = 6;
@@ -221,11 +224,16 @@
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     return [super canPerformAction:action withSender:sender]
-    || (action == @selector(copy:));
+    || (action == @selector(copy:))
+    || (action == @selector(delete:));
 }
 
 - (void)copy:(id)sender {
-    UIPasteboard.generalPasteboard.string = self.passcodeLabel.text;
+    UIPasteboard.generalPasteboard.string = self.bag.generator.password;
+}
+
+- (void)delete:(id)sender {
+    [self.actionDelegate promptDeleteBag:self.bag];
 }
 
 // MARK: - UIContextMenuInteractionDelegate
@@ -236,14 +244,24 @@
     if (self.editing) {
         return nil;
     }
+    
+    UIKeyCommand *copyCommand = [UIKeyCommand commandWithTitle:@"Copy Code"
+                                                         image:[UIImage systemImageNamed:@"doc.on.doc"]
+                                                        action:@selector(copy:)
+                                                         input:@"c" modifierFlags:UIKeyModifierCommand
+                                                  propertyList:nil];
+    UIKeyCommand *deleteCommand = [UIKeyCommand commandWithTitle:@"Delete Token"
+                                                           image:[UIImage systemImageNamed:@"trash"]
+                                                          action:@selector(delete:)
+                                                           input:@"\b" modifierFlags:0
+                                                    propertyList:nil];
+    deleteCommand.attributes = UIMenuElementAttributesDestructive;
+    
     return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil
                                                     actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
-        return [UIMenu menuWithTitle:@"" image:nil identifier:nil options:0 children:@[
-            [UIKeyCommand commandWithTitle:@"Copy Code"
-                                     image:[UIImage systemImageNamed:@"doc.on.doc"]
-                                    action:@selector(copy:)
-                                     input:@"c" modifierFlags:UIKeyModifierCommand
-                              propertyList:nil]
+        return [UIMenu menuWithTitle:@"" children:@[
+            copyCommand,
+            deleteCommand
         ]];
     }];
 }

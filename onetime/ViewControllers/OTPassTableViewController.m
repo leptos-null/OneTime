@@ -8,6 +8,7 @@
 
 #import "OTPassTableViewController.h"
 #import "OTPassTableViewController+OTAddDelegates.h"
+#import "UIViewController+UMSurfacer.h"
 
 #import "../../OneTimeKit/Models/OTBag.h"
 #import "../../OneTimeKit/Models/OTPTime.h"
@@ -253,7 +254,7 @@
     NSString *identifier = OTPassTableViewCell.reusableIdentifier;
     OTPassTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     cell.editSource = self;
-    cell.messageSurfacer = self;
+    cell.actionDelegate = self;
     cell.bag = self.activeDataSource[indexPath.row];
     if (cell.bag.index != indexPath.row && !self.searchController.active) {
         cell.bag.index = indexPath.row;
@@ -274,17 +275,7 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         OTPassTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        OTBag *bag = cell.bag;
-        
-        NSString *alertMsg = [NSString stringWithFormat:@""
-                              "Deleting a token cannot be undone. This action will not turn off 2FA for the account.\n"
-                              "%@: %@", bag.issuer, bag.account];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            [OTBagCenter.defaultCenter removeBags:@[ bag ]];
-        }]];
-        [self presentViewController:alert animated:YES completion:NULL];
+        [self promptDeleteBag:cell.bag];
     } else {
         NSLog(@"tableViewCommitUnsupportedEditingStyle: %@", @(editingStyle));
     }
@@ -369,6 +360,20 @@
 
 - (BOOL)interfaceIsEditing {
     return _editModeFromButton;
+}
+
+// MARK: - OTBagActionDelegate
+
+- (void)promptDeleteBag:(OTBag *)bag {
+    NSString *alertMsg = [NSString stringWithFormat:@""
+                          "Deleting a token cannot be undone. This action will not turn off 2FA for the account.\n"
+                          "%@: %@", bag.issuer, bag.account];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Delete Token?" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [OTBagCenter.defaultCenter removeBags:@[ bag ]];
+    }]];
+    [self presentViewController:alert animated:YES completion:NULL];
 }
 
 @end

@@ -9,10 +9,6 @@
 #import <UIKit/UIKit.h>
 
 #import "../../OneTimeKit/Models/OTBag.h"
-#import "../../OneTimeKit/Models/OTPTime.h"
-#import "../../OneTimeKit/Models/OTPHash.h"
-
-#import "UIViewController+UMSurfacer.h"
 
 #import "OTPadTextField.h"
 
@@ -22,13 +18,21 @@
 
 @end
 
+/// An object that can provide a UI for bag-related prompts
+@protocol OTBagActionDelegate <NSObject>
+/// Prompts the user to delete @c bag
+- (void)promptDeleteBag:(OTBag *)bag;
+
+@end
+
+
 @interface OTPassTableViewCell : UITableViewCell <UITextFieldDelegate, UIContextMenuInteractionDelegate>
 
 @property (class, strong, nonatomic, readonly) NSString *reusableIdentifier;
 
 @property (strong, nonatomic) OTBag *bag;
 @property (weak, nonatomic) id<OTEditingDataSource> editSource;
-@property (weak, nonatomic) id<OTUserMessageSurfacer> messageSurfacer;
+@property (weak, nonatomic) id<OTBagActionDelegate> actionDelegate;
 
 @property (strong, nonatomic) IBOutlet OTPadTextField *issuerField;
 @property (strong, nonatomic) IBOutlet UILabel *passcodeLabel;

@@ -10,7 +10,7 @@
 #import "../Services/OTLaunchOptions.h"
 #import "../ViewControllers/OTPassTableViewController.h"
 #import "../ViewControllers/UIViewController+OTDismissChildren.h"
-#import "../../OneTimeKit/Models/OTBag.h"
+#import "../ViewControllers/OTQRScanViewController.h"
 #import "../../OneTimeKit/Services/OTBagCenter.h"
 #import "../../OneTimeKit/Models/OTBag+CSItem.h"
 

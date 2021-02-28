@@ -12,9 +12,17 @@
 @implementation OTQRScanViewController  {
     AVCaptureSession *_avSession;
     NSArray<CALayer *> *_highlightLayers;
+    NSMutableArray<NSString *> *_foundPayloads;
 }
 
 @dynamic view;
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _foundPayloads = [NSMutableArray array];
+    }
+    return self;
+}
 
 - (void)loadView {
     OTCaptureVideoView *view = [OTCaptureVideoView new];
@@ -144,7 +152,11 @@
     }
     _highlightLayers = layers;
     
+    NSMutableArray<NSString *> *foundPayloads = _foundPayloads;
+    [payloads filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF in %@", foundPayloads]];
     [delegate qrScanController:self didFindPayloads:payloads];
+    
+    [foundPayloads addObjectsFromArray:payloads];
 }
 
 @end

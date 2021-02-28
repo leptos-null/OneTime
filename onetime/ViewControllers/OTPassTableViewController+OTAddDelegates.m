@@ -19,17 +19,21 @@
         return [[OTBag alloc] initWithURL:[NSURL URLWithString:payload]];
     }];
     if (bags.count != 0) {
-        // we're good- stop receiving delegate calls (a little bit of a hack)
-        controller.delegate = nil;
         [controller.navigationController popToViewController:self animated:YES];
+        [OTBagCenter.defaultCenter addBags:bags];
     }
-    [OTBagCenter.defaultCenter addBags:bags];
 }
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFailWithError:(NSError *)error {
     NSLog(@"qrScanControllerDidFailWithError: %@", error);
     [self surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
     [controller.navigationController popToViewController:self animated:YES];
+}
+
+- (UIColor *)qrScanController:(OTQRScanViewController *)controller colorForPayload:(NSString *)payload {
+    // if a bag can be created from the payload, color it green, otherwise red
+    OTBag *bag = [[OTBag alloc] initWithURL:[NSURL URLWithString:payload]];
+    return bag ? UIColor.systemGreenColor : UIColor.systemRedColor;
 }
 
 @end

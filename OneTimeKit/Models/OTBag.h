@@ -21,8 +21,6 @@
 
 @property (strong, nonatomic, readonly) NSString *uniqueIdentifier;
 
-@property (strong, nonatomic, readonly) NSDictionary *keychainAttributes; // nil if not added to keychain
-
 /// Creates a new bag with @c generator
 - (instancetype)initWithGenerator:(OTPBase *)generator;
 /// Creates a bag from Keychain attributes

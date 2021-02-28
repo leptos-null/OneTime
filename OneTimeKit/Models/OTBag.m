@@ -12,7 +12,9 @@
 #import "OTPTime.h"
 #import "NSData+OTBase32.h"
 
-@implementation OTBag
+@implementation OTBag {
+    NSDictionary *_keychainAttributes; // nil if not added to keychain
+}
 
 static inline __pure2 char singleHexChar(uint8_t hex) {
     hex &= 0xf;
@@ -47,47 +49,50 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
     if (!url) {
         return nil;
     }
-    if (self = [super init]) {
-        NSURLComponents *urlComps = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
-        // ignore scheme
-        
-        for (NSURLQueryItem *queryItem in urlComps.queryItems) {
-            if ([queryItem.name isEqualToString:@"issuer"]) {
-                _issuer = queryItem.value;
+    NSURLComponents *urlComps = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+    // ignore scheme
+    
+    NSString *issuer = nil;
+    for (NSURLQueryItem *queryItem in urlComps.queryItems) {
+        if ([queryItem.name isEqualToString:@"issuer"]) {
+            issuer = queryItem.value;
+        }
+    }
+    
+    OTPBase *generator = nil;
+    NSString *domain = url.host;
+    if ([domain isEqualToString:OTPHash.domain]) {
+        generator = [[OTPHash alloc] initWithURLComponents:urlComps];
+    } else if ([domain isEqualToString:OTPTime.domain]) {
+        generator = [[OTPTime alloc] initWithURLComponents:urlComps];
+    }
+    if (!generator) {
+        return nil;
+    }
+    NSString *pathComponent = urlComps.path;
+    NSString *leadingPath = @"/";
+    NSParameterAssert([pathComponent hasPrefix:leadingPath]);
+    pathComponent = [pathComponent substringFromIndex:leadingPath.length];
+    NSArray<NSString *> *userInfo = [pathComponent componentsSeparatedByString:@":"];
+    // "Neither issuer nor account name may themselves contain a colon"
+    NSString *account = nil;
+    switch (userInfo.count) {
+        case 1:
+            account = userInfo[0];
+            break;
+        case 2:
+            if (!issuer) {
+                issuer = userInfo[0];
             }
-        }
-        
-        OTPBase *generator = nil;
-        NSString *domain = url.host;
-        if ([domain isEqualToString:OTPHash.domain]) {
-            generator = [[OTPHash alloc] initWithURLComponents:urlComps];
-        } else if ([domain isEqualToString:OTPTime.domain]) {
-            generator = [[OTPTime alloc] initWithURLComponents:urlComps];
-        }
-        if (!generator) {
+            account = userInfo[1];
+            break;
+        default:
             return nil;
-        }
-        NSString *pathComponent = urlComps.path;
-        NSString *leadingPath = @"/";
-        NSParameterAssert([pathComponent hasPrefix:leadingPath]);
-        pathComponent = [pathComponent substringFromIndex:leadingPath.length];
-        NSArray<NSString *> *userInfo = [pathComponent componentsSeparatedByString:@":"];
-        // "Neither issuer nor account name may themselves contain a colon"
-        switch (userInfo.count) {
-            case 1:
-                _account = userInfo[0];
-                break;
-            case 2:
-                if (!_issuer) {
-                    _issuer = userInfo[0];
-                }
-                _account = userInfo[1];
-                break;
-            default:
-                return nil;
-        }
-        _generator = generator;
-        _uniqueIdentifier = [self _createUniqueIdentifier];
+    }
+    
+    if (self = [self initWithGenerator:generator]) {
+        _issuer = issuer;
+        _account = account;
     }
     return self;
 }
@@ -191,16 +196,20 @@ NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
     attribs[(NSString *)kSecAttrGeneric] = serialProperties;
     
     // be really sure we have the right information
-    if ([self.keychainAttributes[(NSString *)kSecAttrAccount] isEqualToString:self.uniqueIdentifier]) {
+    NSDictionary *keychainAttributes = _keychainAttributes;
+    if ([keychainAttributes[(NSString *)kSecAttrAccount] isEqualToString:self.uniqueIdentifier]) {
         OSStatus ret = SecItemUpdate((__bridge CFDictionaryRef)[self _uniqueKeychainQuery], (__bridge CFDictionaryRef)attribs);
         if (ret == errSecSuccess) {
-            NSMutableDictionary *props = [self.keychainAttributes mutableCopy];
-            [props addEntriesFromDictionary:attribs];
-            _keychainAttributes = [props copy];
+            NSMutableDictionary *updatedAttributes = [keychainAttributes mutableCopy];
+            [updatedAttributes addEntriesFromDictionary:attribs];
+            _keychainAttributes = [updatedAttributes copy];
         }
         return ret;
     }
     attribs[(NSString *)kSecClass] = (NSString *)kSecClassGenericPassword;
+    // if I were to do this again, I would save the base32 encoded key,
+    //   so that the key would show up in Keychain app
+    // (changing this behavior now would break compatibility)
     attribs[(NSString *)kSecValueData] = self.generator.key;
     
     attribs[(NSString *)kSecAttrSynchronizable] = @(YES);

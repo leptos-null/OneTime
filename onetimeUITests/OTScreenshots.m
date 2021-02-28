@@ -27,8 +27,12 @@
     NSString *root = compilePath.stringByDeletingLastPathComponent.stringByDeletingLastPathComponent;
     NSAssert([fileManager fileExistsAtPath:root], @"Cannot find project path");
     
+#if TARGET_OS_MACCATALYST
+    const char *model = "macOS";
+#else
     const char *model = getenv("SIMULATOR_MODEL_IDENTIFIER");
     NSAssert(model != NULL, @"Screenshot collection should be run in the simulator");
+#endif
     NSString *pathHead = [[root stringByAppendingPathComponent:@"Screenshots"] stringByAppendingPathComponent:@(model)];
     
     BOOL isDir = NO;
@@ -43,7 +47,12 @@
 
 - (void)tearDown {
     NSMutableString *readme = [NSMutableString string];
+#if TARGET_OS_MACCATALYST
+    NSOperatingSystemVersion osVersion = NSProcessInfo.processInfo.operatingSystemVersion;
+    [readme appendFormat:@"## macOS %ld.%ld.%ld\n\n", osVersion.majorVersion, osVersion.minorVersion, osVersion.patchVersion];
+#else
     [readme appendFormat:@"## %s %s\n\n", getenv("SIMULATOR_DEVICE_NAME"), getenv("SIMULATOR_RUNTIME_VERSION")];
+#endif
     
     NSArray<NSString *> *screenshotPaths = [_screenshotPaths sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
     for (NSString *screenshotPath in screenshotPaths) {
@@ -65,38 +74,58 @@
     
     [app launch];
     
-    XCUIElement *mainNavBar = app.navigationBars[@"One-Time Passwords"];
+#if TARGET_OS_MACCATALYST
+    XCUIElement *interactionWindow = app.windows[@"SceneWindow"];
+#else
+    XCUIElement *interactionWindow = app;
+#endif
+    
+    XCUIElement *mainNavBar = interactionWindow.navigationBars[@"One-Time Passwords"];
     
     [mainNavBar.buttons[@"Add"] tap];
-    [self _writeScreenshot:app.screenshot name:@"3_menu"];
+    sleep(1); /* we're not waiting long enough to get the screenshot */
+    [self _writeScreenshot:interactionWindow.screenshot name:@"3_menu"];
     
     if (@available(iOS 14.0, *)) {
-        [app.collectionViews.buttons[@"Manual Entry"] tap];
+#if TARGET_OS_MACCATALYST
+        [interactionWindow.menuItems[@"Manual Entry"] tap];
+#else
+        [interactionWindow.collectionViews.buttons[@"Manual Entry"] tap];
+#endif
     } else {
-        [app.sheets[@"Add Code"].scrollViews.otherElements.buttons[@"Manual Entry"] tap];
+        [interactionWindow.sheets[@"Add Code"].scrollViews.otherElements.buttons[@"Manual Entry"] tap];
     }
     
-    XCUIElement *manualNavBar = app.navigationBars[@"Manual Entry"];
-    [manualNavBar.staticTexts[@"Manual Entry"] tap]; /* we're not waiting on this screen long enough to get the screenshot */
-    [self _writeScreenshot:app.screenshot name:@"4_manual"];
+    XCUIElement *manualNavBar = interactionWindow.navigationBars[@"Manual Entry"];
+    sleep(1); /* we're not waiting on this screen long enough to get the screenshot */
+    [self _writeScreenshot:interactionWindow.screenshot name:@"4_manual"];
     
     [manualNavBar.buttons[@"One-Time Passwords"] tap];
-    [self _writeScreenshot:app.screenshot name:@"0_home"];
+    [self _writeScreenshot:interactionWindow.screenshot name:@"0_home"];
     
     [mainNavBar.buttons[@"Edit"] tap];
-    [self _writeScreenshot:app.screenshot name:@"5_edit"];
+    [self _writeScreenshot:interactionWindow.screenshot name:@"5_edit"];
     [mainNavBar.buttons[@"Done"] tap];
     
     XCUIElement *searchField = mainNavBar.searchFields[@"Search"];
     [searchField tap];
     [searchField typeText:@"G"];
-    [self _writeScreenshot:app.screenshot name:@"2_search"];
+    [self _writeScreenshot:interactionWindow.screenshot name:@"2_search"];
+#if TARGET_OS_MACCATALYST
+    [searchField.buttons[@"Clear text"] tap];
+#else
     [mainNavBar.buttons[@"Cancel"] tap];
+#endif
     
-    XCUIElement *table = app.tables.element;
+    XCUIElement *table = interactionWindow.tables.element;
     XCUIElement *twitter = [table.cells elementBoundByIndex:1];
+#if TARGET_OS_MACCATALYST
+    [twitter rightClick];
+#else
     [twitter pressForDuration:1.2];
-    [self _writeScreenshot:app.screenshot name:@"1_copy"];
+#endif
+    
+    [self _writeScreenshot:interactionWindow.screenshot name:@"1_copy"];
 }
 
 @end

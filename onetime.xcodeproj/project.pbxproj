@@ -153,6 +153,7 @@
 		FA4A15BE2380A267005AD686 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA58D2F525DC441300F71BEE /* OTPassTableViewController+OTAddDelegates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OTPassTableViewController+OTAddDelegates.h"; sourceTree = "<group>"; };
 		FA58D2F625DC441300F71BEE /* OTPassTableViewController+OTAddDelegates.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OTPassTableViewController+OTAddDelegates.m"; sourceTree = "<group>"; };
+		FA58D38C25EC28D600F71BEE /* onetimeUITests.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = onetimeUITests.entitlements; sourceTree = "<group>"; };
 		FA59A88E23035B0200463A3F /* OTQRScanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTQRScanViewController.h; sourceTree = "<group>"; };
 		FA59A88F23035B0200463A3F /* OTQRScanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTQRScanViewController.m; sourceTree = "<group>"; };
 		FA59A8922304A8AE00463A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Manual.storyboard; sourceTree = "<group>"; };
@@ -431,6 +432,7 @@
 			children = (
 				FA1426C723E102EC009BD9C8 /* OTScreenshots.m */,
 				FA1426C923E102EC009BD9C8 /* Info.plist */,
+				FA58D38C25EC28D600F71BEE /* onetimeUITests.entitlements */,
 			);
 			path = onetimeUITests;
 			sourceTree = "<group>";
@@ -510,8 +512,8 @@
 			children = (
 				FAEA804A23CEF1D000A6D214 /* OTIndexRequestHandler.h */,
 				FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */,
-				FAEA805523CEF2BB00A6D214 /* spotlight.entitlements */,
 				FAEA804D23CEF1D000A6D214 /* Info.plist */,
+				FAEA805523CEF2BB00A6D214 /* spotlight.entitlements */,
 			);
 			path = onetimespotlight;
 			sourceTree = "<group>";
@@ -1150,6 +1152,7 @@
 		FA1426CC23E102EC009BD9C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = onetimeUITests/onetimeUITests.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1171,6 +1174,7 @@
 		FA1426CD23E102EC009BD9C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = onetimeUITests/onetimeUITests.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				GCC_PREPROCESSOR_DEFINITIONS = (

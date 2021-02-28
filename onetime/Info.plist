@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>$(VERSION_BUILD)</string>
 	<key>CoreSpotlightContinuation</key>
 	<true/>
 	<key>LSApplicationCategoryType</key>

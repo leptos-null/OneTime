@@ -1202,6 +1202,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.oneticon;
 				PRODUCT_NAME = OneTIcon;
 				SUPPORTS_MACCATALYST = YES;
+				TARGETED_DEVICE_FAMILY = 6;
 			};
 			name = Debug;
 		};
@@ -1216,6 +1217,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.oneticon;
 				PRODUCT_NAME = OneTIcon;
 				SUPPORTS_MACCATALYST = YES;
+				TARGETED_DEVICE_FAMILY = 6;
 			};
 			name = Release;
 		};

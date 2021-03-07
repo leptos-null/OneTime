@@ -14,14 +14,19 @@
 
 @implementation ViewController
 
-- (UIImage *)iconForDimension:(CGFloat)dimension scale:(CGFloat)scale inset:(BOOL)inset fill:(BOOL)fillBackground {
-    CGFloat const offset = inset ? dimension/16 : 0;
-    CGRect const fullFrame = CGRectMake(0, 0, dimension, dimension);
-    dimension -= (offset * 2);
-    CGRect const frame = CGRectMake(offset, offset, dimension, dimension);
-    CGFloat const radius = dimension/2 + offset;
+- (UIImage *)iconForSize:(CGSize)size scale:(CGFloat)scale inset:(BOOL)inset fill:(BOOL)fillBackground {
+    CGFloat dimension = fmin(size.width, size.height);
     
-    UIGraphicsBeginImageContextWithOptions(fullFrame.size, NO, scale);
+    CGFloat const offset = inset ? dimension/16 : 0;
+    CGFloat const xInset = (size.width - dimension)/2 + offset;
+    CGFloat const yInset = (size.height - dimension)/2 + offset;
+    
+    CGRect const fullFrame = CGRectMake(0, 0, size.width, size.height);
+    dimension -= (offset * 2);
+    CGRect const frame = CGRectMake(xInset, yInset, dimension, dimension);
+    CGFloat const radius = dimension/2;
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, scale);
     
     if (fillBackground) {
         [[UIColor blackColor] setFill];
@@ -35,7 +40,7 @@
     CGFloat const secondCircleFactor = 0.16;
     CGFloat const secondCircleInset = dimension * secondCircleFactor;
     [[UIBezierPath bezierPathWithOvalInRect:CGRectInset(frame, secondCircleInset, secondCircleInset)] fill];
-
+    
     UIBezierPath *ticks = [UIBezierPath bezierPath];
     NSInteger const tickCount = 12;
     for (NSInteger tickIndex = 0; tickIndex < tickCount; tickIndex++) {
@@ -45,18 +50,18 @@
         double position = (double)tickIndex/tickCount;
         position *= 2 * M_PI;
         CGFloat const xPos = cos(position), yPos = sin(position);
-        [ticks moveToPoint:CGPointMake(innerTickRadius*xPos + radius, innerTickRadius*yPos + radius)];
-        [ticks addLineToPoint:CGPointMake(outerTickRadius*xPos + radius, outerTickRadius*yPos + radius)];
+        [ticks moveToPoint:CGPointMake(xInset + innerTickRadius*xPos + radius, yInset + innerTickRadius*yPos + radius)];
+        [ticks addLineToPoint:CGPointMake(xInset + outerTickRadius*xPos + radius, yInset + outerTickRadius*yPos + radius)];
     }
     ticks.lineWidth = dimension/50;
     ticks.lineCapStyle = kCGLineCapRound;
     [[UIColor darkGrayColor] setStroke];
     [ticks stroke];
-
+    
     UIBezierPath *hand = [UIBezierPath bezierPath];
     hand.lineCapStyle = kCGLineCapRound;
     hand.lineWidth = dimension/46;
-
+    
     CGFloat const handleRingDiameter = dimension*0.3;
     UIBezierPath *vaultHandle = [UIBezierPath bezierPathWithOvalInRect:CGRectInset(frame, handleRingDiameter, handleRingDiameter)];
     
@@ -66,8 +71,8 @@
         double position = (double)vaultSpokeIndex/vaultSpokeCount;
         position *= 2 * M_PI;
         CGFloat const xPos = cos(position), yPos = sin(position);
-        [vaultHandle moveToPoint:CGPointMake(radius, radius)];
-        [vaultHandle addLineToPoint:CGPointMake(spokeLength*xPos + radius, spokeLength*yPos + radius)];
+        [vaultHandle moveToPoint:CGPointMake(xInset + radius, yInset + radius)];
+        [vaultHandle addLineToPoint:CGPointMake(xInset + spokeLength*xPos + radius, yInset + spokeLength*yPos + radius)];
     }
     vaultHandle.lineWidth = dimension/42;
     vaultHandle.lineCapStyle = kCGLineCapRound;
@@ -94,25 +99,33 @@
     NSArray<NSMutableDictionary<NSString *, NSString *> *> *images = dict[@"images"];
     for (NSMutableDictionary<NSString *, NSString *> *image in images) {
         NSString *scale = image[@"scale"];
-        NSString *size = image[@"size"];
+        NSString *dimensions = image[@"size"];
         NSInteger scaleLastIndex = scale.length - 1;
         assert([scale characterAtIndex:scaleLastIndex] == 'x');
         NSString *numScale = [scale substringToIndex:scaleLastIndex];
         
-        NSArray<NSString *> *sizeParts = [size componentsSeparatedByString:@"x"];
+        NSArray<NSString *> *sizeParts = [dimensions componentsSeparatedByString:@"x"];
         assert(sizeParts.count == 2);
-        NSString *numSize = sizeParts.firstObject;
-        assert([numSize isEqualToString:sizeParts.lastObject]);
+        NSString *sizeWidth = sizeParts[0];
+        NSString *sizeHeight = sizeParts[1];
         
-        NSString *fileName = [NSString stringWithFormat:@"AppIcon%@@%@.png", size, scale];
+        NSString *fileName = [NSString stringWithFormat:@"AppIcon%@@%@.png", dimensions, scale];
         BOOL fill = [fillIdioms containsObject:image[@"idiom"]];
-        UIImage *render = [self iconForDimension:numSize.doubleValue scale:numScale.doubleValue inset:inset fill:fill];
+        CGSize size = CGSizeMake(sizeWidth.doubleValue, sizeHeight.doubleValue);
+        
+        UIImage *render = [self iconForSize:size scale:numScale.doubleValue inset:inset fill:fill];
         NSData *fileData = UIImagePNGRepresentation(render);
         assert([fileData writeToFile:[appiconset stringByAppendingPathComponent:fileName] atomically:YES]);
         image[@"filename"] = fileName;
     }
     NSData *serial = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
     assert([serial writeToFile:manifest atomically:YES]);
+}
+
+- (void)writeGitHubPreview:(NSString *)path scale:(CGFloat)scale {
+    UIImage *render = [self iconForSize:CGSizeMake(1280/scale, 640/scale) scale:scale inset:YES fill:YES];
+    NSData *fileData = UIImagePNGRepresentation(render);
+    assert([fileData writeToFile:path atomically:YES]);
 }
 
 - (void)viewDidLoad {
@@ -130,8 +143,7 @@
     [super viewDidLayoutSubviews];
     
     UIImageView *imageView = self.imageView;
-    CGRect const rect = imageView.frame;
-    imageView.image = [self iconForDimension:fmin(rect.size.width, rect.size.height) scale:0 inset:NO fill:NO];
+    imageView.image = [self iconForSize:imageView.frame.size scale:0 inset:NO fill:NO];
 }
 
 @end

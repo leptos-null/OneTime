@@ -1,6 +1,6 @@
 //
 //  OTCaptureVideoView.m
-//  onetime
+//  OneTime
 //
 //  Created by Leptos on 8/17/19.
 //  Copyright © 2019 Leptos. All rights reserved.

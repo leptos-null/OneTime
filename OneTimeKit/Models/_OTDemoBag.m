@@ -1,6 +1,6 @@
 //
 //  _OTDemoBag.m
-//  onetime
+//  OneTimeKit
 //
 //  Created by Leptos on 1/26/20.
 //  Copyright © 2020 Leptos. All rights reserved.

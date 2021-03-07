@@ -1,6 +1,6 @@
 //
 //  OTQRScanViewController.m
-//  onetime
+//  OneTime
 //
 //  Created by Leptos on 8/13/19.
 //  Copyright © 2019 Leptos. All rights reserved.

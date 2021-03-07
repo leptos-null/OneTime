@@ -1,6 +1,6 @@
 //
 //  OTBag+CSItem.h
-//  onetime
+//  OneTimeKit
 //
 //  Created by Leptos on 1/14/20.
 //  Copyright © 2020 Leptos. All rights reserved.

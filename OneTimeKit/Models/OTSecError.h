@@ -1,6 +1,6 @@
 //
 //  OTSecError.h
-//  onetime
+//  OneTimeKit
 //
 //  Created by Leptos on 8/25/19.
 //  Copyright © 2019 Leptos. All rights reserved.

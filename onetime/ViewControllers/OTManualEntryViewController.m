@@ -1,6 +1,6 @@
 //
 //  OTManualEntryViewController.m
-//  onetime
+//  OneTime
 //
 //  Created by Leptos on 8/14/19.
 //  Copyright © 2019 Leptos. All rights reserved.

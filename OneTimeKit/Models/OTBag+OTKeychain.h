@@ -1,6 +1,6 @@
 //
 //  OTBag+OTKeychain.h
-//  onetime
+//  OneTimeKit
 //
 //  Created by Leptos on 4/25/20.
 //  Copyright © 2020 Leptos. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  OTInterfaceController.h
-//  nano Extension
+//  nano OneTime Extension
 //
 //  Created by Leptos on 8/6/19.
 //  Copyright © 2019 Leptos. All rights reserved.

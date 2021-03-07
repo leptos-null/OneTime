@@ -1,6 +1,6 @@
 //
 //  NSString+OTDistance.h
-//  onetime
+//  OneTime
 //
 //  Created by Leptos on 8/23/19.
 //  Copyright © 2019 Leptos. All rights reserved.

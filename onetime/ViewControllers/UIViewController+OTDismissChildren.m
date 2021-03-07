@@ -1,6 +1,6 @@
 //
 //  UIViewController+OTDismissChildren.m
-//  onetime
+//  OneTime
 //
 //  Created by Leptos on 1/16/20.
 //  Copyright © 2020 Leptos. All rights reserved.

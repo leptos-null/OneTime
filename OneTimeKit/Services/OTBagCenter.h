@@ -1,6 +1,6 @@
 //
 //  OTBagCenter.h
-//  onetime
+//  OneTimeKit
 //
 //  Created by Leptos on 4/19/20.
 //  Copyright © 2020 Leptos. All rights reserved.

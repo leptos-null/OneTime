@@ -1,6 +1,6 @@
 //
 //  OTScreenshots.m
-//  onetimeUITests
+//  OneTime UI Tests
 //
 //  Created by Leptos on 1/28/20.
 //  Copyright © 2020 Leptos. All rights reserved.

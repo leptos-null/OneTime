@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14854.2" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17701" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14640.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17500"/>
     </dependencies>
     <scenes>
         <!--Interface Controller-->
@@ -17,14 +17,14 @@
                                 <tableRow identifier="PassCell" selectable="NO" id="3hl-1v-huP" customClass="OTPassRowController">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="7vI-3Y-4I5">
                                         <items>
-                                            <label alignment="left" accessibilityLabel="Issuer" text="Issuer" id="Szw-Jq-AtY">
+                                            <label alignment="left" accessibilityLabel="Issuer" text="Issuer" numberOfLines="0" id="Szw-Jq-AtY">
                                                 <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                             </label>
-                                            <label alignment="left" accessibilityLabel="Passcode" text="Passcode" id="hS8-RS-faI">
+                                            <label alignment="left" accessibilityLabel="Passcode" text="Passcode" minimumScaleFactor="0.5" id="hS8-RS-faI">
                                                 <accessibilityTraits key="accessibilityTraits" updatesFrequently="YES"/>
                                                 <fontDescription key="font" style="UICTFontTextStyleTitle1"/>
                                             </label>
-                                            <timer alignment="left" previewedSeconds="30" id="NY6-yl-0jK">
+                                            <timer alignment="left" minimumScaleFactor="0.75" previewedSeconds="30" id="NY6-yl-0jK">
                                                 <accessibilityTraits key="accessibilityTraits" updatesFrequently="YES"/>
                                                 <fontDescription key="font" style="UICTFontTextStyleTitle3"/>
                                                 <calendarUnit key="units" minute="YES" second="YES"/>
@@ -35,7 +35,7 @@
                                                     <action selector="counterButtonHit" destination="3hl-1v-huP" id="CNR-fT-eNh"/>
                                                 </connections>
                                             </button>
-                                            <label alignment="left" accessibilityLabel="Account" text="Account" id="hc8-SW-P61"/>
+                                            <label alignment="left" accessibilityLabel="Account" text="Account" numberOfLines="0" id="hc8-SW-P61"/>
                                         </items>
                                     </group>
                                     <connections>

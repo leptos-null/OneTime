@@ -20,6 +20,10 @@
 @property (strong, nonatomic, readonly) __kindof OTPBase *generator;
 
 @property (strong, nonatomic, readonly) NSString *uniqueIdentifier;
+/// The date the item was created in Keychain
+@property (strong, nonatomic, readonly) NSDate *creationDate;
+/// The last time the item was updated in Keychain
+@property (strong, nonatomic, readonly) NSDate *modificationDate;
 
 /// Creates a new bag with @c generator
 - (instancetype)initWithGenerator:(OTPBase *)generator;

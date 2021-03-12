@@ -12,9 +12,7 @@
 #import "OTPTime.h"
 #import "NSData+OTBase32.h"
 
-@implementation OTBag {
-    NSDictionary *_keychainAttributes; // nil if not added to keychain
-}
+@implementation OTBag
 
 static inline __pure2 char singleHexChar(uint8_t hex) {
     hex &= 0xf;
@@ -134,9 +132,10 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
             default:
                 break;
         }
-        _keychainAttributes = attributes;
         _generator = generator;
         _uniqueIdentifier = attributes[(NSString *)kSecAttrAccount];
+        _creationDate = attributes[(NSString *)kSecAttrCreationDate];
+        _modificationDate = attributes[(NSString *)kSecAttrModificationDate];
         _account = attributes[(NSString *)kSecAttrLabel];
         _issuer = attributes[(NSString *)kSecAttrService];
         _comment = attributes[(NSString *)kSecAttrComment];
@@ -195,16 +194,15 @@ NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
     attribs[(NSString *)kSecAttrComment] = self.comment ?: @"";
     attribs[(NSString *)kSecAttrGeneric] = serialProperties;
     
-    // be really sure we have the right information
-    NSDictionary *keychainAttributes = _keychainAttributes;
-    if ([keychainAttributes[(NSString *)kSecAttrAccount] isEqualToString:self.uniqueIdentifier]) {
+    if (self.creationDate != nil) { // check if we think item has been added to Keychain
         OSStatus ret = SecItemUpdate((__bridge CFDictionaryRef)[self _uniqueKeychainQuery], (__bridge CFDictionaryRef)attribs);
         if (ret == errSecSuccess) {
-            NSMutableDictionary *updatedAttributes = [keychainAttributes mutableCopy];
-            [updatedAttributes addEntriesFromDictionary:attribs];
-            _keychainAttributes = [updatedAttributes copy];
+            _modificationDate = [NSDate date];
         }
-        return ret;
+        // i.e. if ret is ItemNotFound, continue to below to add it
+        if (ret != errSecItemNotFound) {
+            return ret;
+        }
     }
     attribs[(NSString *)kSecClass] = (NSString *)kSecClassGenericPassword;
     // if I were to do this again, I would save the base32 encoded key,
@@ -222,7 +220,11 @@ NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {
     
     CFTypeRef result = NULL;
     OSStatus ret = SecItemAdd((__bridge CFDictionaryRef)attribs, &result);
-    _keychainAttributes = CFBridgingRelease(result);
+    NSDictionary *resultAttribs = CFBridgingRelease(result);
+    if (OTKindofClass(resultAttribs, NSDictionary)) {
+        _creationDate = resultAttribs[(NSString *)kSecAttrCreationDate];
+        _modificationDate = resultAttribs[(NSString *)kSecAttrModificationDate];
+    }
     return ret;
 }
 

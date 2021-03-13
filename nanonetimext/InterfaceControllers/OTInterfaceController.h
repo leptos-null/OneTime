@@ -13,6 +13,7 @@
 
 @interface OTInterfaceController : WKInterfaceController
 
+@property (strong, nonatomic) IBOutlet WKInterfaceLabel *updateLabel;
 @property (strong, nonatomic) IBOutlet WKInterfaceTable *passcodesTable;
 
 @end

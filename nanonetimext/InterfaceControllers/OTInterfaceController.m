@@ -10,12 +10,13 @@
 #import "OTPassRowController.h"
 
 #import "../../OneTimeKit/Services/OTBagCenter.h"
-#import "../../OneTimeKit/Models/_OTDemoBag.h"
 
-@implementation OTInterfaceController
+@implementation OTInterfaceController {
+    BOOL _didInitialScroll;
+}
 
-- (void)didAppear {
-    [super didAppear];
+- (void)awakeWithContext:(id)context {
+    [super awakeWithContext:context];
     
     if (@available(watchOS 5.1, *)) {
         // for cells of this size (being larger), I think this looks better
@@ -26,7 +27,17 @@
 
 - (void)willActivate {
     [super willActivate];
+    
     [self updatePasscodesTable];
+}
+
+- (void)didAppear {
+    [super didAppear];
+    
+    if (!_didInitialScroll) {
+        [self _scrollToTopOfPasscodeTable:NO];
+        _didInitialScroll = YES;
+    }
 }
 
 - (void)didDeactivate {
@@ -39,13 +50,62 @@
     }
 }
 
+- (void)_scrollToTopOfPasscodeTable:(BOOL)animated {
+    WKInterfaceTable *passcodeTable = self.passcodesTable;
+    if (@available(watchOS 4.0, *)) {
+        [self scrollToObject:passcodeTable atScrollPosition:WKInterfaceScrollPositionTop animated:animated];
+    } else {
+        // leaves a little bit of the button visible
+        [passcodeTable scrollToRowAtIndex:0];
+    }
+}
+
+- (NSString *)_relativeStringFromDate:(NSDate *)date {
+    static NSDateFormatter *dateFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [NSDateFormatter new];
+        dateFormatter.locale = NSLocale.autoupdatingCurrentLocale;
+        dateFormatter.timeZone = NSTimeZone.localTimeZone;
+        dateFormatter.calendar = NSCalendar.autoupdatingCurrentCalendar;
+        
+        dateFormatter.doesRelativeDateFormatting = YES;
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    });
+    return [dateFormatter stringFromDate:date];
+}
+
+- (IBAction)updateButtonHit:(WKInterfaceButton *)button {
+    [self updatePasscodesTable];
+    
+    [self _scrollToTopOfPasscodeTable:YES];
+}
+
 - (void)updatePasscodesTable {
+    WKInterfaceTable *table = self.passcodesTable;
     NSArray<OTBag *> *bags = [OTBagCenter.defaultCenter keychainBagsCache:NO];
-    [self.passcodesTable setNumberOfRows:bags.count withRowType:OTPassRowController.reusableIdentifier];
+    
+    NSInteger tableRows = table.numberOfRows;
+    NSInteger bagCount = bags.count;
+    if (tableRows > bagCount) {
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(bagCount, tableRows - bagCount)];
+        [table removeRowsAtIndexes:indexes];
+    } else if (bagCount > tableRows) {
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(tableRows, bagCount - tableRows)];
+        [table insertRowsAtIndexes:indexes withRowType:OTPassRowController.reusableIdentifier];
+    }
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
-        OTPassRowController *row = [self.passcodesTable rowControllerAtIndex:idx];
+        OTPassRowController *row = [table rowControllerAtIndex:idx];
         row.bag = bag;
+        if (bag.index != idx) {
+            bag.index = idx;
+            [OTBagCenter.defaultCenter updateMetadata:bag];
+        }
     }];
+    
+    NSDate *now = [NSDate date];
+    self.updateLabel.text = [@"Last updated:\n" stringByAppendingString:[self _relativeStringFromDate:now]];
 }
 
 @end

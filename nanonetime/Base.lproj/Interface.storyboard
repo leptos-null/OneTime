@@ -12,6 +12,23 @@
             <objects>
                 <controller alwaysBounce="YES" id="AgC-eL-Hgc" customClass="OTInterfaceController">
                     <items>
+                        <button alignment="left" id="4e9-lU-f6T">
+                            <group key="contentGroup" width="1" alignment="left" layout="vertical" id="ctm-3n-UN2">
+                                <items>
+                                    <label alignment="left" text="Updated label" numberOfLines="0" id="FvA-kM-Gvg">
+                                        <fontDescription key="font" style="UICTFontTextStyleCaption1"/>
+                                    </label>
+                                    <label alignment="left" text="Tap to refresh" minimumScaleFactor="0.75" id="8na-mu-Rbe">
+                                        <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                    </label>
+                                </items>
+                                <color key="backgroundColor" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
+                                <edgeInsets key="margins" left="4" right="4" top="4" bottom="4"/>
+                            </group>
+                            <connections>
+                                <action selector="updateButtonHit:" destination="AgC-eL-Hgc" id="adW-ZH-BMf"/>
+                            </connections>
+                        </button>
                         <table alignment="left" id="0nH-yo-pa4">
                             <items>
                                 <tableRow identifier="PassCell" selectable="NO" id="3hl-1v-huP" customClass="OTPassRowController">
@@ -37,6 +54,7 @@
                                             </button>
                                             <label alignment="left" accessibilityLabel="Account" text="Account" numberOfLines="0" id="hc8-SW-P61"/>
                                         </items>
+                                        <edgeInsets key="margins" left="4" right="4" top="4" bottom="4"/>
                                     </group>
                                     <connections>
                                         <outlet property="accountLabel" destination="hc8-SW-P61" id="AWL-zH-s9u"/>
@@ -51,6 +69,7 @@
                     </items>
                     <connections>
                         <outlet property="passcodesTable" destination="0nH-yo-pa4" id="WLE-xB-7nM"/>
+                        <outlet property="updateLabel" destination="FvA-kM-Gvg" id="fwb-qa-ru0"/>
                     </connections>
                 </controller>
             </objects>

@@ -43,7 +43,6 @@ reindexSearchableItemsWithIdentifiers:(NSArray<NSString *> *)identifiers
             return nil;
         }
         [requestIDs removeObjectAtIndex:indx];
-        [requestIDs exchangeObjectAtIndex:indx withObjectAtIndex:(requestIDs.count - 1)];
         return bag.searchableItem;
     }];
     [searchableIndex fetchLastClientStateWithCompletionHandler:^(NSData *clientState, NSError *fetchErr) {

@@ -194,7 +194,7 @@
     _dataSource = [bagCenter keychainBagsCache:YES];
     if (!self.searchController.active) {
         NSInteger const addedCount = bags.count;
-        NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:bags.count];
+        NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:addedCount];
         
         for (NSInteger indexRow = 0; indexRow < addedCount; indexRow++) {
             newPaths[indexRow] = [NSIndexPath indexPathForRow:(originalDataSourceCount + indexRow) inSection:0];

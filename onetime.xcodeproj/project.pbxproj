@@ -1229,7 +1229,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = onetimespotlight/spotlight.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				GCC_DYNAMIC_NO_PIC = NO;
 				"GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]" = (
@@ -1255,7 +1254,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = onetimespotlight/spotlight.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 7P56K8K4MY;
 				"GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]" = (
 					"$(inherited)",

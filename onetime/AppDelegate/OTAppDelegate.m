@@ -19,6 +19,16 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
 @implementation OTAppDelegate
 
 - (BOOL)application:(UIApplication *)app didFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)options {
+#if 0 /* if taking App Store screenshots on macOS */
+    // App Store Screenshot specifications:
+    //   https://help.apple.com/app-store-connect/#/devd274dd925
+    CGSize const sceneSize = CGSizeMake(1663, 1040); // results in 2560x1600 screenshots
+    for (UIWindowScene *windowScene in app.connectedScenes) {
+        UISceneSizeRestrictions *sizeRestrictions = windowScene.sizeRestrictions;
+        sizeRestrictions.minimumSize = sceneSize;
+        sizeRestrictions.maximumSize = sceneSize;
+    }
+#endif
     if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
         UIApplicationShortcutIcon *icon = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeCapturePhoto];
         UIApplicationShortcutItem *item = [[UIApplicationShortcutItem alloc] initWithType:OTAppShortcutAddQRType localizedTitle:@"Scan QR Code" localizedSubtitle:nil icon:icon userInfo:nil];

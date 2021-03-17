@@ -29,6 +29,7 @@
                                 <action selector="updateButtonHit:" destination="AgC-eL-Hgc" id="adW-ZH-BMf"/>
                             </connections>
                         </button>
+                        <label alignment="left" hidden="YES" text="No entries found. Add entries using One Time on an iOS, iPadOS, or macOS device signed into your iCloud account." numberOfLines="0" id="3vc-3z-Yw8"/>
                         <table alignment="left" id="0nH-yo-pa4">
                             <items>
                                 <tableRow identifier="PassCell" selectable="NO" id="3hl-1v-huP" customClass="OTPassRowController">
@@ -68,6 +69,7 @@
                         </table>
                     </items>
                     <connections>
+                        <outlet property="emptyLabel" destination="3vc-3z-Yw8" id="L61-Tv-xOe"/>
                         <outlet property="passcodesTable" destination="0nH-yo-pa4" id="WLE-xB-7nM"/>
                         <outlet property="updateLabel" destination="FvA-kM-Gvg" id="fwb-qa-ru0"/>
                     </connections>

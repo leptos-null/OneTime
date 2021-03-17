@@ -86,8 +86,8 @@
     WKInterfaceTable *table = self.passcodesTable;
     NSArray<OTBag *> *bags = [OTBagCenter.defaultCenter keychainBagsCache:NO];
     
-    NSInteger tableRows = table.numberOfRows;
-    NSInteger bagCount = bags.count;
+    NSInteger const tableRows = table.numberOfRows;
+    NSInteger const bagCount = bags.count;
     if (tableRows > bagCount) {
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(bagCount, tableRows - bagCount)];
         [table removeRowsAtIndexes:indexes];
@@ -95,6 +95,7 @@
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(tableRows, bagCount - tableRows)];
         [table insertRowsAtIndexes:indexes withRowType:OTPassRowController.reusableIdentifier];
     }
+    self.emptyLabel.hidden = (bagCount != 0);
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
         OTPassRowController *row = [table rowControllerAtIndex:idx];
         row.bag = bag;

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EOI-im-eZM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EOI-im-eZM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14819.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,17 +15,45 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8U3-Dq-TMj">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <view key="tableFooterView" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eSI-1G-PJQ" userLabel="Table Footer View">
+                            <rect key="frame" x="0.0" y="172.5" width="414" height="129"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No entries found" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jUo-d2-Ype" userLabel="Title Label">
+                                    <rect key="frame" x="40" y="40" width="132" height="20.5"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add entries by clicking the + button above." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oXt-yr-dAS" userLabel="Detail Label">
+                                    <rect key="frame" x="40" y="68.5" width="325" height="20.5"/>
+                                    <accessibility key="accessibilityConfiguration" label="Add entries by clicking the Add button above."/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstItem="oXt-yr-dAS" firstAttribute="top" secondItem="jUo-d2-Ype" secondAttribute="bottom" constant="8" id="Gt4-gx-u70"/>
+                                <constraint firstItem="oXt-yr-dAS" firstAttribute="leading" secondItem="eSI-1G-PJQ" secondAttribute="leadingMargin" constant="32" id="J6m-ze-DHN"/>
+                                <constraint firstAttribute="bottomMargin" secondItem="oXt-yr-dAS" secondAttribute="bottom" priority="750" constant="32" id="Ns5-8J-UgL"/>
+                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="oXt-yr-dAS" secondAttribute="trailing" constant="32" id="t6W-IG-58Y"/>
+                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="jUo-d2-Ype" secondAttribute="trailing" constant="32" id="vay-vv-xOf"/>
+                                <constraint firstItem="jUo-d2-Ype" firstAttribute="top" secondItem="eSI-1G-PJQ" secondAttribute="topMargin" priority="750" constant="32" id="zr5-pl-Vss"/>
+                                <constraint firstItem="jUo-d2-Ype" firstAttribute="leading" secondItem="eSI-1G-PJQ" secondAttribute="leadingMargin" constant="32" id="zx7-ip-Apv"/>
+                            </constraints>
+                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PassCell" id="k7c-08-FlA" customClass="OTPassTableViewCell">
-                                <rect key="frame" x="0.0" y="28" width="414" height="112"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="116.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="k7c-08-FlA" id="pcN-eD-KVN">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="112"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="116.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Issuer" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="j3p-PH-tQg" customClass="OTPadTextField">
-                                            <rect key="frame" x="36" y="11" width="49" height="21"/>
+                                            <rect key="frame" x="36" y="11" width="49" height="22"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <accessibility key="accessibilityConfiguration" label="Issuer">
                                                 <accessibilityTraits key="traits" staticText="YES"/>
@@ -36,7 +65,7 @@
                                             </connections>
                                         </textField>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Passcode" textAlignment="natural" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RZA-vA-7Zr">
-                                            <rect key="frame" x="152.5" y="40" width="109" height="32"/>
+                                            <rect key="frame" x="148.5" y="41" width="117" height="34.5"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" notEnabled="YES" updatesFrequently="YES"/>
                                             </accessibility>
@@ -45,7 +74,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Account" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lFD-Cd-b56" customClass="OTPadTextField">
-                                            <rect key="frame" x="38" y="80" width="63.5" height="21"/>
+                                            <rect key="frame" x="38" y="83.5" width="63.5" height="22"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <accessibility key="accessibilityConfiguration" label="Account">
                                                 <accessibilityTraits key="traits" staticText="YES"/>
@@ -57,14 +86,14 @@
                                             </connections>
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="characterWrap" translatesAutoresizingMaskIntoConstraints="NO" id="RoA-ix-f69">
-                                            <rect key="frame" x="314" y="65" width="80" height="36"/>
+                                            <rect key="frame" x="314" y="69.5" width="80" height="36"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" button="YES" updatesFrequently="YES"/>
                                             </accessibility>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                             <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                             <state key="normal" title="Indicator">
-                                                <color key="titleColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="titleColor" systemColor="labelColor"/>
                                             </state>
                                             <connections>
                                                 <action selector="_didTapFactorIndicator:" destination="k7c-08-FlA" eventType="touchUpInside" id="jBj-di-BaK"/>
@@ -111,6 +140,9 @@
                             <action selector="_refreshControlEvent:" destination="Onc-Cc-O5p" eventType="valueChanged" id="KeI-Lo-xHa"/>
                         </connections>
                     </refreshControl>
+                    <connections>
+                        <outlet property="emptyListView" destination="eSI-1G-PJQ" id="JaH-3K-Kpz"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f5O-b4-f6k" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -139,4 +171,12 @@
             <point key="canvasLocation" x="-393" y="288"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

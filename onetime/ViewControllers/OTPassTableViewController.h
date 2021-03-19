@@ -16,6 +16,8 @@
 
 @property (strong, nonatomic, readonly) UISearchController *searchController;
 
+@property (strong, nonatomic) IBOutlet UIView *emptyListView;
+
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier;
 
 - (void)pushLiveScanController:(NSString *)title;

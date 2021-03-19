@@ -20,6 +20,8 @@
 #import "../Services/OTLaunchOptions.h"
 
 @implementation OTPassTableViewController {
+    // do not write to _dataSource directly
+    // instead, write to `self.dataSource`
     NSArray<OTBag *> *_dataSource;
     NSArray<OTBag *> *_filteredSource;
     
@@ -27,16 +29,11 @@
     BOOL _editModeFromButton;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)coder {
-    if (self = [super initWithCoder:coder]) {
-        OTBagCenter.defaultCenter.observer = self;
-        [self updateDataSource];
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    OTBagCenter.defaultCenter.observer = self;
+    [self updateDataSource];
     
     UIBarButtonItem *editButtonItem = self.editButtonItem;
     UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:nil action:nil];
@@ -104,7 +101,14 @@
 }
 
 - (void)updateDataSource {
-    _dataSource = [OTBagCenter.defaultCenter keychainBagsCache:NO];
+    self.dataSource = [OTBagCenter.defaultCenter keychainBagsCache:NO];
+}
+
+- (void)setDataSource:(NSArray<OTBag *> *)dataSource {
+    _dataSource = dataSource;
+    
+    BOOL isEmpty = (dataSource.count == 0);
+    self.tableView.tableFooterView = isEmpty ? self.emptyListView : [UIView new];
 }
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier {
@@ -191,7 +195,7 @@
 - (void)bagCenter:(OTBagCenter *)bagCenter addedBags:(NSArray<OTBag *> *)bags {
     NSInteger const originalDataSourceCount = _dataSource.count;
     
-    _dataSource = [bagCenter keychainBagsCache:YES];
+    self.dataSource = [bagCenter keychainBagsCache:YES];
     if (!self.searchController.active) {
         NSInteger const addedCount = bags.count;
         NSMutableArray<NSIndexPath *> *newPaths = [NSMutableArray arrayWithCapacity:addedCount];
@@ -215,7 +219,7 @@
         }
     }];
     
-    _dataSource = [bagCenter keychainBagsCache:YES];
+    self.dataSource = [bagCenter keychainBagsCache:YES];
     
     NSMutableArray<OTBag *> *filterPatch = [_filteredSource mutableCopy];
     for (OTBag *bag in bags) {
@@ -300,7 +304,7 @@
         bags[i].index = i;
         [OTBagCenter.defaultCenter updateMetadata:bags[i]];
     }
-    _dataSource = [bags copy];
+    self.dataSource = [bags copy];
 }
 
 // MARK: - UITableViewDelegate

@@ -14,7 +14,7 @@
 @interface OTInterfaceController : WKInterfaceController
 
 @property (strong, nonatomic) IBOutlet WKInterfaceLabel *updateLabel;
-@property (strong, nonatomic) IBOutlet WKInterfaceLabel *emptyLabel;
+@property (strong, nonatomic) IBOutlet WKInterfaceGroup *emptyListInterface;
 @property (strong, nonatomic) IBOutlet WKInterfaceTable *passcodesTable;
 
 @end

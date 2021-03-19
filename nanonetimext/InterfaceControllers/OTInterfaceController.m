@@ -95,7 +95,7 @@
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(tableRows, bagCount - tableRows)];
         [table insertRowsAtIndexes:indexes withRowType:OTPassRowController.reusableIdentifier];
     }
-    self.emptyLabel.hidden = (bagCount != 0);
+    self.emptyListInterface.hidden = (bagCount != 0);
     [bags enumerateObjectsUsingBlock:^(OTBag *bag, NSUInteger idx, BOOL *stop) {
         OTPassRowController *row = [table rowControllerAtIndex:idx];
         row.bag = bag;

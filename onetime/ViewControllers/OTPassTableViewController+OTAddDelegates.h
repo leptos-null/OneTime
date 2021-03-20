@@ -15,10 +15,9 @@
 
 @end
 
-API_AVAILABLE(ios(11.0), tvos(11.0))
 @interface OTPassTableViewController (OTImagePickerControllerDelegate) <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
-- (void)bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion;
+- (NSArray<OTBag *> *)bagsForQRCodeInImage:(UIImage *)image;
 
 @end
 

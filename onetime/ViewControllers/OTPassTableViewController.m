@@ -131,7 +131,7 @@
 }
 // this API is available prior to iOS 11, however the API used in the delegate callback
 //   is iOS 11+ so don't setup, since the picker won't do anything on those versions
-- (void)presentSavedScanController:(NSString *)title API_AVAILABLE(ios(11.0), tvos(11.0)) {
+- (void)presentSavedScanController:(NSString *)title {
     UIImagePickerController *imagePicker = [UIImagePickerController new];
     imagePicker.delegate = self;
     imagePicker.title = title;
@@ -162,11 +162,9 @@
             [weakself pushLiveScanController:action.title];
         }]];
     }
-    if (@available(iOS 11.0, *)) {
-        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [weakself presentSavedScanController:action.title];
-        }]];
-    }
+    [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [weakself presentSavedScanController:action.title];
+    }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Manual Entry" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [weakself pushManualEntryController:action.title];
     }]];

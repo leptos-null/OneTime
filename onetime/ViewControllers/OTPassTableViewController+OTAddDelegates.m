@@ -6,7 +6,7 @@
 //  Copyright © 2021 Leptos. All rights reserved.
 //
 
-#import <Vision/Vision.h>
+#import <CoreImage/CoreImage.h>
 
 #import "OTPassTableViewController+OTAddDelegates.h"
 #import "UIViewController+UMSurfacer.h"
@@ -39,55 +39,47 @@
 @end
 
 
-API_AVAILABLE(ios(11.0), tvos(11.0))
 @implementation OTPassTableViewController (OTImagePickerControllerDelegate)
 
-- (void)bagsForQRCodeInImage:(UIImage *)image completionHandler:(void(^)(NSArray<OTBag *> *, NSError *))completion {
-    VNDetectBarcodesRequest *qrRequest = [[VNDetectBarcodesRequest alloc] initWithCompletionHandler:^(VNRequest *request, NSError *error) {
-        if (error) {
-            completion(nil, error);
-            return;
+- (NSArray<OTBag *> *)bagsForQRCodeInImage:(UIImage *)image {
+    static CIDetector *detector;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableDictionary<CIContextOption, id> *options = [NSMutableDictionary dictionary];
+        if (@available(iOS 12.0, *)) {
+            options[kCIContextName] = @"null.leptos.onetime.detector.qr";
         }
-        NSArray<OTBag *> *bags = [request.results compactMap:^OTBag *(VNBarcodeObservation *barcode) {
-            if (!OTKindofClass(barcode, VNBarcodeObservation)) {
-                return nil;
-            }
-            return [[OTBag alloc] initWithURL:[NSURL URLWithString:barcode.payloadStringValue]];
+        CIContext *context = [CIContext contextWithOptions:options];
+        detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:@{
+            // this is so fast, and not going to happen that often - opt into higher accuracy
+            CIDetectorAccuracy : CIDetectorAccuracyHigh
         }];
-        completion(bags, nil);
+    });
+    
+    CIImage *coreImage = [image CIImage] ?: [CIImage imageWithCGImage:[image CGImage]];
+    NSArray<__kindof CIFeature *> *features = [detector featuresInImage:coreImage];
+    NSArray<OTBag *> *bags = [features compactMap:^OTBag *(CIQRCodeFeature *feature) {
+        if (!OTKindofClass(feature, CIQRCodeFeature)) {
+            return nil;
+        }
+        return [[OTBag alloc] initWithURL:[NSURL URLWithString:feature.messageString]];
     }];
-    qrRequest.symbologies = @[ VNBarcodeSymbologyQR ];
-    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:[image CGImage] options:@{
-        
-    }];
-    NSError *err = NULL;
-    [requestHandler performRequests:@[ qrRequest ] error:&err];
-    if (err) {
-        completion(nil, err);
-    }
+    return bags;
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     __weak __typeof(self) weakself = self;
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakself bagsForQRCodeInImage:image completionHandler:^(NSArray<OTBag *> *bags, NSError *error) {
-            if (error) {
-                NSLog(@"bagsForQRCodeInImage: %@", error);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [picker surfaceUserMessage:error.localizedDescription viewHint:nil dismissAfter:0];
-                });
-                return;
+        NSArray<OTBag *> *bags = [weakself bagsForQRCodeInImage:image];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (bags.count) {
+                [picker dismissViewControllerAnimated:YES completion:NULL];
+                [OTBagCenter.defaultCenter addBags:bags];
+            } else {
+                [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
             }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (bags.count) {
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                    [OTBagCenter.defaultCenter addBags:bags];
-                } else {
-                    [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
-                }
-            });
-        }];
+        });
     });
 }
 
@@ -136,22 +128,14 @@ API_AVAILABLE(ios(11.0))
                 NSLog(@"loadObjectOfUIImageClass object is not UIImage");
                 return;
             }
-            [weakself bagsForQRCodeInImage:(UIImage *)image completionHandler:^(NSArray<OTBag *> *bags, NSError *parseErr) {
-                if (parseErr) {
-                    NSLog(@"_bagsForQRCodeInImageCompletedWithError: %@", parseErr);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [weakself surfaceUserMessage:parseErr.localizedDescription viewHint:nil dismissAfter:0];
-                    });
-                    return;
+            NSArray<OTBag *> *bags = [weakself bagsForQRCodeInImage:(UIImage *)image];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (bags.count) {
+                    [OTBagCenter.defaultCenter addBags:bags];
+                } else {
+                    [weakself surfaceUserMessage:@"No valid codes found" viewHint:interaction.view dismissAfter:0];
                 }
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (bags.count) {
-                        [OTBagCenter.defaultCenter addBags:bags];
-                    } else {
-                        [weakself surfaceUserMessage:@"No valid codes found" viewHint:interaction.view dismissAfter:0];
-                    }
-                });
-            }];
+            });
         }];
     }
 }

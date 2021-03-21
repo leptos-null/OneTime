@@ -69,6 +69,7 @@
 		FAEA805B23CEF50500A6D214 /* OTSecError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7F916B231313BC00FD2A04 /* OTSecError.m */; };
 		FAEA805C23CEF50800A6D214 /* OTBag+CSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */; };
 		FAEA805D23CEF56E00A6D214 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEA803E23CED40900A6D214 /* CoreServices.framework */; };
+		FAEE6C622608050100CBCB0C /* OTBag+OTQRCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE6C612608050100CBCB0C /* OTBag+OTQRCodes.m */; };
 		FAF0EAEE23CEF7E400364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
 		FAF0EAEF23CEF81E00364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
 		FAF0EAF023CEF81F00364D38 /* NSArray+OTMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */; };
@@ -216,6 +217,8 @@
 		FAEA804B23CEF1D000A6D214 /* OTIndexRequestHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTIndexRequestHandler.m; sourceTree = "<group>"; };
 		FAEA804D23CEF1D000A6D214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAEA805523CEF2BB00A6D214 /* spotlight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = spotlight.entitlements; sourceTree = "<group>"; };
+		FAEE6C602608050100CBCB0C /* OTBag+OTQRCodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OTBag+OTQRCodes.h"; sourceTree = "<group>"; };
+		FAEE6C612608050100CBCB0C /* OTBag+OTQRCodes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OTBag+OTQRCodes.m"; sourceTree = "<group>"; };
 		FAF0EAEC23CEF7E400364D38 /* NSArray+OTMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+OTMap.h"; sourceTree = "<group>"; };
 		FAF0EAED23CEF7E400364D38 /* NSArray+OTMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+OTMap.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -423,6 +426,8 @@
 				FAE71A7723DE19D00079321A /* _OTDemoBag.m */,
 				FAEA804123CEE0BD00A6D214 /* OTBag+CSItem.h */,
 				FAEA804223CEE0BD00A6D214 /* OTBag+CSItem.m */,
+				FAEE6C602608050100CBCB0C /* OTBag+OTQRCodes.h */,
+				FAEE6C612608050100CBCB0C /* OTBag+OTQRCodes.m */,
 				FA0E25AA22FB6245007DC512 /* NSData+OTBase32.h */,
 				FA0E25AB22FB6245007DC512 /* NSData+OTBase32.m */,
 				FAF0EAEC23CEF7E400364D38 /* NSArray+OTMap.h */,
@@ -778,6 +783,7 @@
 				FA0E250422F9DB3E007DC512 /* OTAppDelegate.m in Sources */,
 				FA7F915D231056B600FD2A04 /* OTNavigationController.m in Sources */,
 				FA0E25AC22FB6245007DC512 /* NSData+OTBase32.m in Sources */,
+				FAEE6C622608050100CBCB0C /* OTBag+OTQRCodes.m in Sources */,
 				FA0E258822F9F703007DC512 /* OTPHash.m in Sources */,
 				FAE71A7823DE19D00079321A /* _OTDemoBag.m in Sources */,
 				FA19B14C244D61830027560C /* OTBagCenter.m in Sources */,

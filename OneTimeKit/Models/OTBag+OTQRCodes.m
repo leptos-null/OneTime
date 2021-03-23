@@ -40,37 +40,51 @@
     return barcodeCreationFilter.outputImage;
 }
 
-- (NSData *)qrCodeData:(OTImageFileFormat)fileFormat {
+- (NSData *)qrCodeData:(NSString *)type {
     CIImage *image = [self qrCodeImage];
     CIContext *context = [self _grayscale8BitContext];
     
     CGColorSpaceRef const colorSpace = CGColorSpaceCreateDeviceGray();
     CIFormat const format = kCIFormatL8;
     
+    NSDictionary *properties = nil;
+    
+    if ([type isEqualToString:@"public.tiff"]) {
+        properties = @{
+            (NSString *)kCGImagePropertyTIFFDictionary : @{
+                (NSString *)kCGImagePropertyTIFFCompression : @(5), /* LZW */
+            }
+        };
+    } else if ([type isEqualToString:@"public.pvr"]) {
+        CGSize imageSize = image.extent.size;
+        // PVR requires power-of-two dimensions
+        // prefer upscale, since we're confident about preserving quality
+        CGFloat xScale = pow(2, ceil(log2(imageSize.width)))/imageSize.width;
+        CGFloat yScale = pow(2, ceil(log2(imageSize.height)))/imageSize.height;
+        
+        image = [image imageByApplyingTransform:CGAffineTransformMakeScale(xScale, yScale)];
+    }
+    
     NSData *imageData = nil;
-    switch (fileFormat) {
-        case OTImageFileFormatTIFF:
-            imageData = [context TIFFRepresentationOfImage:image format:format colorSpace:colorSpace options:@{
-                // no options
-            }];
-            break;
-        case OTImageFileFormatHEIF:
-            imageData = [context HEIFRepresentationOfImage:image format:format colorSpace:colorSpace options:@{
-                (NSString *)kCGImageDestinationLossyCompressionQuality : @(0)
-            }];
-            break;
-        case OTImageFileFormatPNG:
-            imageData = [context PNGRepresentationOfImage:image format:format colorSpace:colorSpace options:@{
-                // no options
-            }];
-            break;
+    CGImageRef graphic = [context createCGImage:image fromRect:image.extent format:format colorSpace:colorSpace deferred:YES];
+    if (graphic) {
+        NSMutableData *data = [NSMutableData data];
+        CGImageDestinationRef dest = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)data, (__bridge CFStringRef)type, 1, NULL);
+        if (dest) {
+            CGImageDestinationAddImage(dest, graphic, (__bridge CFDictionaryRef)properties);
+            if (CGImageDestinationFinalize(dest)) {
+                imageData = data;
+            }
+            CFRelease(dest);
+        }
+        CGImageRelease(graphic);
     }
     CGColorSpaceRelease(colorSpace);
     
     return imageData;
 }
 
-- (UIBezierPath *)qrCodePath:(CGFloat)scale {
+- (NSString *)qrCodeSVG {
     CIImage *image = [self qrCodeImage];
     CIContext *context = [self _grayscale8BitContext];
     
@@ -88,16 +102,18 @@
     [context render:image toBitmap:bitmap rowBytes:rowBytes bounds:bounds format:format colorSpace:colorSpace];
     CGColorSpaceRelease(colorSpace);
     
-    UIBezierPath *path = [UIBezierPath bezierPath];
+    NSMutableString *path = [NSMutableString string];
+    [path appendFormat:@"<svg viewbox=\"0 0 %ld %ld\">\n", columnCount, rowCount];
     for (ptrdiff_t row = 0; row < rowCount; row++) {
         for (ptrdiff_t column = 0; column < columnCount; column++) {
             uint8_t lum = bitmap[row*rowBytes + column];
-            if (lum > INT8_MAX) {
-                CGRect pathRender = CGRectMake(row * scale, column * scale, scale, scale);
-                [path appendPath:[UIBezierPath bezierPathWithRect:pathRender]];
+            if (lum <= INT8_MAX) {
+                [path appendFormat:@"\t<rect x=\"%ld\" y=\"%ld\" width=\"1\" height=\"1\"/>\n", row, column];
             }
         }
     }
+    [path appendString:@"</svg>"];
+    
     free(bitmap);
     
     return path;

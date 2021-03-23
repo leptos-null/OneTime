@@ -6,27 +6,22 @@
 //  Copyright © 2021 Leptos. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
 
 #import "OTBag.h"
-
-typedef NS_ENUM(NSUInteger, OTImageFileFormat) {
-    OTImageFileFormatTIFF API_AVAILABLE(ios(10.0), macos(10.12)),
-    OTImageFileFormatHEIF API_AVAILABLE(ios(11.0), macos(10.13)),
-    OTImageFileFormatPNG  API_AVAILABLE(ios(11.0), macos(10.13)),
-};
 
 @interface OTBag (OTQRCodes)
 
 - (CIImage *)qrCodeImage;
 
-/// Representations that are near-infinitely scalable
-/// @discussion Uses CoreImage routines to generate output in the gray-scale color space.
-/// The output is expected to be small. Image renderers should be able to scale the output
-/// near-infinitely without distortion.
-- (NSData *)qrCodeData:(OTImageFileFormat)fileFormat;
+/// Optimized @c type representation of @c qrCodeImage
+/// @param type The uniform type identifier (UTI) of the resulting image file.
+/// Call @c CGImageDestinationCopyTypeIdentifiers() for supported values.
+/// @discussion Generate output in the gray-scale color space, for types that support it.
+/// The result from most types are able to be rendered at any scale without distortion.
+- (NSData *)qrCodeData:(NSString *)type;
 
-- (UIBezierPath *)qrCodePath:(CGFloat)scale;
+/// SVG representation of @c qrCodeImage
+- (NSString *)qrCodeSVG;
 
 @end

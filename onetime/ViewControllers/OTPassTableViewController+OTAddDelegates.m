@@ -6,11 +6,10 @@
 //  Copyright © 2021 Leptos. All rights reserved.
 //
 
-#import <CoreImage/CoreImage.h>
-
 #import "OTPassTableViewController+OTAddDelegates.h"
 #import "UIViewController+UMSurfacer.h"
 #import "../../OneTimeKit/Models/NSArray+OTMap.h"
+#import "../../OneTimeKit/Services/OTQRService+OTBag.h"
 
 @implementation OTPassTableViewController (OTQRScanControllerDelegate)
 
@@ -41,37 +40,11 @@
 
 @implementation OTPassTableViewController (OTImagePickerControllerDelegate)
 
-- (NSArray<OTBag *> *)bagsForQRCodeInImage:(UIImage *)image {
-    static CIDetector *detector;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSMutableDictionary<CIContextOption, id> *options = [NSMutableDictionary dictionary];
-        if (@available(iOS 12.0, *)) {
-            options[kCIContextName] = @"null.leptos.onetime.detector.qr";
-        }
-        CIContext *context = [CIContext contextWithOptions:options];
-        detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:@{
-            // this is so fast, and not going to happen that often - opt into higher accuracy
-            CIDetectorAccuracy : CIDetectorAccuracyHigh
-        }];
-    });
-    
-    CIImage *coreImage = [image CIImage] ?: [CIImage imageWithCGImage:[image CGImage]];
-    NSArray<__kindof CIFeature *> *features = [detector featuresInImage:coreImage];
-    NSArray<OTBag *> *bags = [features compactMap:^OTBag *(CIQRCodeFeature *feature) {
-        if (!OTKindofClass(feature, CIQRCodeFeature)) {
-            return nil;
-        }
-        return [[OTBag alloc] initWithURL:[NSURL URLWithString:feature.messageString]];
-    }];
-    return bags;
-}
-
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    __weak __typeof(self) weakself = self;
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray<OTBag *> *bags = [weakself bagsForQRCodeInImage:image];
+        CIImage *coreImage = [image CIImage] ?: [CIImage imageWithCGImage:[image CGImage]];
+        NSArray<OTBag *> *bags = [OTQRService.shared bagsInImage:coreImage];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (bags.count) {
                 [picker dismissViewControllerAnimated:YES completion:NULL];
@@ -128,7 +101,8 @@ API_AVAILABLE(ios(11.0))
                 NSLog(@"loadObjectOfUIImageClass object is not UIImage");
                 return;
             }
-            NSArray<OTBag *> *bags = [weakself bagsForQRCodeInImage:(UIImage *)image];
+            CIImage *coreImage = [(UIImage *)image CIImage] ?: [CIImage imageWithCGImage:[(UIImage *)image CGImage]];
+            NSArray<OTBag *> *bags = [OTQRService.shared bagsInImage:coreImage];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (bags.count) {
                     [OTBagCenter.defaultCenter addBags:bags];

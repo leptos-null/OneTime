@@ -17,8 +17,6 @@
 
 @interface OTPassTableViewController (OTImagePickerControllerDelegate) <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
-- (NSArray<OTBag *> *)bagsForQRCodeInImage:(UIImage *)image;
-
 @end
 
 @interface OTPassTableViewController (OTManualEntryControllerDelegate) <OTManualEntryControllerDelegate>

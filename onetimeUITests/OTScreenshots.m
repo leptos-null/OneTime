@@ -107,6 +107,13 @@
     [self _writeScreenshot:interactionWindow.screenshot name:@"5_edit"];
     [mainNavBar.buttons[@"Done"] tap];
     
+    XCUIElement *tableElement = interactionWindow.tables.element;
+#if TARGET_OS_MACCATALYST
+    [tableElement scrollByDeltaX:0 deltaY:50];
+#else
+    [tableElement swipeDown];
+#endif
+    
     XCUIElement *searchField = mainNavBar.searchFields[@"Search"];
     [searchField tap];
     [searchField typeText:@"G"];

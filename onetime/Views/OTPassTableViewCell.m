@@ -246,7 +246,7 @@
     }
     
     UIKeyCommand *copyCommand = [UIKeyCommand commandWithTitle:@"Copy Code"
-                                                         image:[UIImage systemImageNamed:@"doc.on.doc"]
+                                                         image:[UIImage systemImageNamed:@"doc.on.clipboard"]
                                                         action:@selector(copy:)
                                                          input:@"c" modifierFlags:UIKeyModifierCommand
                                                   propertyList:nil];

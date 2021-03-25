@@ -93,6 +93,7 @@
     NSArray<NSString *> *fillIdioms = @[
         @"iphone",
         @"ipad",
+        @"watch",
         @"ios-marketing",
         @"watch-marketing"
     ];

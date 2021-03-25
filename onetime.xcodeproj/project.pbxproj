@@ -1110,7 +1110,7 @@
 				);
 				IBSC_MODULE = nanonetimext;
 				INFOPLIST_FILE = nanonetime/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1130,7 +1130,7 @@
 				);
 				IBSC_MODULE = nanonetimext;
 				INFOPLIST_FILE = nanonetime/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1154,7 +1154,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp.watchkitextension;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkit.watchkitext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1178,7 +1178,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkitapp.watchkitextension;
+				PRODUCT_BUNDLE_IDENTIFIER = null.leptos.onetime.watchkit.watchkitext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;

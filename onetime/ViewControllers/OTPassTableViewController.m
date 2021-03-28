@@ -129,13 +129,22 @@
     qrScanner.title = title;
     [self.navigationController pushViewController:qrScanner animated:YES];
 }
-// this API is available prior to iOS 11, however the API used in the delegate callback
-//   is iOS 11+ so don't setup, since the picker won't do anything on those versions
 - (void)presentSavedScanController:(NSString *)title {
-    UIImagePickerController *imagePicker = [UIImagePickerController new];
-    imagePicker.delegate = self;
-    imagePicker.title = title;
-    [self presentViewController:imagePicker animated:YES completion:NULL];
+    UIViewController *viewController;
+    if (@available(iOS 14, *)) {
+        PHPickerConfiguration *config = [PHPickerConfiguration new];
+        config.filter = PHPickerFilter.imagesFilter;
+        
+        PHPickerViewController *imagePicker = [[PHPickerViewController alloc] initWithConfiguration:config];
+        imagePicker.delegate = self;
+        viewController = imagePicker;
+    } else {
+        UIImagePickerController *imagePicker = [UIImagePickerController new];
+        imagePicker.delegate = self;
+        viewController = imagePicker;
+    }
+    viewController.title = title;
+    [self presentViewController:viewController animated:YES completion:NULL];
 }
 - (void)pushManualEntryController:(NSString *)title {
     OTManualEntryViewController *manual = [OTManualEntryViewController new];

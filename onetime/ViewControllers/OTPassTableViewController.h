@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <PhotosUI/PhotosUI.h>
 
 #import "../../OneTimeKit/Services/OTBagCenter.h"
 

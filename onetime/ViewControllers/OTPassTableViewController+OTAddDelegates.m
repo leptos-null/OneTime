@@ -38,6 +38,7 @@
 @end
 
 
+API_DEPRECATED_WITH_REPLACEMENT("OTPickerViewControllerDelegate", ios(2.0, 14.0))
 @implementation OTPassTableViewController (OTImagePickerControllerDelegate)
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -108,6 +109,51 @@ API_AVAILABLE(ios(11.0))
                     [OTBagCenter.defaultCenter addBags:bags];
                 } else {
                     [weakself surfaceUserMessage:@"No valid codes found" viewHint:interaction.view dismissAfter:0];
+                }
+            });
+        }];
+    }
+}
+
+@end
+
+
+API_AVAILABLE(ios(14.0))
+@implementation OTPassTableViewController (OTPickerViewControllerDelegate)
+
+- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results {
+    Class<NSItemProviderReading> const imageClass = [UIImage class];
+    
+    if (results.count == 0) {
+        [picker dismissViewControllerAnimated:YES completion:NULL];
+        return;
+    }
+    
+    for (PHPickerResult *result in results) {
+        NSItemProvider *provider = result.itemProvider;
+        if (![provider canLoadObjectOfClass:imageClass]) {
+            continue;
+        }
+        [provider loadObjectOfClass:imageClass completionHandler:^(id<NSItemProviderReading> image, NSError *loadErr) {
+            if (loadErr) {
+                NSLog(@"loadObjectOfClassCompletedWithError: %@", loadErr);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [picker surfaceUserMessage:loadErr.localizedDescription viewHint:nil dismissAfter:0];
+                });
+                return;
+            }
+            if (![image isKindOfClass:imageClass]) {
+                NSLog(@"loadObjectOfUIImageClass object is not UIImage");
+                return;
+            }
+            CIImage *coreImage = [(UIImage *)image CIImage] ?: [CIImage imageWithCGImage:[(UIImage *)image CGImage]];
+            NSArray<OTBag *> *bags = [OTQRService.shared bagsInImage:coreImage];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (bags.count) {
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                    [OTBagCenter.defaultCenter addBags:bags];
+                } else {
+                    [picker surfaceUserMessage:@"No valid codes found" viewHint:nil dismissAfter:0.85];
                 }
             });
         }];

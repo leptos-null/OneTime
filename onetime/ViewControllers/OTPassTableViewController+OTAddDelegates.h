@@ -15,6 +15,7 @@
 
 @end
 
+API_DEPRECATED_WITH_REPLACEMENT("OTPickerViewControllerDelegate", ios(2.0, 14.0))
 @interface OTPassTableViewController (OTImagePickerControllerDelegate) <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
@@ -25,5 +26,10 @@
 
 API_AVAILABLE(ios(11.0))
 @interface OTPassTableViewController (OTDropInteractionDelegate) <UIDropInteractionDelegate>
+
+@end
+
+API_AVAILABLE(ios(14.0))
+@interface OTPassTableViewController (OTPickerViewControllerDelegate) <PHPickerViewControllerDelegate>
 
 @end

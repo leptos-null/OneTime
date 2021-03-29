@@ -12,6 +12,8 @@
 @implementation UIViewController (OTViewControllerUserMessageSurfacer)
 
 - (void)surfaceUserMessage:(NSString *)message viewHint:(UIView *)viewHint dismissAfter:(NSTimeInterval)duration {
+    NSParameterAssert(duration >= 0);
+    
     UIView *sourceView = self.view;
     
     OTInfoViewController *info = [OTInfoViewController new];
@@ -33,8 +35,9 @@
     info.popoverPresentationController.sourceView = sourceView;
     info.popoverPresentationController.sourceRect = sourceRect;
     info.popoverPresentationController.permittedArrowDirections = viewHint ? UIPopoverArrowDirectionAny : 0;
-    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, message);
-    [self presentViewController:info animated:YES completion:NULL];
+    [self presentViewController:info animated:YES completion:^{
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, info.textView);
+    }];
     
     if (duration) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{

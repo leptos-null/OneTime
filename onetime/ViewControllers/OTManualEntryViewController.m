@@ -7,7 +7,7 @@
 //
 
 #import "OTManualEntryViewController.h"
-#import "OTInfoViewController.h"
+#import "UIViewController+UMSurfacer.h"
 
 #import "../../OneTimeKit/Models/OTPTime.h"
 #import "../../OneTimeKit/Models/OTPHash.h"
@@ -47,7 +47,6 @@
     [super viewDidLoad];
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveFieldsToBagRequest)];
-    saveButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = saveButton;
 }
 
@@ -57,17 +56,34 @@
     CCHmacAlgorithm alg = (CCHmacAlgorithm)[self.algorithmPicker selectedRowInComponent:0];
     size_t digits = self.lengthStepper.value;
     NSString *factorComponent = self.factorField.text;
-    if (key == nil || cleanKey.length == 0 || digits <= 0 || alg < 0 || factorComponent.length == 0) {
+    
+    if (cleanKey.length == 0) {
+        [self surfaceUserMessage:@"Secret may not be blank" viewHint:self.secretField dismissAfter:0];
         return;
     }
+    if (key == nil) {
+        [self surfaceUserMessage:@"Invalid base32 encoding" viewHint:self.secretField dismissAfter:0];
+        return;
+    }
+    if (factorComponent.length == 0) {
+        [self surfaceUserMessage:@"Factor Type parameter may not be blank" viewHint:self.factorField dismissAfter:0];
+        return;
+    }
+    NSAssert(digits > 0, @"lengthStepper should only permit values > 0");
+    
     __kindof OTPBase *generator = nil;
     switch (self.factorTypeOption.selectedSegmentIndex) {
         case OTManualEntryFactorTypeCounter:
             generator = [[OTPHash alloc] initWithKey:key algorithm:alg digits:digits counter:factorComponent.integerValue];
             break;
-        case OTManualEntryFactorTypeTime:
-            generator = [[OTPTime alloc] initWithKey:key algorithm:alg digits:digits step:factorComponent.doubleValue];
-            break;
+        case OTManualEntryFactorTypeTime: {
+            NSTimeInterval step = factorComponent.doubleValue;
+            if (step <= 0) {
+                [self surfaceUserMessage:@"Step seconds value is not valid" viewHint:self.factorField dismissAfter:0];
+                return;
+            }
+            generator = [[OTPTime alloc] initWithKey:key algorithm:alg digits:digits step:step];
+        } break;
         default: {
             NSAssert(0, @"An unknown option selected in factorTypeOption: %@", self.factorTypeOption);
         }
@@ -94,14 +110,7 @@
 }
 
 - (void)_presentHelpButton:(UIButton *)button text:(NSString *)text {
-    OTInfoViewController *info = [OTInfoViewController new];
-    [info loadViewIfNeeded];
-    info.textView.text = text;
-    [info updatePreferredContentSizeForViewController:self];
-    
-    info.popoverPresentationController.sourceView = self.view;
-    info.popoverPresentationController.sourceRect = [self.view convertRect:button.frame fromView:button.superview];
-    [self presentViewController:info animated:YES completion:NULL];
+    [self surfaceUserMessage:text viewHint:button dismissAfter:0];
 }
 
 // MARK: - UI Setters
@@ -160,12 +169,14 @@
 }
 
 - (IBAction)_factorFieldTextDidChange:(UITextField *)sender {
+    NSString *senderText = sender.text;
+    
     switch (self.factorTypeOption.selectedSegmentIndex) {
         case OTManualEntryFactorTypeCounter: {
-            _counterStoredValue = sender.text;
+            _counterStoredValue = senderText;
         } break;
         case OTManualEntryFactorTypeTime: {
-            _timeStoredValue = sender.text;
+            _timeStoredValue = senderText;
         } break;
             
         default:
@@ -175,7 +186,6 @@
 
 - (IBAction)_colorSecretTextField:(UITextField *)secretField {
     NSString *interest = secretField.text;
-    BOOL couldSave = (interest.length != 0);
     
     NSMutableAttributedString *markup = [[NSMutableAttributedString alloc] initWithString:interest];
     NSCharacterSet *const badChars = [self _invertedBase32Set];
@@ -189,13 +199,11 @@
         if (badRange.location == NSNotFound) {
             break;
         }
-        couldSave = NO;
         [markup addAttributes:badCharAttribs range:badRange];
         range.location = badRange.location + badRange.length;
         range.length = interest.length - range.location;
     }
     secretField.attributedText = markup;
-    self.navigationItem.rightBarButtonItem.enabled = couldSave;
 }
 
 // MARK: - Help text trampolines

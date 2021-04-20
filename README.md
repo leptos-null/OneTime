@@ -49,6 +49,18 @@ One-Time Password (OTP) iOS client
 
 ### Screenshots
 
-![Home](Screenshots/iPhone12,5/0_home.png) ![Context menu](Screenshots/iPhone12,5/1_copy.png)
-![Search](Screenshots/iPhone12,5/2_search.png) ![Add menu](Screenshots/iPhone12,5/3_menu.png)
-![Manual Entry](Screenshots/iPhone12,5/4_manual.png) ![Edit mode](Screenshots/iPhone12,5/5_edit.png)
+#### iOS
+
+![iOS - Home](Screenshots/iPhone12,5/0_home.png) ![iOS - Context menu](Screenshots/iPhone12,5/1_copy.png)
+
+#### watchOS
+
+![watchOS - TOTP](Screenshots/Watch6,2/0_totp.png) ![watchOS - HOTP](Screenshots/Watch6,2/1_hotp.png) ![watchOS - Refresh](Screenshots/Watch6,2/2_refresh.png)
+
+#### macOS
+
+![macOS - Context menu](Screenshots/macOS/1_copy.png)
+
+#### More
+
+[Screenshots Folder](Screenshots/)

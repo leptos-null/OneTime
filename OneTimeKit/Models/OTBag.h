@@ -34,6 +34,13 @@
 - (instancetype)initWithURL:(NSURL *)url;
 - (NSURL *)URL;
 
+/// A URL for adding "Verification Code in iCloud Keychain"
+/// @discussion These bags are already stored in iCloud Keychain,
+/// however the language Apple choose for the "system" OTP mechanism
+/// seems to be "Verification Code in iCloud Keychain"
+/// @note This value is not strictly suitable for passing to @c initWithURL:
+- (NSURL *)appleURL;
+
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 

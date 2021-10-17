@@ -151,17 +151,24 @@ static inline __pure2 char singleHexChar(uint8_t hex) {
     };
 }
 
-
-- (NSURL *)URL {
+- (NSURL *)_urlForScheme:(NSString *)scheme {
     NSURLQueryItem *issuerItem = [NSURLQueryItem queryItemWithName:@"issuer" value:self.issuer];
     
     NSURLComponents *urlComps = [NSURLComponents new];
-    urlComps.scheme = @"otpauth";
+    urlComps.scheme = scheme;
     urlComps.host = [[self.generator class] domain];
     urlComps.path = [NSString stringWithFormat:@"/%@:%@", self.issuer, self.account];
     urlComps.queryItems = [self.generator.queryItems arrayByAddingObject:issuerItem];
     
     return urlComps.URL;
+}
+- (NSURL *)URL {
+    return [self _urlForScheme:@"otpauth"];
+}
+
+- (NSURL *)appleURL {
+    // per https://developer.apple.com/wwdc21/10105
+    return [self _urlForScheme:@"apple-otpauth"];
 }
 
 NSInteger OTBagCompareUsingIndex(OTBag *a, OTBag *b, void *context) {

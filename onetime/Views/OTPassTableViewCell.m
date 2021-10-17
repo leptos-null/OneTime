@@ -257,11 +257,32 @@
                                                     propertyList:nil];
     deleteCommand.attributes = UIMenuElementAttributesDestructive;
     
+    NSMutableArray *additionalActions = [NSMutableArray array];
+    
+    NSURL *bagURL = self.bag.appleURL;
+    // `canOpenURL:` seems like it might be a better choice,
+    // but for security reasons, I want to avoid a malicious
+    // app on e.g. iOS 14 registering for the `apple-otpauth`
+    // scheme and being able to obtains these secrets.
+    if (@available(iOS 15.0, *)) {
+        UIAction *exportAction = [UIAction actionWithTitle:@"Add to System"
+                                                     image:[UIImage systemImageNamed:@"key"]
+                                                identifier:nil handler:^(__kindof UIAction *action) {
+            [UIApplication.sharedApplication openURL:bagURL options:@{} completionHandler:^(BOOL success) {
+                NSLog(@"openURLCompletedSuccessfully: %@", success ? @"YES" : @"NO");
+            }];
+        }];
+        [additionalActions addObject:exportAction];
+    }
+    
     return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil
                                                     actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
         return [UIMenu menuWithTitle:@"" children:@[
-            copyCommand,
-            deleteCommand
+            [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[
+                copyCommand,
+                deleteCommand
+            ]],
+            [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:additionalActions]
         ]];
     }];
 }

@@ -1,4 +1,4 @@
-## iPad Pro (12.9-inch) (4th generation) 14.4
+## iPad Pro (12.9-inch) (5th generation) 15.0
 
 ![0_home](0_home.png)
 

@@ -1,4 +1,4 @@
-## Apple Watch Series 6 - 44mm 7.2
+## Apple Watch Series 6 - 44mm 8.0
 
 ![0_totp](0_totp.png)
 

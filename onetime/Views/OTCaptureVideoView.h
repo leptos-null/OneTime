@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
+API_AVAILABLE(ios(4.0), macCatalyst(14.0))
 @interface OTCaptureVideoView : UIView
 
 @property (strong, nonatomic, readonly) AVCaptureVideoPreviewLayer *layer;

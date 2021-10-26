@@ -14,6 +14,7 @@
 
 @class OTQRScanViewController;
 
+API_AVAILABLE(ios(4.0), macCatalyst(14.0))
 @protocol OTQRScanControllerDelegate <NSObject>
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFindPayloads:(NSArray<NSString *> *)payloads;
@@ -27,6 +28,7 @@
 @end
 
 
+API_AVAILABLE(ios(4.0), macCatalyst(14.0))
 @interface OTQRScanViewController : UIViewController <AVCaptureMetadataOutputObjectsDelegate>
 
 @property(strong, nonatomic) OTCaptureVideoView *view;

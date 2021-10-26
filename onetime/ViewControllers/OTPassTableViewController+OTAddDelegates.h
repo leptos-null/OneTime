@@ -11,6 +11,7 @@
 #import "OTQRScanViewController.h"
 #import "OTManualEntryViewController.h"
 
+API_AVAILABLE(ios(4.0), macCatalyst(14.0))
 @interface OTPassTableViewController (OTQRScanControllerDelegate) <OTQRScanControllerDelegate>
 
 @end

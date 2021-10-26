@@ -21,7 +21,7 @@
 
 - (BOOL)accentuateCellWithBagID:(NSString *)identifier;
 
-- (void)pushLiveScanController:(NSString *)title;
+- (void)pushLiveScanController:(NSString *)title API_AVAILABLE(ios(4.0), macCatalyst(14.0));
 - (void)presentSavedScanController:(NSString *)title;
 - (void)pushManualEntryController:(NSString *)title;
 

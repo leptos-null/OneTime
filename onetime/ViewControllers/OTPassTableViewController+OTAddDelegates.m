@@ -11,6 +11,7 @@
 #import "../../OneTimeKit/Models/NSArray+OTMap.h"
 #import "../../OneTimeKit/Services/OTQRService+OTBag.h"
 
+API_AVAILABLE(ios(4.0), macCatalyst(14.0))
 @implementation OTPassTableViewController (OTQRScanControllerDelegate)
 
 - (void)qrScanController:(OTQRScanViewController *)controller didFindPayloads:(NSArray<NSString *> *)payloads {

@@ -58,25 +58,27 @@ static NSString *const OTAppShortcutAddQRType = @"null.leptos.onetime.add.qr";
 }
 
 - (void)application:(UIApplication *)app performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
-    if ([shortcutItem.type isEqualToString:OTAppShortcutAddQRType]) {
-        UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
-        
-        OTPassTableViewController *target = nil;
-        for (__kindof UIViewController *controller in navController.viewControllers) {
-            if ([controller isKindOfClass:[OTPassTableViewController class]]) {
-                target = controller;
-            } else if ([controller isKindOfClass:[OTQRScanViewController class]]) {
-                [navController popToViewController:controller animated:NO];
-                completionHandler(YES);
+    if (@available(macCatalyst 14.0, *)) {
+        if ([shortcutItem.type isEqualToString:OTAppShortcutAddQRType]) {
+            UINavigationController *navController = (__kindof UIViewController *)self.window.rootViewController;
+            
+            OTPassTableViewController *target = nil;
+            for (__kindof UIViewController *controller in navController.viewControllers) {
+                if ([controller isKindOfClass:[OTPassTableViewController class]]) {
+                    target = controller;
+                } else if ([controller isKindOfClass:[OTQRScanViewController class]]) {
+                    [navController popToViewController:controller animated:NO];
+                    completionHandler(YES);
+                    return;
+                }
+            }
+            if (target) {
+                [target dismissAllChilderenAnimated:NO completion:^{
+                    [target pushLiveScanController:@"Scan QR Code (Live)"];
+                    completionHandler(YES);
+                }];
                 return;
             }
-        }
-        if (target) {
-            [target dismissAllChilderenAnimated:NO completion:^{
-                [target pushLiveScanController:@"Scan QR Code (Live)"];
-                completionHandler(YES);
-            }];
-            return;
         }
     }
     completionHandler(NO);

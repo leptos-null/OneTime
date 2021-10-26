@@ -92,7 +92,9 @@
     _searchController = searchController;
     
     if (OTLaunchOptions.defaultOptions.shouldPushLiveQR) {
-        [self pushLiveScanController:@"Scan QR Code (Live)"];
+        if (@available(macCatalyst 14.0, *)) {
+            [self pushLiveScanController:@"Scan QR Code (Live)"];
+        }
     }
 }
 
@@ -167,9 +169,11 @@
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
     if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
-        [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Live)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [weakself pushLiveScanController:action.title];
-        }]];
+        if (@available(macCatalyst 14.0, *)) {
+            [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Live)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [weakself pushLiveScanController:action.title];
+            }]];
+        }
     }
     [alert addAction:[UIAlertAction actionWithTitle:@"Scan QR Code (Saved)" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [weakself presentSavedScanController:action.title];
